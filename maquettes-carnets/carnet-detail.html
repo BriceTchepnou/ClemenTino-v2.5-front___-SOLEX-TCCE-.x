@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Détail du carnet - ClemenTino</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="assets/carnets.css">
+</head>
+<body>
+
+<!-- ================= Barre simulée : NE PAS intégrer (le menu existe déjà) ================= -->
+<div class="ct-topbar">
+    <a href="#">Guichet</a><a href="#">Comptes</a><a href="#" class="active">Commercial</a>
+    <a href="#">Exploitation</a><a href="#">Suivi</a><a href="#">Comptabilité</a>
+    <span class="pull-right">Support KuTiWa</span>
+</div>
+<!-- ======================================================================================== -->
+
+<div class="ct-page">
+
+    <div class="ct-breadcrumb"><a href="carnets-liste.html">&larr; Liste des carnets</a></div>
+    <h1 class="ct-page-title">
+        Carnet <b id="d-numero"></b>
+        <span id="d-statut" class="ct-badge" style="margin-left:8px;vertical-align:2px"></span>
+    </h1>
+
+    <!-- ---------- Actions ---------- -->
+    <div class="clearfix" style="margin-bottom:14px">
+        <button class="btn btn-ct-primary" id="btnEdit"><span class="glyphicon glyphicon-pencil"></span> Modifier</button>
+        <button class="btn btn-ct-default" id="btnDernier" style="margin-left:6px"><span class="glyphicon glyphicon-step-forward"></span> Mettre à jour le dernier n° utilisé</button>
+        <button class="btn btn-ct-default" id="btnPerdus" style="margin-left:6px"><span class="glyphicon glyphicon-warning-sign text-danger"></span> Déclarer perdues / annulées</button>
+        <button class="btn btn-ct-default pull-right" id="btnCloture"></button>
+    </div>
+
+    <div class="alert alert-warning" id="d-alerte" style="display:none;border-radius:0"></div>
+
+    <div class="row">
+        <!-- ---------- Informations ---------- -->
+        <div class="col-md-5">
+            <table class="table table-condensed ct-info-table">
+                <tr><td>N° carnet</td><td><b id="i-numero"></b></td></tr>
+                <tr><td>Plage de numéros</td><td class="ct-num" id="i-plage"></td></tr>
+                <tr><td>Client</td><td id="i-client"></td></tr>
+                <tr><td>Agence</td><td id="i-agence"></td></tr>
+                <tr><td>Date de création</td><td id="i-creation"></td></tr>
+                <tr><td>Date d'affectation</td><td id="i-affectation"></td></tr>
+                <tr><td>Dernier n° utilisé</td><td class="ct-num" id="i-dernier"></td></tr>
+                <tr><td>Prochaine feuille attendue</td><td class="ct-num" id="i-prochain"></td></tr>
+                <tr><td>Observation</td><td id="i-observation"></td></tr>
+            </table>
+        </div>
+        <!-- ---------- Indicateurs ---------- -->
+        <div class="col-md-7">
+            <div class="row ct-kpis">
+                <div class="col-xs-6 col-sm-3"><div class="ct-kpi ct-kpi-grey"><div class="ct-kpi-label">Feuilles</div><div class="ct-kpi-value" id="k-total"></div></div></div>
+                <div class="col-xs-6 col-sm-3"><div class="ct-kpi ct-kpi-green"><div class="ct-kpi-label">Utilisées</div><div class="ct-kpi-value" id="k-utilisees"></div></div></div>
+                <div class="col-xs-6 col-sm-3"><div class="ct-kpi"><div class="ct-kpi-label">Disponibles</div><div class="ct-kpi-value" id="k-dispo"></div></div></div>
+                <div class="col-xs-6 col-sm-3"><div class="ct-kpi ct-kpi-red"><div class="ct-kpi-label">Perdues / annulées</div><div class="ct-kpi-value" id="k-perdues"></div></div></div>
+            </div>
+            <div class="progress" style="height:20px;border-radius:0">
+                <div class="progress-bar progress-bar-success" id="k-bar-used"></div>
+                <div class="progress-bar progress-bar-danger" id="k-bar-lost"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ---------- Onglets ---------- -->
+    <ul class="nav nav-tabs" role="tablist" style="margin-top:6px">
+        <li class="active"><a href="#tab-feuilles" data-toggle="tab">Feuilles du carnet</a></li>
+        <li><a href="#tab-anomalies" data-toggle="tab">Feuilles perdues / annulées <span class="badge" id="tab-count-anomalies">0</span></a></li>
+        <li><a href="#tab-historique" data-toggle="tab">Historique</a></li>
+    </ul>
+
+    <div class="tab-content">
+
+        <!-- ===== Onglet 1 : grille des feuilles ===== -->
+        <div class="tab-pane active" id="tab-feuilles">
+            <div class="ct-toolbar clearfix">
+                <div class="pull-left form-inline">
+                    <select class="form-control input-sm" id="g-filtre">
+                        <option value="">Toutes les feuilles</option>
+                        <option value="DISPONIBLE">Disponibles</option>
+                        <option value="UTILISEE">Utilisées</option>
+                        <option value="PERDUE">Perdues</option>
+                        <option value="ANNULEE">Annulées</option>
+                    </select>
+                    <input type="number" class="form-control input-sm" id="g-goto" placeholder="Aller au n°…" style="width:140px">
+                </div>
+                <div class="pull-right ct-legend" style="padding-top:6px">
+                    <span><i class="ct-st-DISPONIBLE"></i>Disponible</span>
+                    <span><i class="ct-st-PROCHAINE"></i>Prochaine</span>
+                    <span><i class="ct-st-UTILISEE"></i>Utilisée</span>
+                    <span><i class="ct-st-PERDUE"></i>Perdue</span>
+                    <span><i class="ct-st-ANNULEE"></i>Annulée</span>
+                </div>
+            </div>
+            <p class="text-muted" style="font-size:11px;margin:0">
+                Cliquez sur une feuille pour la sélectionner (Maj + clic pour sélectionner une plage), puis choisissez une action en bas.
+            </p>
+
+            <div class="ct-sheets" id="g-sheets"></div>
+
+            <div class="clearfix">
+                <div class="pull-left" id="g-info"></div>
+                <ul class="pagination pagination-sm pull-right" id="g-pager" style="margin:0"></ul>
+            </div>
+
+            <div class="ct-selection-bar" id="g-selbar">
+                <b id="g-selcount">0</b> feuille(s) sélectionnée(s) : <span id="g-sellist" class="ct-num"></span>
+                <span class="pull-right">
+                    <button class="btn btn-xs btn-danger" id="g-sel-perdue">Marquer perdue(s)</button>
+                    <button class="btn btn-xs btn-default" id="g-sel-annulee">Marquer annulée(s)</button>
+                    <button class="btn btn-xs btn-success" id="g-sel-retablir">Rétablir</button>
+                    <button class="btn btn-xs btn-primary" id="g-sel-dernier" title="Possible uniquement avec 1 feuille sélectionnée">Définir comme dernier n° utilisé</button>
+                    <button class="btn btn-xs btn-link" id="g-sel-clear">Désélectionner</button>
+                </span>
+            </div>
+        </div>
+
+        <!-- ===== Onglet 2 : liste des anomalies ===== -->
+        <div class="tab-pane" id="tab-anomalies">
+            <table class="table table-condensed ct-table" style="margin-top:10px">
+                <thead>
+                <tr>
+                    <th class="no-sort">N° feuille</th>
+                    <th class="no-sort">Type</th>
+                    <th class="no-sort">Motif</th>
+                    <th class="no-sort">Déclarée le</th>
+                    <th class="no-sort">Par</th>
+                    <th class="no-sort text-right">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="a-body"></tbody>
+            </table>
+        </div>
+
+        <!-- ===== Onglet 3 : historique ===== -->
+        <div class="tab-pane" id="tab-historique">
+            <ul class="ct-timeline" id="h-list" style="margin-top:14px"></ul>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================================
+     MODALE : Ajouter / Modifier un carnet   (identique dans carnets-liste.html)
+     ===================================================================== -->
+<div class="modal fade ct-modal" id="modalCarnet" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="width:760px;max-width:96%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">&times;</button>
+                <span class="glyphicon glyphicon-plus-sign"></span> <span id="fc-title">Ajouter un carnet</span>
+            </div>
+            <div class="modal-body">
+                <div class="ct-section-title">Carnet de lettres de transport</div>
+                <form class="form-horizontal" onsubmit="return false;">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label required" for="fc-numero">Numéro carnet</label>
+                        <div class="col-sm-6"><input type="text" class="form-control" id="fc-numero" maxlength="40"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-prefixe">Préfixe des feuilles</label>
+                        <div class="col-sm-3"><input type="text" class="form-control" id="fc-prefixe" maxlength="10"></div>
+                        <div class="col-sm-5"><span class="help-block">Optionnel : imprimé devant chaque n°</span></div>
+                    </div>
+                    <div class="form-group" id="fc-taille-group">
+                        <label class="col-sm-4 control-label" for="fc-taille">Nombre de feuilles</label>
+                        <div class="col-sm-3">
+                            <select class="form-control" id="fc-taille">
+                                <option value="25">25</option><option value="50" selected>50</option>
+                                <option value="100">100</option><option value="200">200</option><option value="1000">1000</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label required" for="fc-debut">Numéro de début</label>
+                        <div class="col-sm-6"><input type="number" min="0" class="form-control" id="fc-debut"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label required" for="fc-fin">Numéro de fin</label>
+                        <div class="col-sm-6"><input type="number" min="0" class="form-control" id="fc-fin"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-client">Affecté au client</label>
+                        <div class="col-sm-6"><select class="form-control" id="fc-client"><option value=""></option></select></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-agence">Affecté à l'agence</label>
+                        <div class="col-sm-6"><select class="form-control" id="fc-agence"></select></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-dernier">Dernier numéro utilisé</label>
+                        <div class="col-sm-6"><input type="number" min="0" class="form-control" id="fc-dernier" placeholder="Vide = carnet neuf"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-perdus">Numéros perdus</label>
+                        <div class="col-sm-6">
+                            <textarea class="form-control" id="fc-perdus" rows="2" placeholder="ex : 456045, 456101-456105"></textarea>
+                            <span class="help-block">Séparer par des virgules ; utiliser un tiret pour une plage.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-perdus-motif">Motif de perte</label>
+                        <div class="col-sm-6"><select class="form-control" id="fc-perdus-motif"></select></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-observation">Observation</label>
+                        <div class="col-sm-6"><textarea class="form-control" id="fc-observation" rows="2"></textarea></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-sm-8"><div class="ct-summary" id="fc-summary" style="display:none"></div></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ct-primary" id="fc-save">Enregistrer</button>
+                <button type="button" class="btn btn-ct-default" data-dismiss="modal" style="margin-left:30px">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================================
+     MODALE : Mettre à jour le dernier numéro utilisé
+     ===================================================================== -->
+<div class="modal fade ct-modal" id="modalDernier" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <span class="glyphicon glyphicon-step-forward"></span> Dernier numéro utilisé
+            </div>
+            <div class="modal-body">
+                <div class="ct-section-title">Avancement du carnet</div>
+                <p>Actuellement : <b class="ct-num" id="md-actuel"></b> · Prochain attendu : <b class="ct-num" id="md-prochain"></b></p>
+                <div class="form-group">
+                    <label for="md-numero" style="font-weight:400">Nouveau dernier n° utilisé</label>
+                    <div class="input-group">
+                        <span class="input-group-btn"><button class="btn btn-default" id="md-minus" type="button">−1</button></span>
+                        <input type="number" class="form-control text-center" id="md-numero">
+                        <span class="input-group-btn"><button class="btn btn-default" id="md-plus" type="button">+1</button></span>
+                    </div>
+                    <span class="help-block" id="md-help"></span>
+                </div>
+                <div class="alert alert-danger" id="md-error" style="display:none;border-radius:0"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ct-primary" id="md-save">Enregistrer</button>
+                <button type="button" class="btn btn-ct-default" data-dismiss="modal" style="margin-left:30px">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================================
+     MODALE : Déclarer des feuilles perdues / annulées
+     ===================================================================== -->
+<div class="modal fade ct-modal" id="modalPerdus" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <span class="glyphicon glyphicon-warning-sign"></span> Déclarer des feuilles perdues / annulées
+            </div>
+            <div class="modal-body">
+                <div class="ct-section-title">Feuilles concernées</div>
+                <form class="form-horizontal" onsubmit="return false;">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Type</label>
+                        <div class="col-sm-8">
+                            <label class="radio-inline"><input type="radio" name="mp-type" value="PERDUE" checked> Perdue</label>
+                            <label class="radio-inline"><input type="radio" name="mp-type" value="ANNULEE"> Annulée</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label required" for="mp-numeros">Numéros</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="mp-numeros" rows="3" placeholder="ex : 456101, 456105-456110"></textarea>
+                            <span class="help-block" id="mp-preview"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="mp-motif">Motif</label>
+                        <div class="col-sm-8"><select class="form-control" id="mp-motif"></select></div>
+                    </div>
+                </form>
+                <div class="alert alert-danger" id="mp-error" style="display:none;border-radius:0"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ct-primary" id="mp-save">Enregistrer</button>
+                <button type="button" class="btn btn-ct-default" data-dismiss="modal" style="margin-left:30px">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================================
+     MODALE : Confirmation générique
+     ===================================================================== -->
+<div class="modal fade ct-modal" id="modalConfirm" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <span class="glyphicon glyphicon-question-sign"></span> Confirmation
+            </div>
+            <div class="modal-body" id="confirm-msg"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-ct-danger" id="confirm-ok">Confirmer</button>
+                <button type="button" class="btn btn-ct-default" data-dismiss="modal">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ct-footer">Copyright © ClemenTino 2.0 · Vous êtes affecté à la ville de <b>DOUALA</b>, au bureau de <b>AKWA</b>.</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/carnets-common.js"></script>
+<script src="assets/carnet-detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carnets de lettres de transport - ClemenTino</title>
+
+    <!-- Dépendances identiques à l'existant : Bootstrap 3 + jQuery (+ Select2 pour les listes de clients) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="assets/carnets.css">
+</head>
+<body>
+
+<!-- ================= Barre simulée : NE PAS intégrer (le menu existe déjà) ================= -->
+<div class="ct-topbar">
+    <a href="#">Guichet</a><a href="#">Comptes</a><a href="#" class="active">Commercial</a>
+    <a href="#">Exploitation</a><a href="#">Suivi</a><a href="#">Comptabilité</a>
+    <span class="pull-right">Support KuTiWa</span>
+</div>
+<!-- ======================================================================================== -->
+
+<div class="ct-page">
+
+    <h1 class="ct-page-title">Liste des carnets de lettre de transport</h1>
+
+    <!-- ---------- Actions principales ---------- -->
+    <div class="clearfix">
+        <button type="button" class="btn btn-ct-new" id="btnNouveauCarnet">
+            <span class="glyphicon glyphicon-plus-sign"></span> Nouveau carnet
+        </button>
+        <button type="button" class="btn btn-default" id="btnRechercheFeuille" style="border-radius:0;margin-left:6px">
+            <span class="glyphicon glyphicon-search"></span> Retrouver une feuille (n° de LT)
+        </button>
+        <button type="button" class="btn btn-ct-default pull-right" id="btnRefresh">
+            <span class="glyphicon glyphicon-refresh" style="color:#5cb85c"></span> Rafraîchir la liste
+        </button>
+    </div>
+
+    <!-- ---------- Filtres ---------- -->
+    <form class="form-inline ct-filters" id="formFiltres" onsubmit="return false;">
+        <div class="form-group">
+            <label for="f-du">Du</label>
+            <input type="date" class="form-control" id="f-du">
+        </div>
+        <div class="form-group">
+            <label for="f-au">Au</label>
+            <input type="date" class="form-control" id="f-au">
+        </div>
+        <div class="form-group">
+            <label for="f-client">Client</label>
+            <select class="form-control" id="f-client" style="width:240px">
+                <option value="">Tout</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="f-agence">Agence</label>
+            <select class="form-control" id="f-agence">
+                <option value="">Toutes</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="f-statut">Statut</label>
+            <select class="form-control" id="f-statut">
+                <option value="">Tous</option>
+                <option value="STOCK">En stock</option>
+                <option value="AFFECTE">Affecté</option>
+                <option value="EPUISE">Épuisé</option>
+                <option value="CLOTURE">Clôturé</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-ct-primary" id="btnAfficher">Afficher</button>
+        </div>
+    </form>
+
+    <!-- ---------- Indicateurs ---------- -->
+    <div class="row ct-kpis">
+        <div class="col-sm-2 col-xs-6"><div class="ct-kpi"><div class="ct-kpi-label">Carnets</div><div class="ct-kpi-value" id="kpi-carnets">0</div></div></div>
+        <div class="col-sm-2 col-xs-6"><div class="ct-kpi ct-kpi-grey"><div class="ct-kpi-label">Feuilles totales</div><div class="ct-kpi-value" id="kpi-feuilles">0</div></div></div>
+        <div class="col-sm-2 col-xs-6"><div class="ct-kpi ct-kpi-green"><div class="ct-kpi-label">Feuilles utilisées</div><div class="ct-kpi-value" id="kpi-utilisees">0</div></div></div>
+        <div class="col-sm-2 col-xs-6"><div class="ct-kpi"><div class="ct-kpi-label">Feuilles disponibles</div><div class="ct-kpi-value" id="kpi-dispo">0</div></div></div>
+        <div class="col-sm-2 col-xs-6"><div class="ct-kpi ct-kpi-red"><div class="ct-kpi-label">Perdues / annulées</div><div class="ct-kpi-value" id="kpi-perdues">0</div></div></div>
+        <div class="col-sm-2 col-xs-6"><div class="ct-kpi ct-kpi-orange"><div class="ct-kpi-label">Carnets bientôt épuisés</div><div class="ct-kpi-value" id="kpi-alerte">0</div></div></div>
+    </div>
+
+    <!-- ---------- Longueur + recherche rapide ---------- -->
+    <div class="clearfix" style="margin-bottom:8px">
+        <div class="pull-left form-inline">
+            Afficher
+            <select class="form-control input-sm" id="pageSize" style="border-radius:0;margin:0 4px">
+                <option>10</option><option selected>25</option><option>50</option><option>100</option>
+            </select>
+            carnets
+        </div>
+        <div class="pull-right form-inline">
+            <label for="quickSearch" style="font-weight:400">Recherche rapide</label>
+            <input type="text" class="form-control input-sm" id="quickSearch" style="border-radius:0;width:220px" placeholder="N° carnet, client, n° de feuille…">
+        </div>
+    </div>
+
+    <!-- ---------- Tableau ---------- -->
+    <div class="table-responsive">
+        <table class="table table-condensed ct-table" id="tableCarnets">
+            <thead>
+            <tr>
+                <th data-sort="numero">N° Carnet <span class="ct-sort"></span></th>
+                <th data-sort="debut">N° début <span class="ct-sort"></span></th>
+                <th data-sort="fin">N° fin <span class="ct-sort"></span></th>
+                <th data-sort="dernierUtilise">Dernier N° utilisé <span class="ct-sort"></span></th>
+                <th data-sort="pct">Utilisation <span class="ct-sort"></span></th>
+                <th data-sort="perdues" class="text-center">Perdues <span class="ct-sort"></span></th>
+                <th data-sort="client">Client <span class="ct-sort"></span></th>
+                <th data-sort="agence">Agence <span class="ct-sort"></span></th>
+                <th data-sort="statut">Statut <span class="ct-sort"></span></th>
+                <th class="no-sort text-right">Actions</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="clearfix">
+        <div class="pull-left" id="pagerInfo">Aucun carnet à afficher</div>
+        <ul class="pagination pagination-sm pull-right" id="pager" style="margin:0"></ul>
+    </div>
+
+    <p class="text-muted" style="margin-top:20px;font-size:11px">
+        Maquette - données de démonstration stockées dans le navigateur.
+        <a href="#" id="btnResetDemo">Réinitialiser les données de démo</a>
+    </p>
+</div>
+
+
+<!-- =====================================================================
+     MODALE : Ajouter / Modifier un carnet   (identique dans carnet-detail.html)
+     ===================================================================== -->
+<div class="modal fade ct-modal" id="modalCarnet" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="width:760px;max-width:96%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">&times;</button>
+                <span class="glyphicon glyphicon-plus-sign"></span> <span id="fc-title">Ajouter un carnet</span>
+            </div>
+            <div class="modal-body">
+                <div class="ct-section-title">Carnet de lettres de transport</div>
+                <form class="form-horizontal" onsubmit="return false;">
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label required" for="fc-numero">Numéro carnet</label>
+                        <div class="col-sm-6"><input type="text" class="form-control" id="fc-numero" placeholder="ex : TOTAL-354935" maxlength="40"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-prefixe">Préfixe des feuilles</label>
+                        <div class="col-sm-3"><input type="text" class="form-control" id="fc-prefixe" placeholder="ex : LT" maxlength="10"></div>
+                        <div class="col-sm-5"><span class="help-block">Optionnel : imprimé devant chaque n° (LT100001…)</span></div>
+                    </div>
+
+                    <div class="form-group" id="fc-taille-group">
+                        <label class="col-sm-4 control-label" for="fc-taille">Nombre de feuilles</label>
+                        <div class="col-sm-3">
+                            <select class="form-control" id="fc-taille">
+                                <option value="25">25</option>
+                                <option value="50" selected>50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                                <option value="1000">1000</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-5"><span class="help-block">Calcule le n° de fin automatiquement</span></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label required" for="fc-debut">Numéro de début</label>
+                        <div class="col-sm-6"><input type="number" min="0" class="form-control" id="fc-debut" placeholder="1er n° imprimé"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label required" for="fc-fin">Numéro de fin</label>
+                        <div class="col-sm-6"><input type="number" min="0" class="form-control" id="fc-fin" placeholder="Dernier n° imprimé"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-client">Affecté au client</label>
+                        <div class="col-sm-6">
+                            <select class="form-control" id="fc-client"><option value=""></option></select>
+                            <span class="help-block">Laisser vide si le carnet reste en stock</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-agence">Affecté à l'agence</label>
+                        <div class="col-sm-6"><select class="form-control" id="fc-agence"></select></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-dernier">Dernier numéro utilisé</label>
+                        <div class="col-sm-6">
+                            <input type="number" min="0" class="form-control" id="fc-dernier" placeholder="Vide = carnet neuf">
+                            <span class="help-block">Les feuilles sont coupées dans l'ordre : toutes celles jusqu'à ce n° sont considérées utilisées.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-perdus">Numéros perdus</label>
+                        <div class="col-sm-6">
+                            <textarea class="form-control" id="fc-perdus" rows="2" placeholder="ex : 456045, 456101-456105"></textarea>
+                            <span class="help-block">Séparer par des virgules ; utiliser un tiret pour une plage.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-perdus-motif">Motif de perte</label>
+                        <div class="col-sm-6"><select class="form-control" id="fc-perdus-motif"></select></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="fc-observation">Observation</label>
+                        <div class="col-sm-6"><textarea class="form-control" id="fc-observation" rows="2"></textarea></div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-sm-8"><div class="ct-summary" id="fc-summary" style="display:none"></div></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ct-primary" id="fc-save">Enregistrer</button>
+                <button type="button" class="btn btn-ct-default" data-dismiss="modal" style="margin-left:30px">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================================
+     MODALE : Déclarer des feuilles perdues / annulées (depuis la liste)
+     ===================================================================== -->
+<div class="modal fade ct-modal" id="modalPerdus" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">&times;</button>
+                <span class="glyphicon glyphicon-warning-sign"></span> Déclarer des feuilles perdues / annulées
+            </div>
+            <div class="modal-body">
+                <div class="ct-section-title">Carnet <span id="mp-carnet"></span></div>
+                <p class="text-muted" id="mp-plage"></p>
+                <form class="form-horizontal" onsubmit="return false;">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Type</label>
+                        <div class="col-sm-8">
+                            <label class="radio-inline"><input type="radio" name="mp-type" value="PERDUE" checked> Perdue</label>
+                            <label class="radio-inline"><input type="radio" name="mp-type" value="ANNULEE"> Annulée</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label required" for="mp-numeros">Numéros</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="mp-numeros" rows="3" placeholder="ex : 456101, 456105-456110"></textarea>
+                            <span class="help-block" id="mp-preview"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="mp-motif">Motif</label>
+                        <div class="col-sm-8"><select class="form-control" id="mp-motif"></select></div>
+                    </div>
+                </form>
+                <div class="alert alert-danger" id="mp-error" style="display:none;border-radius:0"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ct-primary" id="mp-save">Enregistrer</button>
+                <button type="button" class="btn btn-ct-default" data-dismiss="modal" style="margin-left:30px">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================================
+     MODALE : Retrouver une feuille (à quel carnet / client appartient un n°)
+     ===================================================================== -->
+<div class="modal fade ct-modal" id="modalRecherche" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">&times;</button>
+                <span class="glyphicon glyphicon-search"></span> Retrouver une feuille
+            </div>
+            <div class="modal-body">
+                <div class="ct-section-title">Numéro de lettre de transport</div>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="rf-numero" placeholder="ex : 456045" style="border-radius:0">
+                    <span class="input-group-btn"><button class="btn btn-ct-primary" id="rf-go">Chercher</button></span>
+                </div>
+                <div id="rf-result" style="margin-top:14px"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================================
+     MODALE : Confirmation générique
+     ===================================================================== -->
+<div class="modal fade ct-modal" id="modalConfirm" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <span class="glyphicon glyphicon-question-sign"></span> Confirmation
+            </div>
+            <div class="modal-body" id="confirm-msg"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-ct-danger" id="confirm-ok">Confirmer</button>
+                <button type="button" class="btn btn-ct-default" data-dismiss="modal">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ct-footer">Copyright © ClemenTino 2.0 · Vous êtes affecté à la ville de <b>DOUALA</b>, au bureau de <b>AKWA</b>.</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/carnets-common.js"></script>
+<script src="assets/carnets-liste.js"></script>
+</body>
+</html>

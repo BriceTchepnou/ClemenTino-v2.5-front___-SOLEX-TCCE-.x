@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "maquettes-carnets",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "http-server", "maquettes-carnets", "-p", "8765", "-c-1"],
+      "port": 8765
+    }
+  ]
+}
