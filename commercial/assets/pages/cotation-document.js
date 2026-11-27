@@ -19,7 +19,9 @@ $(function () {
     CX.api.get("cotations", id).done(function (c) {
         var cl = COT.client(c.clientId);
         rendre(c, cl);
-        $("#btnImprimer, #btnPdf").on("click", function () { window.print(); });
+        $("#btnImprimer").on("click", function () { window.print(); });
+        /* PDF A4 généré directement (indépendant des réglages de la boîte d'impression) */
+        $("#btnPdf").on("click", function () { CX.pdf.telecharger("#doc", { nom: document.title, bouton: this }); });
         if (U.queryParam("print") === "1") setTimeout(function () { window.print(); }, 500);
     }).fail(function (e) { erreur(e); });
 
@@ -51,7 +53,9 @@ $(function () {
         if (fil) h.push("<div class='cd-filigrane " + fil[1] + "'>" + fil[0] + "</div>");
 
         /* --- en-tête société --- */
-        h.push("<div class='cd-head'><div class='cd-logo'><div class='cd-logo-mark'>" + U.esc(U.initials(S.nom)) + "</div>" +
+        h.push("<div class='cd-head'><div class='cd-logo'>" + (S.logo
+            ? "<div class='cd-logo-mark cd-logo-img'><img src='" + U.esc(S.logo) + "' alt='" + U.esc(S.nom) + "'></div>"
+            : "<div class='cd-logo-mark'>" + U.esc(U.initials(S.nom)) + "</div>") +
             "<div><div class='cd-soc-nom'>" + U.esc(S.nom) + "</div><div class='cd-soc-slogan'>" + U.esc(S.slogan) + "</div></div></div>" +
             "<div class='cd-soc-coord'>" + U.esc(S.adresse) + "<br>Tél. " + U.esc(S.tel) + " · " + U.esc(S.email) +
             "<br>RCCM " + U.esc(S.rccm) + " · NIU " + U.esc(S.niu) + "</div></div>");
@@ -234,6 +238,11 @@ $(function () {
         li.push("Offre valable jusqu'au <b>" + U.toFr(c.dateValidite) + "</b>" + (jours > 0 ? " (" + jours + " jours)" : "") + ". Passé ce délai, les prix pourront être révisés.");
         if (cl && cl.enCompte) li.push("Paiement : sur facture, à <b>" + (cl.delaiPaiement || CX.CONFIG.DELAI_PAIEMENT_JOURS) + " jours</b> date de facture, par virement ou chèque à l'ordre de " + U.esc(S.nom) + ".");
         else li.push("Paiement : <b>comptant</b> au dépôt (espèces, Orange Money, MTN MoMo) ou par virement préalable.");
+        if (d.tarif && d.tarif.grilleNom) {   /* grille du client utilisée pour le calcul (rubrique Tarifaires) */
+            li.push("Tarif appliqué : <b>" + U.esc(d.tarif.grilleNom) + "</b>" + (d.tarif.grilleCode ? " (" + U.esc(d.tarif.grilleCode) + ")" : "") +
+                (d.tarif.contratNumero ? ", conformément au contrat n° <b>" + U.esc(d.tarif.contratNumero) + "</b>" : "") +
+                (d.tarif.regle ? " · règle « " + U.esc(d.tarif.regle) + " »" : "") + (d.express ? " · option express incluse" : "") + ".");
+        }
         if (c.type === "EXPEDITION") {
             li.push("Tarif établi sur le poids taxable déclaré (le plus élevé du poids réel et du poids volumétrique L × l × H / 5 000). Tout écart constaté au dépôt donnera lieu à un réajustement.");
             li.push("Les marchandises sont transportées aux risques de l'expéditeur au-delà de la valeur déclarée. Les produits dangereux ou illicites sont refusés.");

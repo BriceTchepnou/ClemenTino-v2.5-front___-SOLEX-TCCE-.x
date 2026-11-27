@@ -360,16 +360,40 @@ $(function () {
                 okText: "Convertir"
             }).done(function () {
                 // TODO API : POST /commercial/cotations/{id}/convertir  -> crée l'expédition (Guichet) et renvoie son n° de LT
-                var details = $.extend({}, c.details, { convertie: true, dateConversion: today });
-                CX.api.patchMany("cotations", [c.id], { details: details })
-                    .then(function () { return CX.api.log("cotations", c.id, "Convertie en " + quoi); })
-                    .done(function () {
-                        U.toast("Cotation " + c.numero + " convertie. La création de l'expédition se fait dans le module Guichet (hors maquette).", "info");
-                        charger();
+                if (c.type === "TARIFAIRE") { convertirEnGrille(c); return; }
+                /* Expédition / mise à disposition : création de l'expédition, qui suit ensuite le
+                   circuit normal (livraison, preuve de livraison) jusqu'à la facturation du client. */
+                CX.api.list("expeditions").then(function (exps) {
+                    var d = c.details || {}, colis = d.colis || [];
+                    var nb = 0, poids = 0;
+                    $.each(colis, function (_, k) { nb += k.nombre || 1; poids += (k.poids || 0) * (k.nombre || 1); });
+                    var cl = $.grep(CX.api.clientsSync(), function (x) { return x.id == c.clientId; })[0] || {};
+                    var depAg = CX.REF.agencesDe(d.villeDep || "")[0], destAg = CX.REF.agencesDe(d.villeDest || "")[0];
+                    var nRt = "RT-" + today.substr(2, 2) + today.substr(5, 2) + "-" + ("00000" + (1200 + exps.length + 1)).slice(-5);
+                    return CX.api.save("expeditions", {
+                        numero: nRt, nRt: nRt, nRtMan: null, clientId: c.clientId, dateExp: today, dateLivraison: null,
+                        villeDep: d.villeDep || CX.CONFIG.USER.ville, bureauDep: d.bureauDep || (depAg ? depAg.nom : ""),
+                        villeDest: d.villeDest || d.villeDep || "", bureauDest: d.bureauDest || (destAg ? destAg.nom : ""),
+                        expediteur: (d.expediteur && d.expediteur.nom) || cl.raisonSociale || "",
+                        destinataire: (d.destinataire && d.destinataire.nom) || "",
+                        contenu: c.type === "FRET" ? "Mise à disposition " + (d.vehicule || "véhicule") + " · " + (d.nbJours || 1) + " j" : (colis[0] && (colis[0].description || colis[0].nature)) || c.nom,
+                        nbColis: nb || 1, poids: Math.round(poids * 10) / 10, montant: U.round(c.montantHT),
+                        statut: "EN_TRANSIT", preuveLivraison: false, factureId: null, cotationId: c.id
                     });
+                }).then(function (exp) {
+                    var details = $.extend({}, c.details, { convertie: true, dateConversion: today, expeditionId: exp.id, nRt: exp.nRt });
+                    return CX.api.patchMany("cotations", [c.id], { details: details })
+                        .then(function () { return CX.api.log("cotations", c.id, "Convertie en " + quoi + " n° " + exp.nRt); })
+                        .done(function () {
+                            U.toast("Cotation " + c.numero + " convertie : expédition <b>" + exp.nRt + "</b> créée. Elle sera facturable après livraison " +
+                                "(<a href='facture-emettre.html?client=" + c.clientId + "' style='color:#93c5fd'>voir en facturation</a>).", "success");
+                            charger();
+                        });
+                });
             });
         },
 
+        /* (voir convertirEnGrille plus bas) */
         dupliquer: function (c) {
             var copie = JSON.parse(JSON.stringify(c));
             delete copie.id; delete copie.numero;
@@ -412,6 +436,58 @@ $(function () {
     /* ------------------------------------------------------------------
        Modale « motif » -> promesse résolue avec le motif saisi
        ------------------------------------------------------------------ */
+    /* Cotation TARIFAIRE acceptée -> grille tarifaire CLIENT active, affectée au client.
+       Une règle « forfait par tranches de poids » par trajet ; repli sur la grille standard.
+       TODO API : POST /commercial/cotations/{id}/convertir (type TARIFAIRE) -> crée la grille */
+    function convertirEnGrille(c) {
+        var d = c.details || {}, lignes = d.lignes || [], T = CX.tarifs;
+        if (!T || !lignes.length) { U.toast("Aucune ligne tarifaire à convertir.", "warning"); return; }
+        var maxDe = {}; $.each(CX.cot.TRANCHES, function (_, t) { maxDe[t.code] = t.max; });
+        var parTrajet = {};
+        $.each(lignes, function (_, l) {
+            if (!l.villeDep || !l.villeDest || !(Number(l.prix) > 0)) return;
+            var k = l.villeDep + "|" + l.villeDest;
+            (parTrajet[k] = parTrajet[k] || []).push({ max: maxDe[l.tranche] || parseFloat(String(l.tranche).split("-").pop()) || 1, prix: U.round(Number(l.prix) * (1 - (Number(d.remiseGlobale || d.remisePct) || 0) / 100)) });
+        });
+        var g = T.nouvelleGrille("CLIENT"), std = T.grilleStandard ? T.grilleStandard() : null;
+        g.nom = "Tarif " + nomClient(c) + " (" + c.numero + ")";
+        g.description = "Issue de la cotation tarifaire " + c.numero + " acceptée le " + U.toFr(c.dateAcceptation || today) + ".";
+        g.statut = "ACTIVE"; g.du = d.dateEffet || today; g.au = c.dateValiditeGrille || "";
+        g.baseId = std ? std.id : null;
+        g.affectation = { clientIds: [c.clientId], groupeIds: [] };
+        $.each(parTrajet, function (k, tr) {
+            tr.sort(function (a, b) { return a.max - b.max; });
+            var p = k.split("|"), r = T.nouvelleRegle("TRANCHES"), n = tr.length;
+            r.libelle = T.villeLabel(p[0]) + " → " + T.villeLabel(p[1]);
+            r.perimetre.villesDep = [p[0]]; r.perimetre.villesDest = [p[1]]; r.perimetre.bidirectionnel = false;
+            r.params = { tranches: tr, auDelaPas: 1,
+                auDelaParKg: n > 1 ? Math.max(100, U.round((tr[n - 1].prix - tr[n - 2].prix) / Math.max(1, tr[n - 1].max - tr[n - 2].max))) : 500 };
+            g.regles.push(r);
+        });
+        if (!g.regles.length) { U.toast("Les lignes de la cotation n'ont pas de prix exploitable.", "warning"); return; }
+        g.historique = [{ date: U.now(), user: CX.CONFIG.USER.nom, action: "Grille créée depuis la cotation " + c.numero }];
+        var contrat = T.contratEnVigueur ? T.contratEnVigueur(c.clientId, today) : null;
+        CX.api.save("tarifaires", g).then(function (saved) {
+            /* Un contrat en vigueur est prioritaire : on y rattache la nouvelle grille pour qu'elle s'applique */
+            if (contrat) {
+                return CX.api.patchMany("contrats", [contrat.id], { tarifaireId: saved.id })
+                    .then(function () { return CX.api.log("contrats", contrat.id, "Grille " + saved.code + " rattachée (cotation " + c.numero + ")"); })
+                    .then(function () { return saved; });
+            }
+            return saved;
+        }).then(function (saved) {
+            var details = $.extend({}, d, { convertie: true, dateConversion: today, tarifaireId: saved.id });
+            return CX.api.patchMany("cotations", [c.id], { details: details })
+                .then(function () { return CX.api.log("cotations", c.id, "Convertie en grille tarifaire " + (saved.code || saved.numero) + " affectée au client"); })
+                .done(function () {
+                    U.toast("Grille <b>" + U.esc(saved.code || saved.numero) + "</b> créée et affectée à " + U.esc(nomClient(c)) +
+                        (contrat ? " (rattachée au contrat " + U.esc(contrat.numero) + ")" : "") +
+                        " : elle s'appliquera à ses prochaines saisies. <a href='tarif-form.html?id=" + saved.id + "' style='color:#93c5fd'>Ouvrir la grille</a>", "success");
+                    charger();
+                });
+        });
+    }
+
     function demanderMotif(o) {
         var dfd = $.Deferred(), $m = $("#modalMotif");
         $("#motifTitre").text(o.titre);

@@ -21,6 +21,7 @@ $(function () {
         trajetManuel: false,  // l'utilisateur a forcé le type de trajet
         expAuto: true,        // l'expéditeur suit le client sélectionné
         remiseFigee: null,    // remise enregistrée sur une cotation existante (prioritaire sur la fiche client)
+        tarif: null,          // grille applicable : CX.tarifs.resoudre(client, date) -> { grille, origine, contrat… }
         uid: 0                // compteur pour les noms de radios des colis
     };
     var dernierCalc = null;
@@ -154,7 +155,7 @@ $(function () {
 
     /* Barres « poids réel » vs « poids volumétrique » d'un colis */
     function majPoidsColis($c) {
-        var c = lireUnColis($c), vol = CX.tarif.poidsVolumetrique(c.L, c.l, c.H), reel = c.poids;
+        var c = lireUnColis($c), vol = CX.tarifs ? CX.tarifs.poidsVolumetrique(c.L, c.l, c.H, diviseurVol()) : CX.tarif.poidsVolumetrique(c.L, c.l, c.H), reel = c.poids;
         var max = Math.max(reel, vol, 0.0001), tax = Math.max(reel, vol) * c.nombre;
         $c.find(".cf-colis-titre").text(c.nature + (c.description ? " · " + c.description : ""));
         $c.find("[data-poids]").html(
@@ -232,25 +233,69 @@ $(function () {
         var dep = $("#pfVilleDep").val();
         if (!dep) { U.toast("Choisissez la ville de départ à pré-remplir.", "warning"); $("#pfVilleDep").focus(); return; }
         function generer() {
-            // TODO API : GET /commercial/tarifs/grille-standard?villeDep={dep}  (grille officielle au lieu du calcul indicatif)
-            var lignes = [];
+            // TODO API : GET /commercial/tarifs/{grille}/bareme?villeDep={dep}  (barème calculé par le serveur)
+            var lignes = [], g = state.tarif && state.tarif.grille;
             $.each(REF.VILLES, function (_, v) {
                 if (v.nom === dep) return;
                 $.each(COT.TRANCHES, function (_, t) {
-                    lignes.push({ villeDep: dep, villeDest: v.nom, tranche: t.code, prix: CX.tarif.transport(dep, v.nom, t.max) });
+                    var prix = g ? CX.tarifs.calculer(g, { villeDep: dep, villeDest: v.nom, typeEnvoi: "COLIS", nature: "Colis", poids: t.max, nombre: 1 }).ht
+                        : CX.tarif.transport(dep, v.nom, t.max);
+                    lignes.push({ villeDep: dep, villeDest: v.nom, tranche: t.code, prix: prix });
                 });
             });
             remplirGrille(lignes);
             recalc();
-            U.toast(lignes.length + " lignes générées depuis la grille standard au départ de " + U.esc(COT.villeLabel(dep)) + ".");
+            U.toast(lignes.length + " lignes générées depuis la grille « " + U.esc(g ? g.nom : "standard") + " » au départ de " + U.esc(COT.villeLabel(dep)) + ".");
         }
         if ($("#grilleBody tr").length) {
             U.confirm({
                 title: "Pré-remplir la grille",
-                message: "Les <b>" + $("#grilleBody tr").length + " ligne(s)</b> actuelles seront remplacées par la grille standard au départ de <b>" + U.esc(COT.villeLabel(dep)) + "</b>.",
+                message: "Les <b>" + $("#grilleBody tr").length + " ligne(s)</b> actuelles seront remplacées par la grille « " + U.esc(state.tarif && state.tarif.grille ? state.tarif.grille.nom : "standard") + " » au départ de <b>" + U.esc(COT.villeLabel(dep)) + "</b>.",
                 okText: "Remplacer les lignes"
             }).done(generer);
         } else generer();
+    });
+
+    /* =================================================================
+       Grille tarifaire du client (moteur CX.tarifs)
+       Contrat en vigueur > grille propre > groupe > grille standard.
+       Sans client : grille standard.
+       ================================================================= */
+    function majTarif() {
+        if (!CX.tarifs) { state.tarif = null; return; }
+        // TODO API : GET /commercial/tarifs/resoudre?client={id}&date={date}
+        state.tarif = CX.tarifs.resoudre(state.client ? state.client.id : null, state.cot ? state.cot.dateCreation : today);
+        var g = state.tarif.grille;
+        $("#colisSub").text("Le poids taxable est le plus grand du poids réel et du poids volumétrique (L × l × H / " + U.fmt(diviseurVol()) + ")");
+        $("#btnPrefillTxt").text(g ? "Pré-remplir depuis la grille « " + g.nom + " »" : "Pré-remplir depuis la grille standard");
+        $("#colisList .cf-colis").each(function () { majPoidsColis($(this)); });
+    }
+    function diviseurVol() { return state.tarif && state.tarif.grille ? CX.tarifs.diviseurDe(state.tarif.grille) : 5000; }
+    /* Remise : celle du contrat en vigueur s'il y en a un, sinon celle de la fiche client */
+    function remiseContrat() {
+        var k = state.tarif && state.tarif.contrat ? state.tarif.contrat.conditions : null;
+        return k && k.remisePct != null ? U.num(k.remisePct) : null;
+    }
+    function majBlocTarif(r) {
+        var t = state.tarif, g = t && t.grille, o = g ? CX.tarifs.ORIGINES[t.origine] : null;
+        $("#r-tarif").toggleClass("cx-hidden", !CX.tarifs).toggleClass("std", !g || t.origine === "STANDARD");
+        if (!CX.tarifs) return;
+        $("#r-tarifNom").text(g ? g.nom : "aucune grille").attr("href", g ? "tarif-form.html?id=" + g.id : "tarifs-liste.html");
+        $("#r-tarifOrigine").html(g ? U.esc(o.label) + (t.origine === "CONTRAT" ? " · contrat n° <b>" + U.esc(t.contrat.numero) + "</b>" : t.origine === "GROUPE" ? " · " + U.esc(t.libelle) : "") +
+            (r.calcTarif && r.calcTarif.regle ? "<br>Règle : « " + U.esc(r.calcTarif.regle.libelle) + " »" : "") : U.esc((t && t.alertes[0]) || ""));
+        var actif = $("#tarifAuto").is(":checked");
+        $("#r-detailToggle").toggleClass("cx-hidden", !r.calcTarif || !actif);
+        $("#r-detail").html(r.calcTarif ? CX.tarifs.detailHtml(r.calcTarif, { titreTotal: "Total grille (HT)" }) : "");
+        var alertes = $.merge(t ? t.alertes.slice() : [], r.calcTarif && actif ? r.calcTarif.alertes : []);
+        $("#r-tarifAlertes").html(alertes.length && actif && $("#r-detail").hasClass("cx-hidden") ? "<div class='cx-note cx-note-warn' style='font-size:12px'><i class='fa fa-exclamation-triangle'></i><div>" +
+            $.map(alertes, function (a) { return U.esc(a); }).join("<br>") + "</div></div>" : "");
+        var ex = g ? CX.tarifs.supplementsDe(g).express : null;
+        $("#expressInfo").text(ex && ex.actif ? "Supplément " + (ex.mode === "FIXE" ? U.money(ex.valeur) : "+" + U.fmt(ex.valeur) + " % du transport") + " (grille du client)" : "Non proposé par la grille du client");
+    }
+    $("#r-detailToggle").on("click", function () {
+        var $d = $("#r-detail").toggleClass("cx-hidden");
+        $(this).html($d.hasClass("cx-hidden") ? "<i class='fa fa-plus-circle'></i> Détail du calcul" : "<i class='fa fa-minus-circle'></i> Masquer le détail");
+        recalc();
     });
 
     /* =================================================================
@@ -269,6 +314,7 @@ $(function () {
                 villeDest: etr ? "" : $("#villeDest").val(), bureauDest: etr ? "" : ($("#bureauDest").val() || ""),
                 paysDest: etr ? $("#paysDest").val() : "", villeDestLibre: etr ? $.trim($("#villeDestLibre").val()) : "",
                 livraison: $("input[name='livraison']:checked").val() || "BUREAU",
+                express: $("#express").is(":checked"),
                 quartier: $.trim($("#quartier").val()), zone: $("#zone").val(), repere: $.trim($("#repere").val()),
                 colis: lireColis(),
                 tarifAuto: $("#tarifAuto").is(":checked"),
@@ -303,10 +349,12 @@ $(function () {
     /* Remise client : celle de la fiche client, sauf cotation existante (remise figée à l'enregistrement) */
     function remiseClient() {
         if (state.remiseFigee != null) return state.remiseFigee;
+        var rc = remiseContrat();
+        if (rc != null) return rc;
         return state.client ? (state.client.remisePct || 0) : 0;
     }
     function calculer(d) {
-        if (state.type === "EXPEDITION") return COT.calcExpedition(d, remiseClient());
+        if (state.type === "EXPEDITION") return COT.calcExpedition(d, remiseClient(), state.tarif);
         if (state.type === "FRET") return COT.calcFret(d, remiseClient());
         return COT.calcTarifaire(d);
     }
@@ -443,6 +491,8 @@ $(function () {
             $("#r-livraison").text(d.livraison === "DOMICILE" ? U.money(r.livraison) : "Retrait bureau").toggleClass("cx-hidden", !d.tarifAuto);
             $("#in-livraison").toggleClass("cx-hidden", d.tarifAuto);
             $("#colisResume").text(r.nbColis + " colis · " + U.fmt(r.poidsReel, 1) + " kg réels · " + U.fmt(r.poidsTaxable, 1) + " kg taxables");
+            if (d.express) tags.push("<span>Express</span>");
+            majBlocTarif(r);
 
             /* cohérence type de trajet / villes */
             var deduit = COT.deduireTrajet(d.villeDep, d.villeDest), msg = "";
@@ -496,7 +546,7 @@ $(function () {
         /* --- totaux --- */
         if (t !== "TARIFAIRE") {
             $("#r-brut").text(U.money(r.brut));
-            $("#r-remiseLbl").text("Remise client (" + U.fmt(r.remisePct) + " %)");
+            $("#r-remiseLbl").text((state.remiseFigee == null && remiseContrat() != null ? "Remise contrat (" : "Remise client (") + U.fmt(r.remisePct) + " %)");
             $("#r-remise").text(r.remise ? "− " + U.money(r.remise) : U.money(0));
             $("#r-ht").text(U.money(r.ht));
             $("#r-tvaLbl").text("TVA (" + U.fmt(r.taux, 2) + " %)");
@@ -568,9 +618,11 @@ $(function () {
         /* changement de client sur une cotation existante : on reprend la remise de la fiche */
         if (state.cot && String(id) !== String(state.cot.clientId)) state.remiseFigee = null;
         var c = state.client;
+        majTarif();
+        var rc = remiseContrat();
         $("#clientInfo").html(c
             ? (c.enCompte ? "<i class='fa fa-check-circle' style='color:var(--cx-green)'></i> Client en compte" : "Client au comptant") +
-              " · " + U.esc(COT.villeLabel(c.ville)) + " · remise contractuelle <b>" + U.fmt(c.remisePct || 0) + " %</b>" +
+              " · " + U.esc(COT.villeLabel(c.ville)) + " · remise " + (rc != null ? "du contrat <b>" + U.fmt(rc) + " %</b>" : "contractuelle <b>" + U.fmt(c.remisePct || 0) + " %</b>") +
               (c.statut === "SUSPENDU" ? " · <span class='cx-error-text'>compte suspendu</span>" : "")
             : "Recherchez par raison sociale, sigle ou code client.");
         if (c && !state.lecture) {
@@ -592,7 +644,7 @@ $(function () {
                 $("#fVilleDep").val(c.ville); $("#fZoneVille").val(c.ville);
             }
             if (state.type === "TARIFAIRE" && !state.cot && !$("#remiseGlobale").data("touched")) {
-                $("#remiseGlobale").val(c.remisePct || 0);
+                $("#remiseGlobale").val(rc != null ? rc : (c.remisePct || 0));
                 if (c.ville) $("#pfVilleDep").val(c.ville);
             }
         }
@@ -683,6 +735,12 @@ $(function () {
             /* on fige les montants retenus (utilisés par le devis) */
             d.transport = r.transport; d.livraisonMt = r.livraison; d.remise = r.remise;
             d.poidsTaxable = r.poidsTaxable;
+            var tg = state.tarif && state.tarif.grille;
+            d.tarif = d.tarifAuto && tg ? {
+                grilleId: tg.id, grilleCode: tg.code, grilleNom: tg.nom, origine: state.tarif.origine,
+                contratId: state.tarif.contrat ? state.tarif.contrat.id : null, contratNumero: state.tarif.contrat ? state.tarif.contrat.numero : null,
+                regle: r.calcTarif && r.calcTarif.regle ? r.calcTarif.regle.libelle : null
+            } : null;
         }
         if (state.type === "FRET") d.calc = { location: r.location, chauffeur: r.chauffeur, carburant: r.carburant, manutention: r.manutention, frais: r.frais, remise: r.remise };
 
@@ -770,6 +828,7 @@ $(function () {
             $("input[name='livraison'][value='" + (d.livraison === "DOMICILE" ? "DOMICILE" : "BUREAU") + "']").prop("checked", true);
             $("#quartier").val(d.quartier || ""); $("#zone").val(d.zone || ""); $("#repere").val(d.repere || "");
             majLivraison();
+            $("#express").prop("checked", !!d.express);
             $("#colisList").empty();
             $.each(d.colis && d.colis.length ? d.colis : [{}], function (_, k) { ajouterColis(k); });
             var e = d.expediteur || {}, t = d.destinataire || {};
@@ -844,6 +903,7 @@ $(function () {
         var t = (U.queryParam("type") || "EXPEDITION").toUpperCase();
         state.type = TITRES[t] ? t : "EXPEDITION";
         appliquerType();
+        majTarif();
         valeursParDefaut();
         majDestination();
         var cid = U.queryParam("client");

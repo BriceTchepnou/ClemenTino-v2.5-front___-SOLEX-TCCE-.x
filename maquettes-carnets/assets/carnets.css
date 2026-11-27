@@ -199,3 +199,6 @@ body {
 .select2-container .select2-selection--single { border-radius: 0 !important; height: 34px !important; }
 .select2-container--default .select2-selection--single .select2-selection__rendered { line-height: 32px !important; }
 .select2-container--default .select2-selection--single .select2-selection__arrow { height: 32px !important; }
+
+/* Modales sous l'en-tête collant du module Commercial */
+@media (min-width: 768px) { .ct-modal .modal-dialog { margin-top: 76px; } }

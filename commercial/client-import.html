@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Import de clients - ClemenTino</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/client-import.css">
+</head>
+<body class="cx-app" data-page="client-import">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> › <a href="clients-liste.html">Comptes clients</a> › Import</div>
+            <h1 class="cx-title">Importer des clients <small>depuis un fichier Excel ou CSV</small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-modele"><i class="fa fa-file-excel-o"></i> Télécharger le modèle Excel</button>
+            <a class="cx-btn cx-btn-ghost" href="clients-liste.html"><i class="fa fa-list"></i> Liste des clients</a>
+        </div>
+    </div>
+
+    <!-- Étapes -->
+    <ol class="ci-steps" id="ci-steps">
+        <li data-step="1" class="active"><span>1</span>Fichier</li>
+        <li data-step="2"><span>2</span>Correspondance des colonnes</li>
+        <li data-step="3"><span>3</span>Aperçu &amp; contrôle</li>
+        <li data-step="4"><span>4</span>Import</li>
+    </ol>
+
+    <!-- =============================================================
+         ÉTAPE 1 : fichier
+         ============================================================= -->
+    <section class="ci-pane" data-pane="1">
+        <div class="cx-layout">
+            <div>
+                <div class="cx-card">
+                    <div class="cx-card-head"><span class="cx-step">1</span>
+                        <div><h3 class="cx-card-title">Choisir le fichier</h3>
+                            <p class="cx-card-sub">Formats acceptés : .xlsx, .xls, .csv (séparateur ; ou ,) · 5 000 lignes maximum</p></div>
+                    </div>
+                    <div class="cx-card-body">
+                        <label class="ci-drop" id="ci-drop" for="ci-file">
+                            <i class="fa fa-cloud-upload"></i>
+                            <b>Glissez votre fichier ici</b>
+                            <span>ou cliquez pour le sélectionner</span>
+                            <input type="file" id="ci-file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv">
+                        </label>
+                        <div class="ci-file-info cx-hidden" id="ci-file-info"></div>
+
+                        <div class="row cx-hidden" id="ci-file-options" style="margin-top:14px">
+                            <div class="col-sm-6 cx-field">
+                                <label class="cx-label" for="ci-sheet">Feuille du classeur</label>
+                                <select class="form-control" id="ci-sheet"></select>
+                            </div>
+                            <div class="col-sm-6 cx-field">
+                                <label class="cx-label" for="ci-header-row">Ligne des en-têtes</label>
+                                <select class="form-control" id="ci-header-row"></select>
+                                <span class="cx-help">Les lignes au-dessus sont ignorées (titres, logos…).</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="cx-aside">
+                <div class="cx-summary">
+                    <div class="cx-summary-body">
+                        <div class="cx-block-title">Comment préparer le fichier</div>
+                        <ul class="ci-tips">
+                            <li><i class="fa fa-check"></i> Une ligne par client, la 1<sup>re</sup> ligne contient les noms de colonnes.</li>
+                            <li><i class="fa fa-check"></i> Seule la <b>raison sociale</b> est obligatoire.</li>
+                            <li><i class="fa fa-check"></i> Type de compte : <code>Comptant</code>, <code>En compte</code> ou <code>Forfait</code>.</li>
+                            <li><i class="fa fa-check"></i> Un client en compte exige NIU, RCCM, téléphone du contact principal et email de facturation.</li>
+                            <li><i class="fa fa-check"></i> Les noms de colonnes sont reconnus automatiquement (« Raison sociale », « Société », « Tél. »…) ; vous pourrez corriger à l'étape suivante.</li>
+                        </ul>
+                        <button type="button" class="cx-btn cx-btn-soft cx-btn-block" id="btn-modele-2"><i class="fa fa-download"></i> Télécharger le modèle</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- =============================================================
+         ÉTAPE 2 : correspondance des colonnes
+         ============================================================= -->
+    <section class="ci-pane cx-hidden" data-pane="2">
+        <div class="cx-layout">
+            <div class="cx-card">
+                <div class="cx-card-head"><span class="cx-step">2</span>
+                    <div><h3 class="cx-card-title">Correspondance des colonnes</h3>
+                        <p class="cx-card-sub">Associez chaque colonne du fichier à un champ ClemenTino. Les colonnes « Ignorer » ne sont pas importées.</p></div>
+                    <div class="cx-card-tools"><button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" id="btn-automap"><i class="fa fa-magic"></i> Re-détecter</button></div>
+                </div>
+                <div class="cx-card-body cx-flush" style="margin-top:12px">
+                    <div class="cx-table-wrap">
+                        <table class="cx-table" id="ci-map">
+                            <thead><tr><th>Colonne du fichier</th><th>Exemples de valeurs</th><th style="width:300px">Champ ClemenTino</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <aside class="cx-aside">
+                <div class="cx-summary">
+                    <div class="cx-summary-body">
+                        <div class="cx-block-title">Champs reconnus</div>
+                        <ul class="cx-checklist" id="ci-map-check"></ul>
+                        <div class="cx-note cx-note-err cx-hidden" id="ci-map-err"><i class="fa fa-exclamation-circle"></i><div></div></div>
+                    </div>
+                    <div class="cx-summary-foot">
+                        <button type="button" class="cx-btn cx-btn-primary cx-btn-block cx-btn-lg" id="btn-to-3">Contrôler les données <i class="fa fa-arrow-right"></i></button>
+                        <button type="button" class="cx-btn cx-btn-link cx-btn-block" data-goto="1"><i class="fa fa-arrow-left"></i> Changer de fichier</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- =============================================================
+         ÉTAPE 3 : aperçu & contrôle
+         ============================================================= -->
+    <section class="ci-pane cx-hidden" data-pane="3">
+        <div class="cx-kpis" id="ci-kpis"></div>
+        <div class="cx-layout">
+            <div class="cx-card">
+                <div class="cx-card-head"><span class="cx-step">3</span>
+                    <div><h3 class="cx-card-title">Aperçu des clients à importer</h3>
+                        <p class="cx-card-sub">Cliquez sur une cellule pour la corriger. Les lignes en erreur ne seront pas importées.</p></div>
+                </div>
+                <div class="cx-tabs" id="ci-tabs" style="margin-top:12px">
+                    <a data-filtre="" class="active">Toutes <span class="cx-count" data-c="all">0</span></a>
+                    <a data-filtre="ok">Prêtes <span class="cx-count" data-c="ok">0</span></a>
+                    <a data-filtre="warn">Avertissements <span class="cx-count" data-c="warn">0</span></a>
+                    <a data-filtre="err">Erreurs <span class="cx-count" data-c="err">0</span></a>
+                    <a data-filtre="dup">Doublons <span class="cx-count" data-c="dup">0</span></a>
+                </div>
+                <div class="cx-toolbar">
+                    <div class="cx-field cx-grow cx-search"><i class="fa fa-search"></i>
+                        <input type="text" class="form-control" id="ci-search" placeholder="Rechercher dans l'aperçu…"></div>
+                </div>
+                <div id="ci-preview"></div>
+            </div>
+            <aside class="cx-aside">
+                <div class="cx-summary">
+                    <div class="cx-summary-hero">
+                        <div class="cx-hero-top"><span>Import en préparation</span><span id="ci-hero-file"></span></div>
+                        <div class="cx-hero-title"><span id="ci-hero-n">0</span> client(s) à importer</div>
+                        <div class="cx-hero-sub" id="ci-hero-sub"></div>
+                    </div>
+                    <div class="cx-summary-body">
+                        <div class="cx-block-title">Clients déjà existants (doublons)</div>
+                        <div class="ci-radio">
+                            <label><input type="radio" name="ci-dup" value="IGNORER" checked> <b>Ignorer</b><small>ne pas toucher au client existant</small></label>
+                            <label><input type="radio" name="ci-dup" value="MAJ"> <b>Mettre à jour</b><small>compléter / remplacer avec les valeurs du fichier</small></label>
+                            <label><input type="radio" name="ci-dup" value="CREER"> <b>Créer quand même</b><small>nouveau compte en double</small></label>
+                        </div>
+                        <hr class="cx-sep">
+                        <div class="cx-block-title">Options</div>
+                        <label class="cx-switch" style="margin-bottom:8px"><input type="checkbox" id="ci-opt-warn" checked><span class="cx-switch-track"></span>
+                            <span class="cx-switch-text"><b>Importer les lignes avec avertissement</b><small>ex. téléphone mal formé</small></span></label>
+                        <div class="cx-field" style="margin-top:8px">
+                            <label class="cx-label" for="ci-agence">Agence de rattachement par défaut</label>
+                            <select class="form-control" id="ci-agence"></select>
+                        </div>
+                        <div class="cx-note cx-note-warn cx-hidden" id="ci-block"><i class="fa fa-exclamation-triangle"></i><div></div></div>
+                    </div>
+                    <div class="cx-summary-foot">
+                        <button type="button" class="cx-btn cx-btn-success cx-btn-block cx-btn-lg" id="btn-import"><i class="fa fa-cloud-upload"></i> Importer <span id="ci-btn-n">0</span> client(s)</button>
+                        <button type="button" class="cx-btn cx-btn-ghost cx-btn-block" id="btn-errors-csv" style="margin-top:8px"><i class="fa fa-download"></i> Rapport des anomalies (CSV)</button>
+                        <button type="button" class="cx-btn cx-btn-link cx-btn-block" data-goto="2"><i class="fa fa-arrow-left"></i> Revoir les colonnes</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- =============================================================
+         ÉTAPE 4 : résultat
+         ============================================================= -->
+    <section class="ci-pane cx-hidden" data-pane="4">
+        <div class="cx-card" style="max-width:760px;margin:0 auto">
+            <div class="cx-card-body ci-result">
+                <div id="ci-progress-zone">
+                    <h3 class="cx-card-title">Import en cours…</h3>
+                    <div class="cx-bar green" style="height:10px;margin:14px 0 6px"><i id="ci-progress" style="width:0"></i></div>
+                    <div class="cx-muted" id="ci-progress-txt"></div>
+                </div>
+                <div id="ci-done" class="cx-hidden">
+                    <div class="ci-done-ico"><i class="fa fa-check"></i></div>
+                    <h3 class="cx-card-title" style="text-align:center">Import terminé</h3>
+                    <p class="cx-muted" style="text-align:center" id="ci-done-sub"></p>
+                    <div class="cx-kpis" id="ci-done-kpis" style="margin-top:16px"></div>
+                    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+                        <a class="cx-btn cx-btn-primary" href="clients-liste.html"><i class="fa fa-list"></i> Voir la liste des clients</a>
+                        <button type="button" class="cx-btn cx-btn-ghost" id="btn-report"><i class="fa fa-download"></i> Rapport d'import (CSV)</button>
+                        <a class="cx-btn cx-btn-ghost" href="client-import.html"><i class="fa fa-refresh"></i> Nouvel import</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <p class="cx-demo-bar">Maquette - lecture du fichier dans le navigateur (SheetJS) ; en production, le fichier est contrôlé et enregistré par le serveur.</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<!-- Lecture / écriture Excel côté navigateur (SheetJS Community Edition) -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/client-import.js"></script>
+</body>
+</html>

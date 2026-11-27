@@ -162,6 +162,23 @@ $(function () {
         onSelect: function () { majResume(); }
     });
 
+    /* Tarif de l'expédition selon la grille du client (contrat > grille client > groupe > standard).
+       TODO API : POST /commercial/tarifs/calcul { clientId, envoi } */
+    function tarifClient(e) {
+        if (CX.tarifs && CX.tarifs.resoudre) {
+            try {
+                var r = CX.tarifs.resoudre(e.clientId, e.dateExp);
+                if (r && r.grille) {
+                    var c = CX.tarifs.calculer(r.grille, { villeDep: e.villeDep, villeDest: e.villeDest, typeEnvoi: "COLIS", nature: "Colis",
+                        poids: e.poids || 1, nombre: 1, livraison: "BUREAU" });   // poids = poids total de l'envoi
+                    if (c && c.ht > 0) return { montant: U.round(c.ht), titre: "Tarif " + (r.libelle || r.grille.nom) + " : " + U.money(c.ht) + " HT" };
+                }
+            } catch (err) { /* repli sur le tarif indicatif */ }
+        }
+        var m = CX.tarif.transport(e.villeDep, e.villeDest, e.poids);
+        return { montant: m, titre: "Tarif indicatif : " + U.money(m) };
+    }
+
     /* Onglet « À régulariser » : motifs + actions en ligne */
     var dtRegulariser = new CX.DataTable("#dt-regulariser", {
         columns: colonnesCommunes().concat([
@@ -169,9 +186,10 @@ $(function () {
                 searchValue: function (e) { return $("<div>").html(motifs(e)).text(); } },
             { key: "montant", title: "Montant HT", className: "num", render: function (e) {
                 if (Number(e.montant) > 0) return "<span class='cx-strong cx-nowrap'>" + U.money(e.montant) + "</span>";
-                var indicatif = CX.tarif.transport(e.villeDep, e.villeDest, e.poids);
+                var t = tarifClient(e), indicatif = t.montant;
                 return "<div class='fe-saisie'><input type='text' class='form-control input-sm' data-montant inputmode='numeric' placeholder='≈ " +
-                    U.fmt(indicatif) + "' title='Tarif indicatif : " + U.money(indicatif) + "'>" +
+                    U.fmt(indicatif) + "' title='" + U.esc(t.titre) + "'>" +
+                    "<button type='button' class='cx-btn cx-btn-ghost cx-btn-xs' data-act='tarif' data-montant-tarif='" + indicatif + "' title='Appliquer : " + U.esc(t.titre) + "'><i class='fa fa-magic'></i></button>" +
                     "<button type='button' class='cx-btn cx-btn-soft cx-btn-xs' data-act='montant' title='Enregistrer le montant'><i class='fa fa-check'></i></button></div>";
             } },
             { key: "actions", title: "", sortable: false, className: "cx-right", render: function (e) {
@@ -201,6 +219,12 @@ $(function () {
     }
 
     /* Saisie du montant d'une expédition à 0 */
+    /* Bouton « baguette » : reprend le tarif du client dans la saisie puis l'enregistre */
+    $("#dt-regulariser").on("click", "[data-act=tarif]", function () {
+        var $tr = $(this).closest("tr");
+        $tr.find("[data-montant]").val($(this).data("montant-tarif"));
+        $tr.find("[data-act=montant]").click();
+    });
     $("#dt-regulariser").on("click", "[data-act=montant]", function () {
         var $tr = $(this).closest("tr"), id = $tr.data("id");
         var m = U.round(U.num($tr.find("[data-montant]").val()));

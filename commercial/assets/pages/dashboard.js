@@ -10,8 +10,10 @@ $(function () {
     }
 
     $.when(
-        CX.api.list("clients"), CX.api.list("expeditions"), CX.api.list("factures"), CX.api.list("cotations")
-    ).done(function (clients, exps, factures, cotations) {
+        CX.api.list("clients"), CX.api.list("expeditions"), CX.api.list("factures"), CX.api.list("cotations"),
+        // TODO API : GET /commercial/contrats?echeanceAvant={date}
+        CX.api.list("contrats")
+    ).done(function (clients, exps, factures, cotations, contrats) {
         var nomClient = {}; $.each(clients, function (_, c) { nomClient[c.id] = c.raisonSociale; });
         var enCompte = {}; $.each(clients, function (_, c) { if (c.enCompte) enCompte[c.id] = true; });
 
@@ -28,6 +30,9 @@ $(function () {
         var aFacturer = $.grep(exps, function (e) { return enCompte[e.clientId] && !e.factureId && e.statut === "LIVREE"; });
         var htAFacturer = 0; $.each(aFacturer, function (_, e) { htAFacturer += e.montant || 0; });
         var cotEnCours = $.grep(cotations, function (c) { return $.inArray(c.statut, ["ENREGISTREE", "SOUMISE", "VALIDEE", "EN_ATTENTE"]) >= 0; });
+        /* contrats clients en vigueur arrivant à échéance dans les 30 jours (rubrique Tarifaires) */
+        var dans30j = U.addDays(today, 30);
+        var ctrEcheance = $.grep(contrats || [], function (c) { return c.statut !== "RESILIE" && c.du <= today && c.au && c.au >= today && c.au <= dans30j; });
         var nbEnCompte = $.grep(clients, function (c) { return c.enCompte && c.statut === "ACTIF"; }).length;
 
         $("#d-periode").text("· " + U.toFrLong(today));
@@ -37,7 +42,8 @@ $(function () {
             kpi("Encours clients", U.fmt(encours) + " <small>FCFA</small>", "Reste à encaisser", "fa-hourglass-half", "purple", "factures-suivi.html"),
             kpi("Factures échues", nbEchues, U.money(echu) + " en retard", "fa-exclamation-triangle", "red", "factures-suivi.html"),
             kpi("Cotations en cours", cotEnCours.length, "À suivre jusqu'à l'acceptation", "fa-calculator", "orange", "cotations-liste.html"),
-            kpi("Clients en compte actifs", nbEnCompte, clients.length + " comptes au total", "fa-building-o", "", "clients-liste.html")
+            kpi("Clients en compte actifs", nbEnCompte, clients.length + " comptes au total", "fa-building-o", "", "clients-liste.html"),
+            kpi("Contrats à échéance (30 j)", ctrEcheance.length, ctrEcheance.length ? $.map(ctrEcheance.slice(0, 2), function (c) { return U.esc(nomClient[c.clientId] || ""); }).join(", ") + (ctrEcheance.length > 2 ? "…" : "") : "Aucun renouvellement proche", "fa-file-text-o", ctrEcheance.length ? "orange" : "", "tarifs-liste.html#contrats")
         ].join(""));
 
         /* ---------- Expéditions à facturer par client ---------- */

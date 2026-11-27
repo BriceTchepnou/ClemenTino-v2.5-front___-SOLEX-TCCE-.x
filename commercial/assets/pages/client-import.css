@@ -1,0 +1,76 @@
+/* =====================================================================
+   Commercial · Import de clients (préfixe « ci- »)
+   ===================================================================== */
+
+/* Étapes */
+.ci-steps { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0 0 18px; flex-wrap: wrap; }
+.ci-steps li {
+    display: flex; align-items: center; gap: 8px; padding: 8px 14px 8px 8px; border-radius: 999px;
+    background: #fff; border: 1px solid var(--cx-line); color: var(--cx-muted); font-weight: 600; font-size: 12.5px;
+}
+.ci-steps li span {
+    width: 24px; height: 24px; border-radius: 50%; background: #eef0f4; color: #4b5563;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+}
+.ci-steps li.active { border-color: var(--cx-ink); color: var(--cx-ink); }
+.ci-steps li.active span { background: var(--cx-ink); color: #fff; }
+.ci-steps li.done { color: var(--cx-green); }
+.ci-steps li.done span { background: var(--cx-green); color: #fff; }
+
+/* Zone de dépôt */
+.ci-drop {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    border: 2px dashed #b9c6de; border-radius: 14px; padding: 40px 20px; background: var(--cx-soft);
+    cursor: pointer; text-align: center; font-weight: 400; margin: 0; transition: all .15s;
+}
+.ci-drop:hover, .ci-drop.over { border-color: var(--cx-navy-3); background: var(--cx-blue-soft); }
+.ci-drop .fa { font-size: 38px; color: var(--cx-navy-2); margin-bottom: 6px; }
+.ci-drop b { font-size: 15px; color: var(--cx-ink); }
+.ci-drop span { color: var(--cx-muted); font-size: 12.5px; }
+.ci-drop input { display: none; }
+
+.ci-file-info {
+    display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 12px 14px;
+    border: 1px solid var(--cx-line); border-radius: 10px; background: #fff;
+}
+.ci-file-info > .fa { font-size: 26px; color: #1e7b45; }
+.ci-file-info b { display: block; color: var(--cx-ink); }
+.ci-file-info span { font-size: 12px; color: var(--cx-muted); }
+.ci-file-info .cx-btn { margin-left: auto; }
+
+.ci-tips { list-style: none; padding: 0; margin: 0 0 14px; font-size: 12.5px; }
+.ci-tips li { padding: 4px 0 4px 22px; position: relative; color: var(--cx-text); }
+.ci-tips li .fa { position: absolute; left: 0; top: 7px; color: var(--cx-green); }
+.ci-tips code { background: var(--cx-soft); color: var(--cx-navy); padding: 1px 5px; border-radius: 4px; }
+
+/* Correspondance */
+.ci-ex span {
+    display: inline-block; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle;
+    background: var(--cx-soft); border-radius: 6px; padding: 2px 7px; margin: 1px 4px 1px 0; font-size: 11.5px; color: #374151;
+}
+#ci-map .cx-row-muted td:first-child { text-decoration: line-through; }
+
+/* Aperçu */
+.ci-cell { cursor: text; border-bottom: 1px dashed transparent; display: inline-block; min-width: 30px; }
+.ci-cell:hover { border-bottom-color: var(--cx-navy-3); }
+.ci-cell.vide { color: #c3cbd9; }
+.ci-cell .form-control { min-width: 140px; }
+.ci-msg { font-size: 11.5px; line-height: 1.35; margin: 1px 0; white-space: normal; max-width: 320px; }
+.ci-msg.err { color: #b42318; }
+.ci-msg.warn { color: #a85a00; }
+.ci-msg.dup { color: var(--cx-purple); }
+.cx-table tr.ci-row-err td { background: #fff8f8; }
+.cx-table tr.ci-row-excl td { opacity: .5; }
+#ci-preview .cx-table td { white-space: nowrap; }
+
+.ci-radio label { display: block; font-weight: 400; margin: 0 0 8px; cursor: pointer; padding-left: 22px; position: relative; }
+.ci-radio input { position: absolute; left: 0; top: 2px; }
+.ci-radio b { color: var(--cx-ink); font-size: 13px; }
+.ci-radio small { display: block; color: var(--cx-muted); font-size: 11.5px; }
+
+/* Résultat */
+.ci-result { padding: 28px; }
+.ci-done-ico {
+    width: 64px; height: 64px; border-radius: 50%; background: var(--cx-green-soft); color: var(--cx-green);
+    display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 10px;
+}

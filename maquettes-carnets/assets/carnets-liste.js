@@ -300,9 +300,28 @@ $(function () {
                     "<tr><td>Carnet</td><td><a href='carnet-detail.html?id=" + c.id + "&focus=" + n + "'>" + CT.util.esc(c.numero) + "</a> (" + c.debut + " - " + c.fin + ")</td></tr>" +
                     "<tr><td>Client</td><td>" + (CT.util.esc(CT.util.clientNom(c.clientId)) || "<i>Non affecté</i>") + "</td></tr>" +
                     "<tr><td>Agence</td><td>" + CT.util.esc(CT.util.agenceNom(c.agenceId)) + "</td></tr>" +
+                    suiviFeuille(n) +
                     "</table>");
             });
         });
+    }
+    /* Feuille -> expédition -> facture (si le module Commercial est chargé)
+       TODO API : GET /expeditions?nRtMan={n} */
+    function suiviFeuille(n) {
+        if (!(window.CX && CX.api) || CT.STORAGE_KEY.indexOf("_cx_") < 0) return "";
+        var exp = null;
+        try {
+            CX.api.list("expeditions", function (e) { return String(e.nRtMan) === String(n); }).done(function (l) { exp = l[0] || null; });
+        } catch (e) { return ""; }
+        if (!exp) return "<tr><td>Expédition</td><td><i class='text-muted'>Aucune expédition saisie avec ce n° de LT</i></td></tr>";
+        var fac = null;
+        if (exp.factureId) CX.api.get("factures", exp.factureId).done(function (f) { fac = f; });
+        return "<tr><td>Expédition</td><td><b>" + CT.util.esc(exp.nRt) + "</b> du " + CT.util.toFr(exp.dateExp) + " · " +
+            CT.util.esc(exp.villeDep + " → " + exp.villeDest) + " · " + (exp.statut === "LIVREE" ? "livrée" : "en transit") +
+            (exp.preuveLivraison ? " · décharge reçue" : " · <span class='text-danger'>décharge non reçue</span>") + "</td></tr>" +
+            "<tr><td>Facturation</td><td>" + (fac
+                ? "<a href='../commercial/facture.html?id=" + fac.id + "'>" + CT.util.esc(fac.numero) + "</a> du " + CT.util.toFr(fac.dateEmission)
+                : "<i>Non facturée</i> · <a href='../commercial/facture-emettre.html?client=" + exp.clientId + "'>Émettre la facture</a>") + "</td></tr>";
     }
     $("#rf-go").on("click", rechercherFeuille);
     $("#rf-numero").on("keydown", function (e) { if (e.which === 13) rechercherFeuille(); });
@@ -311,6 +330,13 @@ $(function () {
         e.preventDefault();
         CT.store.reinitialiser().done(charger);
     });
+
+    /* ?client=ID (depuis la fiche ou la liste des clients) : filtre la liste sur ce client */
+    var clientParam = (/[?&]client=(\d+)/.exec(location.search) || [])[1];
+    if (clientParam) {
+        $("#f-client").val(clientParam).trigger("change");
+        $("#f-du").val("2000-01-01");
+    }
 
     charger();
 });

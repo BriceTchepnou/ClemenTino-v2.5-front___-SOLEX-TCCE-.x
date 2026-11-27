@@ -23,7 +23,8 @@ CX.MENU_COMMERCIAL = [
         id: "clients", titre: "Comptes clients", icon: "fa-building-o", home: "clients-liste.html",
         items: [
             { page: "client-form", href: "client-form.html", label: "Nouveau compte client", desc: "Créer un client en compte ou au comptant" },
-            { page: "clients-liste", href: "clients-liste.html", label: "Liste des comptes", desc: "Rechercher, consulter, suspendre" }
+            { page: "clients-liste", href: "clients-liste.html", label: "Liste des comptes", desc: "Rechercher, consulter, suspendre" },
+            { page: "client-import", href: "client-import.html", label: "Importer des clients", desc: "Chargement en masse depuis Excel" }
         ]
     },
     {
@@ -31,6 +32,15 @@ CX.MENU_COMMERCIAL = [
         items: [
             { page: "cotation-form", href: "cotations-liste.html#nouvelle", label: "Émettre une cotation / devis", desc: "Expédition, mise à disposition, tarifaire" },
             { page: "cotations-liste", href: "cotations-liste.html", label: "Suivi des cotations", desc: "Soumission, validation, conversion" }
+        ]
+    },
+    {
+        id: "tarifs", titre: "Tarifaires", icon: "fa-table", home: "tarifs-liste.html",
+        items: [
+            { page: "tarifs-liste", href: "tarifs-liste.html", label: "Grilles tarifaires", desc: "Tarifs standard, clients et groupes" },
+            { page: "tarif-form", href: "tarif-form.html", label: "Nouvelle grille", desc: "Trajets, poids, natures, modèles de calcul" },
+            { page: "tarifs-groupes", href: "tarifs-liste.html#groupes", label: "Groupes de clients", desc: "Un tarif commun à plusieurs clients" },
+            { page: "contrat-form", href: "tarifs-liste.html#contrats", label: "Contrats clients", desc: "Contrat signé, période, grille attachée" }
         ]
     },
     {
@@ -51,8 +61,9 @@ CX.MENU_COMMERCIAL = [
 /* Pages « filles » rattachées à une rubrique pour le surlignage */
 CX.PAGE_GROUP = {
     "dashboard": "dashboard",
-    "clients-liste": "clients", "client-form": "clients", "client-fiche": "clients",
+    "clients-liste": "clients", "client-form": "clients", "client-fiche": "clients", "client-import": "clients",
     "cotations-liste": "cotations", "cotation-form": "cotations", "cotation-document": "cotations",
+    "tarifs-liste": "tarifs", "tarif-form": "tarifs", "contrat-form": "tarifs",
     "facture-emettre": "facturation", "factures-suivi": "facturation", "facture": "facturation",
     "carnets-liste": "carnets"
 };
@@ -71,6 +82,7 @@ CX.shell = {
             "<span style='margin-left:auto'>Raccourcis :</span>" +
             "<a class='cx-btn cx-btn-ghost cx-btn-sm' href='client-form.html'><i class='fa fa-plus'></i> Client</a>" +
             "<a class='cx-btn cx-btn-ghost cx-btn-sm' href='cotations-liste.html#nouvelle'><i class='fa fa-plus'></i> Cotation</a>" +
+            "<a class='cx-btn cx-btn-ghost cx-btn-sm' href='tarif-form.html'><i class='fa fa-plus'></i> Grille</a>" +
             "<a class='cx-btn cx-btn-ghost cx-btn-sm' href='facture-emettre.html'><i class='fa fa-plus'></i> Facture</a></div></div>";
     },
 

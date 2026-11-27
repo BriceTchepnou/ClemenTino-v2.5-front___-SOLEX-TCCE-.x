@@ -418,6 +418,17 @@
 
                     <hr class="cx-sep">
 
+                    <!-- Grille tarifaire appliquée (moteur CX.tarifs) + groupes de clients -->
+                    <div class="cx-block-title">Grille tarifaire</div>
+                    <div id="bloc-grille"></div>
+                    <div class="cx-field" style="margin-bottom:0">
+                        <label class="cx-label" for="groupeIds">Groupes de clients</label>
+                        <select class="form-control" id="groupeIds" name="groupeIds" multiple style="width:100%"></select>
+                        <span class="cx-help">Le client bénéficie de la grille de son groupe, sauf contrat en vigueur ou grille propre. <a href="tarifs-liste.html#groupes">Gérer les groupes</a></span>
+                    </div>
+
+                    <hr class="cx-sep">
+
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="cx-field">
@@ -502,6 +513,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 <script src="assets/cx-core.js"></script>
 <script src="assets/cx-data.js"></script>
+<script src="assets/cx-tarifs.js"></script>
 <script src="assets/cx-shell.js"></script>
 <script src="assets/pages/client-form.js"></script>
 </body>

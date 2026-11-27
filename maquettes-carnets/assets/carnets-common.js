@@ -59,6 +59,23 @@ CT.AGENCES = [
     { id: 3, nom: "BASTOS", ville: "YAOUNDE" },
     { id: 4, nom: "CENTRE", ville: "BAFOUSSAM" }
 ];
+/* ---------------------------------------------------------------------
+   Intégration au module Commercial : si ses scripts sont chargés (CX),
+   les carnets utilisent les mêmes clients et agences (identifiants
+   alignés), ce qui relie feuille de carnet -> expédition -> facture.
+   --------------------------------------------------------------------- */
+CT.CLIENT_DEMO = { 1: 1, 2: 2, 3: 3 };   // clients du jeu de démo des carnets
+CT.AGENCE_DEMO = { 1: 1, 2: 2, 3: 3 };
+if (window.CX && CX.api && CX.api.clientsSync) try {
+    CT.CLIENTS = $.map($.grep(CX.api.clientsSync(), function (c) { return c.enCompte; }), function (c) { return { id: c.id, nom: c.raisonSociale }; });
+    CT.AGENCES = $.map(CX.REF.AGENCES, function (a) { return { id: a.id, nom: a.nom, ville: a.ville }; });
+    CT.CLIENT_DEMO = { 1: 1, 2: 6, 3: 10 };  // PHARMACIE PACIFIC, TOTAL ENERGIES, BRASSERIES
+    CT.AGENCE_DEMO = { 1: 1, 2: 2, 3: 5 };   // AKWA, BONANJO, BASTOS
+    CT.STORAGE_KEY = "ct_carnets_demo_cx_v1";
+} catch (e) {   /* module Commercial indisponible : les carnets restent autonomes */
+    if (window.console) console.warn("Carnets : intégration Commercial désactivée", e);
+}
+
 CT.MOTIFS_ANOMALIE = [
     "Feuille perdue par le client",
     "Feuille perdue par le livreur",
@@ -276,11 +293,37 @@ CT.metier = {
    ===================================================================== */
 CT.store = (function () {
     function load() {
-        var raw = localStorage.getItem(CT.STORAGE_KEY);
-        if (raw) { try { return JSON.parse(raw); } catch (e) { /* ignore */ } }
-        var seed = seedData();
-        save(seed);
-        return seed;
+        var raw = localStorage.getItem(CT.STORAGE_KEY), list = null;
+        if (raw) { try { list = JSON.parse(raw); } catch (e) { list = null; } }
+        if (!list) { list = seedData(); save(list); }
+        return syncExpeditions(list);
+    }
+
+    /* Avec le module Commercial : chaque expédition saisie avec un n° de LT manuel
+       (feuille du carnet) fait avancer le « dernier n° utilisé » du carnet.
+       TODO API : fait côté serveur à l'enregistrement de l'expédition (Guichet). */
+    function syncExpeditions(list) {
+        if (!(window.CX && CX.api) || CT.STORAGE_KEY.indexOf("_cx_") < 0) return list;
+        var exps = [];
+        try {
+            CX.api.list("expeditions", function (e) { return e.nRtMan; }).done(function (l) {
+                exps = l.sort(function (a, b) { return parseInt(a.nRtMan, 10) - parseInt(b.nRtMan, 10); });
+            });
+        } catch (e) { return list; }
+        var change = false;
+        $.each(list, function (_, c) {
+            $.each(exps, function (_, e) {
+                var n = parseInt(e.nRtMan, 10);
+                if (n >= c.debut && n <= c.fin && (c.dernierUtilise == null || n > c.dernierUtilise) &&
+                    (!c.clientId || c.clientId == e.clientId)) {
+                    c.historique = c.historique || [];
+                    c.historique.unshift({ date: e.dateExp + " 00:00", user: "Guichet", action: "Feuille " + n + " utilisée (expédition " + e.nRt + ")" });
+                    c.dernierUtilise = n; change = true;
+                }
+            });
+        });
+        if (change) save(list);
+        return list;
     }
     function save(list) { localStorage.setItem(CT.STORAGE_KEY, JSON.stringify(list)); }
     function done(v) { return $.Deferred().resolve(v).promise(); }
@@ -294,7 +337,7 @@ CT.store = (function () {
         function an(n, t, m, d) { return { numero: n, type: t, motif: m, date: d, user: "M. NJOYA" }; }
         return [
             { id: 1, numero: "TOTAL-354935", prefixe: "", debut: 456000, fin: 456999, dernierUtilise: 456100,
-              clientId: 1, agenceId: 1, dateCreation: "2026-11-02", dateAffectation: "2026-11-03", cloture: false,
+              clientId: CT.CLIENT_DEMO[1], agenceId: CT.AGENCE_DEMO[1], dateCreation: "2026-11-02", dateAffectation: "2026-11-03", cloture: false,
               observation: "",
               anomalies: [an(456045, "PERDUE", "Feuille perdue par le livreur", "2026-11-12"),
                           an(456077, "ANNULEE", "Erreur de saisie - feuille annulée", "2026-11-18")],
@@ -303,19 +346,19 @@ CT.store = (function () {
                            { date: "2026-11-03 09:05", user: "Support KuTiWa", action: "Carnet affecté à PHARMACIE PACIFIC (agence AKWA)" },
                            { date: "2026-11-02 14:30", user: "Support KuTiWa", action: "Création du carnet (456000 - 456999)" }] },
             { id: 2, numero: "CRN-2026-0012", prefixe: "LT", debut: 100001, fin: 100050, dernierUtilise: 100050,
-              clientId: 2, agenceId: 2, dateCreation: "2026-10-01", dateAffectation: "2026-10-02", cloture: false,
+              clientId: CT.CLIENT_DEMO[2], agenceId: CT.AGENCE_DEMO[2], dateCreation: "2026-10-01", dateAffectation: "2026-10-02", cloture: false,
               observation: "Carnet terminé, prévoir un nouveau carnet", anomalies: [an(100013, "PERDUE", "Feuille perdue par le client", "2026-10-20")],
               historique: [{ date: "2026-10-01 08:00", user: "Support KuTiWa", action: "Création du carnet (100001 - 100050)" }] },
             { id: 3, numero: "CRN-2026-0013", prefixe: "LT", debut: 100051, fin: 100100, dernierUtilise: 100062,
-              clientId: 2, agenceId: 2, dateCreation: "2026-11-20", dateAffectation: "2026-11-21", cloture: false,
+              clientId: CT.CLIENT_DEMO[2], agenceId: CT.AGENCE_DEMO[2], dateCreation: "2026-11-20", dateAffectation: "2026-11-21", cloture: false,
               observation: "", anomalies: [],
               historique: [{ date: "2026-11-20 08:00", user: "Support KuTiWa", action: "Création du carnet (100051 - 100100)" }] },
             { id: 4, numero: "CRN-2026-0014", prefixe: "LT", debut: 100101, fin: 100150, dernierUtilise: null,
-              clientId: null, agenceId: 3, dateCreation: "2026-11-25", dateAffectation: null, cloture: false,
+              clientId: null, agenceId: CT.AGENCE_DEMO[3], dateCreation: "2026-11-25", dateAffectation: null, cloture: false,
               observation: "En stock à Yaoundé", anomalies: [],
               historique: [{ date: "2026-11-25 11:20", user: "Support KuTiWa", action: "Création du carnet (100101 - 100150)" }] },
             { id: 5, numero: "SABC-0007", prefixe: "", debut: 780001, fin: 780100, dernierUtilise: 780033,
-              clientId: 3, agenceId: 1, dateCreation: "2026-09-15", dateAffectation: "2026-09-16", cloture: true,
+              clientId: CT.CLIENT_DEMO[3], agenceId: CT.AGENCE_DEMO[1], dateCreation: "2026-09-15", dateAffectation: "2026-09-16", cloture: true,
               observation: "Contrat résilié - carnet récupéré", anomalies: [],
               historique: [{ date: "2026-11-05 15:00", user: "Support KuTiWa", action: "Carnet clôturé" }] }
         ];

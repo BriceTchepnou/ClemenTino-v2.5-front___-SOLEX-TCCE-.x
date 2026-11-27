@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Contrat client - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/tarifs.css">
+</head>
+<body class="cx-app" data-page="contrat-form">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> / <a href="tarifs-liste.html#contrats">Contrats clients</a> / <span id="crumb-current">Nouveau</span></div>
+            <h1 class="cx-title"><span id="page-title">Nouveau contrat client</span> <small id="page-sub"></small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <a class="cx-btn cx-btn-ghost" href="tarifs-liste.html#contrats"><i class="fa fa-list"></i> Liste des contrats</a>
+        </div>
+    </div>
+
+    <div class="cx-card cx-hidden" id="not-found">
+        <div class="cx-empty"><i class="fa fa-exclamation-circle"></i><b>Contrat introuvable</b>
+            Ce contrat n'existe pas ou a été supprimé.<br><br><a class="cx-btn cx-btn-primary" href="tarifs-liste.html#contrats">Retour à la liste</a></div>
+    </div>
+
+    <form class="cx-layout" id="f-contrat" novalidate>
+        <div>
+            <!-- 1. Client & contrat -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="contrat">1</span>
+                    <div>
+                        <h3 class="cx-card-title">Client &amp; contrat</h3>
+                        <p class="cx-card-sub">Un client ne peut avoir qu'un seul contrat en vigueur à une date donnée</p>
+                    </div>
+                    <div class="cx-card-tools"><span class="cx-code-chip">N° : <b id="numero-display">attribué à l'enregistrement</b></span></div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="cx-field">
+                        <label class="cx-label req" for="clientId">Client</label>
+                        <select class="form-control" id="clientId" name="clientId"><option value=""></option></select>
+                        <span class="cx-help" id="client-info">Recherchez par raison sociale, sigle ou code client.</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="objet">Objet du contrat</label>
+                                <input type="text" class="form-control" id="objet" name="objet" maxlength="150" placeholder="Ex. : Contrat cadre de messagerie 2027">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="dateSignature">Date de signature</label>
+                                <input type="date" class="form-control" id="dateSignature" name="dateSignature">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="du">En vigueur du</label>
+                                <input type="date" class="form-control" id="du" name="du">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="au">au</label>
+                                <input type="date" class="form-control" id="au" name="au">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label">Durée</label>
+                                <div class="cx-pills" id="durees">
+                                    <label class="cx-pill"><input type="radio" name="dureeRapide" value="6"><span>6 mois</span></label>
+                                    <label class="cx-pill"><input type="radio" name="dureeRapide" value="12"><span>1 an</span></label>
+                                    <label class="cx-pill"><input type="radio" name="dureeRapide" value="24"><span>2 ans</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cx-note cx-note-err cx-hidden" id="chevauchement"><i class="fa fa-ban"></i><div id="chevauchement-texte"></div></div>
+                    <div class="cx-hidden" id="bloc-resiliation">
+                        <div class="cx-note cx-note-warn"><i class="fa fa-ban"></i><div id="resiliation-texte"></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Document -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="document">2</span>
+                    <div>
+                        <h3 class="cx-card-title">Contrat signé</h3>
+                        <p class="cx-card-sub">Exemplaire scanné, PDF de 10 Mo maximum</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <label class="cx-drop" id="drop-contrat" for="fichierFile">
+                        <input type="file" id="fichierFile" accept="application/pdf,.pdf">
+                        <i class="fa fa-file-pdf-o"></i>
+                        <span><b>Charger le contrat signé</b><small>ou glisser-déposer le fichier PDF ici</small></span>
+                    </label>
+                    <div class="cx-file cx-hidden" id="fichier-current">
+                        <i class="fa fa-file-pdf-o"></i>
+                        <div class="cx-file-name"><b id="fichier-nom"></b><small id="fichier-meta"></small></div>
+                        <button type="button" class="cx-btn cx-btn-ghost cx-btn-xs" id="btn-fichier-voir"><i class="fa fa-eye"></i> Ouvrir</button>
+                        <button type="button" class="cx-btn cx-btn-ghost cx-btn-xs" id="btn-fichier-change"><i class="fa fa-exchange"></i> Remplacer</button>
+                        <button type="button" class="cx-btn cx-btn-danger cx-btn-xs" id="btn-fichier-remove"><i class="fa fa-trash-o"></i> Retirer</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Conditions -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="conditions">3</span>
+                    <div>
+                        <h3 class="cx-card-title">Conditions commerciales</h3>
+                        <p class="cx-card-sub">Délai de paiement, remise, plafond de crédit</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="delaiPaiement">Délai de paiement</label>
+                                <div class="input-group"><input type="number" class="form-control" id="delaiPaiement" name="delaiPaiement" min="0" max="180"><span class="input-group-addon">jours</span></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="remisePct">Remise sur facture</label>
+                                <div class="input-group"><input type="number" class="form-control" id="remisePct" name="remisePct" min="0" max="100" step="0.5"><span class="input-group-addon">%</span></div>
+                                <span class="cx-help">Appliquée en plus de la grille (cotations).</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="plafondCredit">Plafond de crédit</label>
+                                <div class="input-group"><input type="number" class="form-control" id="plafondCredit" name="plafondCredit" min="0" step="50000" placeholder="0 = sans plafond"><span class="input-group-addon">FCFA</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="notes">Clauses particulières <span class="cx-opt">(facultatif)</span></label>
+                        <textarea class="form-control" id="notes" name="notes" rows="2" maxlength="500" placeholder="Ex. : ramassage quotidien, révision tarifaire annuelle…"></textarea>
+                    </div>
+                    <label class="cx-switch">
+                        <input type="checkbox" id="reporterFiche" name="reporterFiche" checked><span class="cx-switch-track"></span>
+                        <span class="cx-switch-text"><b>Reporter ces conditions sur la fiche client</b><small>Délai, remise et plafond du compte client mis à jour à l'enregistrement</small></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- 4. Grille tarifaire -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="grille">4</span>
+                    <div>
+                        <h3 class="cx-card-title">Grille tarifaire attachée</h3>
+                        <p class="cx-card-sub">Pendant la durée du contrat, chaque saisie pour ce client utilise cette grille</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="cx-seg cx-seg-soft" id="seg-grille">
+                        <label class="cx-seg-item"><input type="radio" name="modeGrille" value="EXISTANTE" checked><span><i class="fa fa-table"></i><b>Grille existante</b><small>Choisir une grille déjà paramétrée</small></span></label>
+                        <label class="cx-seg-item"><input type="radio" name="modeGrille" value="NOUVELLE"><span><i class="fa fa-plus-square-o"></i><b>Créer une grille dédiée</b><small>À partir d'une grille de base + remise</small></span></label>
+                    </div>
+                    <div id="bloc-existante" style="margin-top:12px">
+                        <div class="cx-field">
+                            <label class="cx-label req" for="tarifaireId">Grille</label>
+                            <select class="form-control" id="tarifaireId" name="tarifaireId"></select>
+                        </div>
+                        <div id="grille-info" class="tf-grille-info"></div>
+                    </div>
+                    <div id="bloc-nouvelle" class="cx-hidden" style="margin-top:12px">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="ng-nom">Nom de la nouvelle grille</label>
+                                    <input type="text" class="form-control" id="ng-nom" name="ngNom" maxlength="100">
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="ng-base">À partir de</label>
+                                    <select class="form-control" id="ng-base" name="ngBase"></select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="ng-remise">Remise</label>
+                                    <div class="input-group"><input type="number" class="form-control" id="ng-remise" name="ngRemise" min="-50" max="80" step="0.5" value="0"><span class="input-group-addon">%</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cx-note cx-note-info" style="margin:0"><i class="fa fa-info-circle"></i>
+                            <div>La grille est créée <b>active</b>, valable sur la période du contrat. Vous pourrez ensuite y ajouter des règles propres au client (trajets, paliers…).</div></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Colonne de droite -->
+        <aside class="cx-aside">
+            <div class="cx-summary">
+                <div class="cx-summary-hero">
+                    <div class="cx-hero-top"><span id="ap-mode">Nouveau contrat</span><span id="ap-statut"></span></div>
+                    <div class="cx-hero-title" id="ap-client">Client à choisir</div>
+                    <div class="cx-hero-sub" id="ap-periode">Période à préciser</div>
+                    <div class="cx-hero-tags" id="ap-tags"></div>
+                </div>
+                <div class="cx-summary-body">
+                    <div class="cx-sum-line"><span>Grille appliquée</span><b id="ap-grille">—</b></div>
+                    <div class="cx-sum-line"><span>Délai de paiement</span><b id="ap-delai">—</b></div>
+                    <div class="cx-sum-line"><span>Remise</span><b id="ap-remise">—</b></div>
+                    <div class="cx-sum-line"><span>Plafond de crédit</span><b id="ap-plafond">—</b></div>
+                    <div class="cx-sum-line"><span>Document signé</span><b id="ap-doc">—</b></div>
+                    <hr class="cx-sep" style="margin:10px 0">
+                    <div class="cx-section-label">Exemple : colis de 5 kg vers Yaoundé</div>
+                    <div id="ap-exemple" class="cx-muted" style="font-size:12.5px">—</div>
+                </div>
+                <div class="cx-summary-foot">
+                    <div class="cx-note cx-note-warn cx-hidden" id="r-manquants"><i class="fa fa-exclamation-circle"></i>
+                        <div><b id="r-nbManq">0</b> point(s) à corriger<ul class="tf-manq" id="r-listeManq"></ul></div></div>
+                    <button type="submit" class="cx-btn cx-btn-primary cx-btn-lg cx-btn-block" id="btn-save"><i class="fa fa-check"></i> Enregistrer le contrat</button>
+                    <div class="tf-foot-btns">
+                        <a class="cx-btn cx-btn-ghost" id="btn-cancel" href="tarifs-liste.html#contrats">Annuler</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </form>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-tarifs.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/contrat-form.js"></script>
+</body>
+</html>

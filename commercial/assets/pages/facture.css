@@ -128,6 +128,29 @@
     .fx-totaux { width: 100%; flex: none; }
 }
 
+/* Logo image (CX.CONFIG.SOCIETE.logo) */
+.fx-logo-mark.fx-logo-img { background: transparent; border-radius: 0; width: 52px; height: 52px; }
+.fx-logo-mark.fx-logo-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+/* =====================================================================
+   Export PDF direct (CX.pdf) : la feuille est clonée hors écran en 794 px
+   ===================================================================== */
+.fx-sheet.cx-pdf-mode {
+    width: 794px !important; max-width: none !important; min-height: 0 !important; margin: 0 !important;
+    border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+    padding: 0 12mm !important; display: block !important; overflow: visible !important;
+}
+.fx-sheet.cx-pdf-mode .fx-pied { margin-top: 14px; }
+.fx-sheet.cx-pdf-mode .fx-watermark { top: 300px; }
+/* 794 px < 860 px : on neutralise la mise en page « petit écran » (html2canvas
+   évalue les media queries à 794 px) pour garder la disposition A4. */
+.fx-sheet.cx-pdf-mode .fx-head, .fx-sheet.cx-pdf-mode .fx-bas { flex-direction: row !important; }
+.fx-sheet.cx-pdf-mode .fx-titre { text-align: right !important; }
+.fx-sheet.cx-pdf-mode .fx-meta { margin-left: auto !important; }
+.fx-sheet.cx-pdf-mode .fx-parties { grid-template-columns: 1fr 1fr !important; }
+.fx-sheet.cx-pdf-mode .fx-totaux { width: 76mm !important; flex: 0 0 76mm !important; }
+.fx-sheet.cx-pdf-mode .fx-cachet-zone { height: 22mm; }
+
 /* =====================================================================
    Impression
    ===================================================================== */
@@ -137,12 +160,18 @@
     @bottom-right { content: "Page " counter(page) " / " counter(pages); font-size: 8pt; color: #6b7280; }
 }
 @media print {
-    html, body.cx-app { background: #fff !important; }
-    .fx-main { max-width: none; padding: 0 !important; margin: 0; }
+    /* Jamais plus large que la zone imprimable : évite le rognage gauche/droite
+       quelle que soit la largeur de la fenêtre ou le zoom au moment d'imprimer. */
+    html, body.cx-app { background: #fff !important; width: auto !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important; }
+    .fx-main, .cx-main.fx-main { max-width: none !important; width: auto !important; padding: 0 !important; margin: 0 !important; }
     .fx-sheet {
-        width: auto; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none !important;
-        display: block; overflow: visible; font-size: 9.5pt;
+        width: 100% !important; max-width: 100% !important; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none !important;
+        display: block; overflow: visible; font-size: 9.5pt; box-sizing: border-box;
     }
+    .fx-lignes { width: 100% !important; table-layout: auto; }
+    .fx-lignes td { word-break: break-word; }
+    .fx-sheet * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .fx-sheet .fx-logo-mark.fx-logo-img { background: transparent !important; }
     .fx-lignes { font-size: 8.5pt; }
     .fx-lignes td { padding: 4px 5px; }
     /* Filigrane répété sur chaque page */

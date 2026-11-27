@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Tarifaires - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/tarifs.css">
+</head>
+<body class="cx-app" data-page="tarifs-liste">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> / Tarifaires</div>
+            <h1 class="cx-title">Tarifaires <small>grilles, groupes de clients, contrats</small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-groupe"><i class="fa fa-users"></i> Nouveau groupe</button>
+            <a class="cx-btn cx-btn-ghost" href="contrat-form.html"><i class="fa fa-file-text-o"></i> Nouveau contrat</a>
+            <a class="cx-btn cx-btn-new" href="tarif-form.html"><i class="fa fa-plus"></i> Nouvelle grille</a>
+        </div>
+    </div>
+
+    <!-- Indicateurs -->
+    <div class="cx-kpis" id="kpis"></div>
+
+    <div class="cx-card">
+        <div class="cx-tabs" id="tabs">
+            <a data-tab="grilles" class="active"><i class="fa fa-table"></i> Grilles tarifaires <span class="cx-count" id="n-grilles">0</span></a>
+            <a data-tab="groupes"><i class="fa fa-users"></i> Groupes de clients <span class="cx-count" id="n-groupes">0</span></a>
+            <a data-tab="contrats"><i class="fa fa-file-text-o"></i> Contrats clients <span class="cx-count" id="n-contrats">0</span></a>
+        </div>
+
+        <!-- Grilles -->
+        <div class="tf-pane" data-pane="grilles">
+            <div class="cx-toolbar">
+                <div class="cx-field cx-grow">
+                    <label class="cx-label" for="q-grilles">Recherche</label>
+                    <div class="cx-search"><i class="fa fa-search"></i>
+                        <input type="search" class="form-control" id="q-grilles" placeholder="Code, nom, client, groupe…"></div>
+                </div>
+                <div class="cx-field">
+                    <label class="cx-label" for="f-type">Type</label>
+                    <select class="form-control" id="f-type"></select>
+                </div>
+                <div class="cx-field">
+                    <label class="cx-label" for="f-statut">Statut</label>
+                    <select class="form-control" id="f-statut"></select>
+                </div>
+            </div>
+            <div id="dt-grilles"></div>
+        </div>
+
+        <!-- Groupes -->
+        <div class="tf-pane cx-hidden" data-pane="groupes">
+            <div class="cx-toolbar">
+                <div class="cx-field cx-grow">
+                    <div class="cx-search"><i class="fa fa-search"></i>
+                        <input type="search" class="form-control" id="q-groupes" placeholder="Nom du groupe, client…"></div>
+                </div>
+                <div class="cx-field">
+                    <button type="button" class="cx-btn cx-btn-soft cx-btn-sm" id="btn-groupe-2"><i class="fa fa-plus"></i> Nouveau groupe</button>
+                </div>
+            </div>
+            <div id="dt-groupes"></div>
+        </div>
+
+        <!-- Contrats -->
+        <div class="tf-pane cx-hidden" data-pane="contrats">
+            <div class="cx-toolbar">
+                <div class="cx-field cx-grow">
+                    <div class="cx-search"><i class="fa fa-search"></i>
+                        <input type="search" class="form-control" id="q-contrats" placeholder="N° de contrat, client, objet…"></div>
+                </div>
+                <div class="cx-field">
+                    <select class="form-control" id="f-ctr-statut" aria-label="Statut du contrat"></select>
+                </div>
+                <div class="cx-field">
+                    <label class="cx-switch"><input type="checkbox" id="f-ctr-echeance"><span class="cx-switch-track"></span>
+                        <span class="cx-switch-text"><b>Échéance dans 30 jours</b></span></label>
+                </div>
+                <div class="cx-field">
+                    <a class="cx-btn cx-btn-soft cx-btn-sm" href="contrat-form.html"><i class="fa fa-plus"></i> Nouveau contrat</a>
+                </div>
+            </div>
+            <div id="dt-contrats"></div>
+        </div>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<!-- Modale : groupe de clients -->
+<div class="modal fade" id="m-groupe" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="max-width:560px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><i class="fa fa-users"></i><span id="mg-titre">Nouveau groupe de clients</span></h4>
+            </div>
+            <div class="modal-body" id="mg-form">
+                <div class="cx-field">
+                    <label class="cx-label req" for="mg-nom">Nom du groupe</label>
+                    <input type="text" class="form-control" id="mg-nom" name="nom" maxlength="80" placeholder="Ex. : Pharmacies & laboratoires">
+                </div>
+                <div class="cx-field">
+                    <label class="cx-label" for="mg-description">Description</label>
+                    <input type="text" class="form-control" id="mg-description" name="description" maxlength="200">
+                </div>
+                <div class="cx-field">
+                    <label class="cx-label" for="mg-clients">Clients du groupe</label>
+                    <select class="form-control" id="mg-clients" name="clientIds" multiple style="width:100%"></select>
+                    <span class="cx-help" id="mg-info"></span>
+                </div>
+                <div class="cx-field" style="margin-bottom:0">
+                    <label class="cx-label" for="mg-grille">Grille tarifaire du groupe <span class="cx-opt">(facultatif)</span></label>
+                    <select class="form-control" id="mg-grille" name="grilleId"></select>
+                    <span class="cx-help">La grille choisie est affectée au groupe (carte « Affectation » de la grille).</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="cx-btn cx-btn-ghost" data-dismiss="modal">Annuler</button>
+                <button type="button" class="cx-btn cx-btn-primary" id="mg-save"><i class="fa fa-check"></i> Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale : affectation d'une grille -->
+<div class="modal fade" id="m-affecter" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="max-width:560px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><i class="fa fa-share-alt"></i>Affecter la grille</h4>
+            </div>
+            <div class="modal-body">
+                <p class="cx-muted" id="ma-grille"></p>
+                <div class="cx-field">
+                    <label class="cx-label" for="ma-clients">Clients</label>
+                    <select class="form-control" id="ma-clients" multiple style="width:100%"></select>
+                </div>
+                <div class="cx-field" style="margin-bottom:0">
+                    <label class="cx-label" for="ma-groupes">Groupes de clients</label>
+                    <select class="form-control" id="ma-groupes" multiple style="width:100%"></select>
+                </div>
+                <div class="cx-note cx-note-info"><i class="fa fa-info-circle"></i><div>Un <b>contrat client</b> en vigueur reste prioritaire sur ces affectations.</div></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="cx-btn cx-btn-ghost" data-dismiss="modal">Annuler</button>
+                <button type="button" class="cx-btn cx-btn-primary" id="ma-save"><i class="fa fa-check"></i> Enregistrer l'affectation</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-tarifs.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/tarifs-liste.js"></script>
+</body>
+</html>

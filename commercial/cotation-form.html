@@ -161,6 +161,10 @@
                                 </div>
                             </div>
                         </div>
+                        <label class="cx-switch" style="margin-top:14px">
+                            <input type="checkbox" id="express" name="express"><span class="cx-switch-track"></span>
+                            <span class="cx-switch-text"><b>Envoi express / urgent</b><small id="expressInfo">Supplément selon la grille tarifaire du client</small></span>
+                        </label>
                     </div>
 
                     <!-- ----- FRET : véhicule ----- -->
@@ -199,7 +203,7 @@
                     <span class="cx-step">2</span>
                     <div>
                         <h3 class="cx-card-title">Colis à expédier</h3>
-                        <p class="cx-card-sub">Le poids taxable est le plus grand du poids réel et du poids volumétrique (L × l × H / 5 000)</p>
+                        <p class="cx-card-sub" id="colisSub">Le poids taxable est le plus grand du poids réel et du poids volumétrique (L × l × H / 5 000)</p>
                     </div>
                     <div class="cx-card-tools" id="colisResume"></div>
                 </div>
@@ -419,7 +423,7 @@
                             <select class="form-control" id="pfVilleDep"></select>
                         </div>
                         <div class="cx-field">
-                            <button type="button" class="cx-btn cx-btn-soft" id="btnPrefill"><i class="fa fa-magic"></i> Pré-remplir depuis la grille standard</button>
+                            <button type="button" class="cx-btn cx-btn-soft" id="btnPrefill"><i class="fa fa-magic"></i> <span id="btnPrefillTxt">Pré-remplir depuis la grille standard</span></button>
                         </div>
                         <div class="cx-field cf-remise">
                             <label class="cx-label" for="remiseGlobale">Remise globale</label>
@@ -435,7 +439,7 @@
                             <tbody id="grilleBody"></tbody>
                         </table>
                     </div>
-                    <div class="cx-empty" id="grilleVide"><i class="fa fa-table"></i><b>Aucune ligne</b>Ajoutez des lignes ou pré-remplissez depuis la grille standard.</div>
+                    <div class="cx-empty" id="grilleVide"><i class="fa fa-table"></i><b>Aucune ligne</b>Ajoutez des lignes ou pré-remplissez depuis la grille du client (ou la grille standard).</div>
                     <span class="cx-help cx-error-text cx-hidden" id="grilleErreur"></span>
                     <button type="button" class="cx-btn cx-btn-dashed cx-btn-block" id="btnAddLigne" style="margin-top:12px"><i class="fa fa-plus"></i> Ajouter une ligne</button>
                 </div>
@@ -462,6 +466,9 @@
                 <div class="cx-summary-body">
                     <!-- EXPÉDITION -->
                     <div id="rb-EXPEDITION" data-type="EXPEDITION">
+                        <!-- Grille tarifaire appliquée (contrat > grille du client > groupe > standard) -->
+                        <div class="cx-tarif-chip" id="r-tarif"><i class="fa fa-table"></i>
+                            <div>Tarif appliqué : <a id="r-tarifNom" href="#" target="_blank">—</a><small id="r-tarifOrigine"></small></div></div>
                         <label class="cx-switch" style="margin-bottom:8px">
                             <input type="checkbox" id="tarifAuto" checked><span class="cx-switch-track"></span>
                             <span class="cx-switch-text"><b>Tarification automatique</b><small>Transport et livraison selon la grille</small></span>
@@ -474,6 +481,9 @@
                             <input type="text" class="form-control cf-num cx-hidden" id="in-livraison" name="livraisonMt" aria-label="Montant de la livraison"></div>
                         <div class="cx-sum-line"><span>Autres frais</span>
                             <input type="text" class="form-control cf-num" id="in-autres" name="autres" value="0" aria-label="Autres frais"></div>
+                        <a class="cf-toggle" id="r-detailToggle"><i class="fa fa-plus-circle"></i> Détail du calcul</a>
+                        <div class="cx-hidden" id="r-detail" style="margin-top:6px"></div>
+                        <div id="r-tarifAlertes"></div>
                     </div>
                     <!-- FRET -->
                     <div id="rb-FRET" data-type="FRET">
@@ -530,6 +540,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 <script src="assets/cx-core.js"></script>
 <script src="assets/cx-data.js"></script>
+<script src="assets/cx-tarifs.js"></script>
 <script src="assets/cx-shell.js"></script>
 <script src="assets/pages/cotations-commun.js"></script>
 <script src="assets/pages/cotation-form.js"></script>

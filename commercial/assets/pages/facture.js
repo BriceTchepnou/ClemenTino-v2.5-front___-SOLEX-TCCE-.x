@@ -68,7 +68,9 @@ $(function () {
         $("#fx-filigrane").text(fili).toggleClass("cx-hidden", !fili).toggleClass("fx-watermark-red", f.statut === "ANNULEE");
 
         /* En-tête société */
-        $("#fx-logo-mark").text(U.initials(S.nom));
+        /* Logo image si configuré (CX.CONFIG.SOCIETE.logo), sinon initiales */
+        if (S.logo) $("#fx-logo-mark").addClass("fx-logo-img").html("<img src='" + U.esc(S.logo) + "' alt='" + U.esc(S.nom) + "'>");
+        else $("#fx-logo-mark").text(U.initials(S.nom));
         $("#fx-soc-nom, #fx-soc-nom2").text(S.nom);
         $("#fx-soc-slogan").text(S.slogan || "");
         $("#fx-soc-coord").html(
@@ -175,8 +177,8 @@ $(function () {
     $("#btn-imprimer").on("click", function () { window.print(); });
     $("#btn-pdf").on("click", function () {
         // TODO API (option) : GET /commercial/factures/{id}.pdf  (PDF généré côté serveur, ex. KnpSnappyBundle)
-        U.toast("Dans la fenêtre d'impression, choisissez la destination « Enregistrer au format PDF ».", "info");
-        setTimeout(function () { window.print(); }, 400);
+        /* PDF A4 généré directement (indépendant des réglages de la boîte d'impression) */
+        CX.pdf.telecharger(".fx-sheet", { nom: document.title, bouton: this });
     });
     $("#btn-envoyer").on("click", function () {
         if (facture) F.marquerEnvoyee(facture, client).done(charger);

@@ -17,6 +17,7 @@ CX.CONFIG = {
     SOCIETE: {
         nom: "SOLEX EXPRESS",                 // TODO : raison sociale réelle (paramètres société)
         slogan: "Courrier · Colis · Messagerie",
+        logo: "assets/img/logo-societe.svg",  // TODO : logo officiel (PNG/SVG, même domaine pour l'export PDF)
         adresse: "Rue Joffre, Akwa - BP 1234 Douala, Cameroun",
         tel: "+237 233 00 00 00",
         email: "facturation@solex.cm",

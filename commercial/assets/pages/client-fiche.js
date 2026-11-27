@@ -2,7 +2,7 @@
    Commercial · Fiche client 360° (client-fiche.html?id=12)
    ---------------------------------------------------------------------
    En-tête (identité + actions), indicateurs, puis onglets :
-   Informations · Contacts · Expéditions · Factures · Cotations · Historique
+   Informations · Contacts · Expéditions · Factures · Tarif & contrat · Cotations · Historique
    L'onglet ouvert est mémorisé dans l'ancre (#expeditions, #factures…).
    ===================================================================== */
 $(function () {
@@ -66,6 +66,7 @@ $(function () {
         rendreContacts();
         rendreTables();
         rendreHistorique();
+        rendreTarif();
     }
 
     /* =================================================================
@@ -84,6 +85,7 @@ $(function () {
             REF.badge(TYPE, type),
             REF.badge(REF.STATUT_CLIENT, c.statut),
             c.tarifAuto ? "<span class='cx-badge cx-badge-green cx-no-dot'><i class='fa fa-bolt'></i> Tarif automatique</span>" : "",
+            badgeTarif(c),
             c.secteur ? "<span>" + U.esc(c.secteur) + "</span>" : "",
             c.ville ? "<span class='cx-sep-dot'></span><span><i class='fa fa-map-marker'></i> " + U.esc(c.ville) + "</span>" : "",
             a ? "<span class='cx-sep-dot'></span><span>Agence " + U.esc(a.nom) + "</span>" : ""
@@ -122,6 +124,14 @@ $(function () {
             al.push(note("err", "fa-ban", "<b>Plafond de crédit dépassé</b> : encours de " + U.money(encours) + " pour un plafond de " + U.money(c.plafondCredit) + "."));
         }
         $("#h-alertes").html(al.join(""));
+    }
+    /* Badge « grille appliquée » dans l'en-tête (clic : onglet Tarif & contrat) */
+    function badgeTarif(c) {
+        if (!CX.tarifs) return "";
+        var r = CX.tarifs.resoudre(c.id, today);
+        if (!r.grille || r.origine === "STANDARD") return "";
+        var o = CX.tarifs.ORIGINES[r.origine];
+        return "<a href='#tarif' data-goto-tarif class='cx-badge cx-badge-" + o.color + " cx-no-dot' title='" + U.esc(r.libelle) + "'><i class='fa " + o.icon + "'></i> " + U.esc(r.grille.nom) + "</a>";
     }
     function note(type, icon, html) { return "<div class='cx-note cx-note-" + type + "'><i class='fa " + icon + "'></i><div>" + html + "</div></div>"; }
 
@@ -389,6 +399,123 @@ $(function () {
     }
 
     /* =================================================================
+       Onglet Tarif & contrat (moteur CX.tarifs)
+       ================================================================= */
+    var dtCtr;
+    function rendreTarif() {
+        var c = state.client, T = CX.tarifs;
+        if (!T) return;
+        var res = T.resoudre(c.id, today), g = res.grille, o = T.ORIGINES[res.origine] || { label: "—", color: "grey", icon: "fa-question" };
+        var contrats = $.grep(CX.api.listSync("contrats"), function (x) { return String(x.clientId) === String(c.id); });
+        var ctr = T.contratEnVigueur(c.id, today, contrats);
+        state.tarif = res;
+
+        /* Grille appliquée aujourd'hui */
+        var regles = g ? $.map((g.regles || []).slice(0, 6), function (r) {
+            return "<li class='ok'><i class='fa " + T.MODELES[r.modele].icon + "'></i><b>" + U.esc(r.libelle || T.MODELES[r.modele].label) + "</b><small>" + U.esc(T.libPerimetre(r)) + " · " + U.esc(T.libModele(r)) + "</small></li>";
+        }).join("") : "";
+        var base = g && g.baseId ? T.grilleParId(g.baseId) : null;
+        $("#tarif-grille").html("<div class='cx-block-title'>Grille appliquée aujourd'hui</div>" + (g ?
+            "<div class='cx-tarif-chip" + (res.origine === "STANDARD" ? " std" : "") + "'><i class='fa " + o.icon + "'></i><div>" +
+            "<a href='tarif-form.html?id=" + g.id + "'>" + U.esc(g.nom) + "</a> <span class='cx-mono' style='font-size:11px'>" + U.esc(g.code) + "</span>" +
+            "<small>" + U.esc(o.label) + " · " + U.esc(res.libelle) + " · valable " + U.esc(T.libValidite(g)) + "</small></div></div>" +
+            "<ul class='cx-checklist' style='margin-bottom:8px'>" + regles + ((g.regles || []).length > 6 ? "<li>… " + ((g.regles || []).length - 6) + " autre(s) règle(s)</li>" : "") +
+            (base ? "<li><i class='fa fa-level-down'></i>Sinon : grille " + U.esc(base.code + " · " + base.nom) + (g.remiseBasePct ? " (" + (g.remiseBasePct > 0 ? "−" : "+") + U.fmt(Math.abs(g.remiseBasePct)) + " %)" : "") + "</li>" : "") + "</ul>" +
+            $.map(res.alertes, function (a) { return note("warn", "fa-exclamation-triangle", U.esc(a)); }).join("") +
+            "<div style='display:flex;gap:8px;flex-wrap:wrap'><button type='button' class='cx-btn cx-btn-primary cx-btn-sm' id='btn-simuler'><i class='fa fa-calculator'></i> Simuler un envoi</button>" +
+            "<a class='cx-btn cx-btn-ghost cx-btn-sm' href='tarif-form.html?id=" + g.id + "'><i class='fa fa-table'></i> Voir la grille</a>" +
+            (res.origine === "STANDARD" || res.origine === "GROUPE" ? "<a class='cx-btn cx-btn-ghost cx-btn-sm' href='tarif-form.html?type=CLIENT&client=" + c.id + "'><i class='fa fa-plus'></i> Grille propre au client</a>" : "") + "</div>"
+            : note("err", "fa-ban", "Aucune grille applicable : " + U.esc(res.alertes.join(" ")))));
+
+        /* Contrat en vigueur */
+        var reste = ctr && ctr.au ? U.daysBetween(today, ctr.au) : null, k = ctr ? ctr.conditions || {} : {};
+        var retour = encodeURIComponent("client-fiche.html?id=" + c.id + "#tarif");
+        $("#tarif-contrat").html("<div class='cx-block-title'>Contrat en vigueur</div>" + (ctr ?
+            "<dl class='cx-dl'>" +
+            "<dt>N° de contrat</dt><dd><a class='cx-mono' href='contrat-form.html?id=" + ctr.id + "&retour=" + retour + "'>" + U.esc(ctr.numero) + "</a> " + T.badge(T.STATUTS_CONTRAT, "ACTIF") + "</dd>" +
+            "<dt>Objet</dt><dd>" + U.esc(ctr.objet || "") + "</dd>" +
+            "<dt>Période</dt><dd>" + U.toFr(ctr.du) + " → " + U.toFr(ctr.au) + (reste != null ? " <span class='cx-badge cx-badge-" + (reste <= 30 ? "orange" : "grey") + " cx-no-dot'>expire dans " + reste + " j</span>" : "") + "</dd>" +
+            "<dt>Signé le</dt><dd>" + (ctr.dateSignature ? U.toFr(ctr.dateSignature) : "—") + "</dd>" +
+            "<dt>Conditions</dt><dd>" + (k.delaiPaiement || 0) + " j · remise " + U.fmt(k.remisePct || 0) + " % · plafond " + (k.plafondCredit ? U.money(k.plafondCredit) : "aucun") + "</dd>" +
+            /* TODO API : GET /commercial/contrats/{id}/document */
+            "<dt>Contrat signé</dt><dd>" + (ctr.fichier ? "<a href='#' data-contrat-pdf='" + U.esc(ctr.fichier) + "'><i class='fa fa-file-pdf-o' style='color:#d14343'></i> " + U.esc(ctr.fichier) + "</a>" : "<span style='color:var(--cx-orange)'>PDF non chargé</span>") + "</dd>" +
+            "</dl><div style='display:flex;gap:8px;margin-top:10px;flex-wrap:wrap'><a class='cx-btn cx-btn-ghost cx-btn-sm' href='contrat-form.html?id=" + ctr.id + "&retour=" + retour + "'><i class='fa fa-pencil'></i> Modifier</a>" +
+            (reste != null && reste <= 60 ? "<a class='cx-btn cx-btn-soft cx-btn-sm' href='contrat-form.html?client=" + c.id + "&renouveler=" + ctr.id + "'><i class='fa fa-refresh'></i> Renouveler</a>" : "") +
+            "<a class='cx-btn cx-btn-ghost cx-btn-sm' href='contrat-form.html?client=" + c.id + "'><i class='fa fa-plus'></i> Nouveau contrat</a></div>"
+            : "<div class='cx-empty' style='padding:18px 0'><i class='fa fa-file-text-o'></i><b>Aucun contrat en vigueur</b>Le client est tarifé selon sa grille " +
+              (res.origine === "GROUPE" ? "de groupe" : res.origine === "CLIENT" ? "propre" : "standard") + ".<br><br>" +
+              "<a class='cx-btn cx-btn-primary cx-btn-sm' href='contrat-form.html?client=" + c.id + "'><i class='fa fa-plus'></i> Nouveau contrat</a></div>"));
+
+        /* Groupes du client */
+        var grs = T.groupesDuClient(c.id);
+        $("#tarif-groupes").html("<span class='cx-muted' style='font-size:12.5px'>Groupes de clients : </span>" + (grs.length ? $.map(grs, function (x) {
+            return "<a class='cx-tag' href='tarifs-liste.html#groupes'><i class='fa fa-users'></i> " + U.esc(x.nom) + "</a>";
+        }).join(" ") : "<span class='cx-muted' style='font-size:12.5px'>aucun</span>") + " · <a href='client-form.html?id=" + c.id + "' style='font-size:12.5px'>modifier</a>");
+
+        /* Historique des contrats */
+        if (!dtCtr) {
+            dtCtr = new CX.DataTable("#dt-ctr", {
+                pageSize: 10, sortKey: "du", sortDir: -1, emptyText: "Aucun contrat pour ce client", emptyIcon: "fa-file-text-o",
+                columns: [
+                    { key: "numero", title: "N° contrat", render: function (x) { return "<a class='cx-mono cx-strong' href='contrat-form.html?id=" + x.id + "'>" + U.esc(x.numero) + "</a><div class='cx-cell-sub'>" + U.esc(x.objet || "") + "</div>"; } },
+                    { key: "du", title: "Période", render: function (x) { return U.toFr(x.du) + " → " + U.toFr(x.au); } },
+                    { key: "tarifaireId", title: "Grille", render: function (x) { var gg = CX.tarifs.grilleParId(x.tarifaireId); return gg ? "<a href='tarif-form.html?id=" + gg.id + "'>" + U.esc(gg.nom) + "</a>" : "—"; } },
+                    { key: "fichier", title: "Document", sortable: false, render: function (x) { return x.fichier ? "<a href='#' data-contrat-pdf='" + U.esc(x.fichier) + "'><i class='fa fa-file-pdf-o' style='color:#d14343'></i> PDF</a>" : "<span class='cx-muted'>—</span>"; } },
+                    { key: "statut", title: "Statut", sortValue: function (x) { return CX.tarifs.statutContrat(x, today); }, render: function (x) { return CX.tarifs.badge(CX.tarifs.STATUTS_CONTRAT, CX.tarifs.statutContrat(x, today)); } }
+                ]
+            });
+        }
+        dtCtr.setRows(contrats);
+        $("#n-contrats").text(contrats.length);
+        $("#a-contrat").attr("href", "contrat-form.html?client=" + c.id);
+    }
+
+    /* Simulation d'un envoi avec la grille du client (modale construite à la volée) */
+    function simulerEnvoi() {
+        var T = CX.tarifs, c = state.client, res = state.tarif;
+        if (!res || !res.grille) return;
+        $("#m-sim").remove();
+        var villes = $.map(REF.VILLES, function (v) { return "<option value='" + v.nom + "'>" + U.esc(T.villeLabel(v.nom)) + "</option>"; }).join("");
+        function col(n, id, label, ctrl) { return "<div class='col-sm-" + n + "'><div class='cx-field'><label class='cx-label' for='" + id + "'>" + label + "</label>" + ctrl + "</div></div>"; }
+        var $m = $("<div class='modal fade' id='m-sim' tabindex='-1' role='dialog'><div class='modal-dialog' style='max-width:640px'><div class='modal-content'>" +
+            "<div class='modal-header'><button type='button' class='close' data-dismiss='modal'>&times;</button><h4 class='modal-title'><i class='fa fa-calculator'></i>Simuler un envoi · " + U.esc(c.raisonSociale) + "</h4></div>" +
+            "<div class='modal-body'><div class='cx-tarif-chip" + (res.origine === "STANDARD" ? " std" : "") + "'><i class='fa fa-table'></i><div><b>" + U.esc(res.grille.nom) + "</b><small>" + U.esc(res.libelle) + "</small></div></div>" +
+            "<div class='row'>" +
+            col(4, "sim-dep", "Départ", "<select class='form-control' id='sim-dep'>" + villes + "</select>") +
+            col(4, "sim-dest", "Arrivée", "<select class='form-control' id='sim-dest'>" + villes + "</select>") +
+            col(4, "sim-nature", "Nature", "<select class='form-control' id='sim-nature'>" + $.map(REF.NATURES_COLIS, function (n) { return "<option>" + U.esc(n) + "</option>"; }).join("") + "</select>") +
+            col(3, "sim-poids", "Poids (kg)", "<input type='text' class='form-control' id='sim-poids' value='5' inputmode='decimal'>") +
+            col(3, "sim-nombre", "Nombre", "<input type='text' class='form-control' id='sim-nombre' value='1' inputmode='numeric'>") +
+            col(3, "sim-valeur", "Valeur déclarée", "<input type='text' class='form-control' id='sim-valeur' inputmode='numeric' placeholder='0'>") +
+            col(3, "sim-zone", "Remise", "<select class='form-control' id='sim-zone'><option value=''>Retrait bureau</option>" +
+                $.map(REF.ZONES_LIVRAISON, function (z) { return "<option value='" + z.code + "'>Domicile " + z.code + "</option>"; }).join("") + "</select>") +
+            "</div><div id='sim-res'></div></div>" +
+            "<div class='modal-footer'><a class='cx-btn cx-btn-ghost' href='cotation-form.html?type=EXPEDITION&client=" + c.id + "'><i class='fa fa-calculator'></i> Faire une cotation</a>" +
+            "<button type='button' class='cx-btn cx-btn-primary' data-dismiss='modal'>Fermer</button></div></div></div></div>").appendTo("body");
+        var dep = c.ville || CX.CONFIG.USER.ville;
+        $m.find("#sim-dep").val(dep); $m.find("#sim-dest").val(dep === "YAOUNDE" ? "DOUALA" : "YAOUNDE");
+        function calc() {
+            var z = $m.find("#sim-zone").val();
+            var r = T.calculer(res.grille, {
+                villeDep: $m.find("#sim-dep").val(), villeDest: $m.find("#sim-dest").val(), nature: $m.find("#sim-nature").val(),
+                poids: U.num($m.find("#sim-poids").val()), nombre: parseInt($m.find("#sim-nombre").val(), 10) || 1,
+                valeurDeclaree: U.num($m.find("#sim-valeur").val()), livraison: z ? "DOMICILE" : "BUREAU", zone: z
+            });
+            $m.find("#sim-res").html("<div class='cx-sum-total' style='margin-top:0;border-top:0;padding-top:4px'><span>Montant " + (res.grille.tvaIncluse ? "TTC" : "HT") + "</span><b><span id='sim-total'>" + U.fmt(r.total) + "</span><small>FCFA</small></b></div>" +
+                "<div class='cx-muted' style='font-size:12px;margin-bottom:8px'>soit " + U.money(r.ttc) + " TTC (TVA " + U.fmt(CX.CONFIG.TVA, 2) + " %)</div>" + T.detailHtml(r));
+        }
+        $m.on("input change", "input, select", U.debounce(calc, 80));
+        $m.on("hidden.bs.modal", function () { $m.remove(); });
+        $m.modal("show");
+        calc();
+    }
+    $("#tarif-grille").on("click", "#btn-simuler", simulerEnvoi);
+    $("#fiche").on("click", "[data-contrat-pdf]", function (ev) {
+        ev.preventDefault();
+        U.toast("Téléchargement de « " + U.esc($(this).data("contrat-pdf")) + " » (disponible après intégration).", "info");
+    });
+
+    /* =================================================================
        Onglet Historique
        ================================================================= */
     function rendreHistorique() {
@@ -449,6 +576,7 @@ $(function () {
         $("html, body").animate({ scrollTop: $("#tabs").offset().top - 80 }, 200);
     });
     $("#f-exp-nonfact").on("change", filtrerExp);
+    $("#h-meta").on("click", "[data-goto-tarif]", function (ev) { ev.preventDefault(); ouvrirOnglet("tarif"); });
     $("#a-suspendre").on("click", suspendreOuReactiver);
     $("#fiche").on("click", "a.disabled", function (ev) {
         ev.preventDefault();

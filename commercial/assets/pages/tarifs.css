@@ -1,0 +1,81 @@
+/* =====================================================================
+   Commercial · Tarifaires - styles communs à tarifs-liste, tarif-form,
+   contrat-form (préfixe tf-)
+   ===================================================================== */
+
+.cx-app .select2-container { width: 100% !important; }
+.tf-num { text-align: right; }
+.tf-off { opacity: .45; pointer-events: none; }
+
+/* ---------- Liste ---------- */
+.tf-modeles { display: flex; gap: 4px; flex-wrap: wrap; }
+.tf-modeles .cx-tag { font-weight: 600; }
+.tf-aff { font-size: 12px; color: var(--cx-muted); }
+.tf-aff b { color: var(--cx-ink); }
+.tf-pane .cx-toolbar { border-bottom: 1px solid var(--cx-line-2); }
+.tf-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* ---------- Éditeur de grille : règles ---------- */
+.tf-regle { border: 1px solid var(--cx-line); border-radius: 12px; margin-bottom: 14px; background: #fff; }
+.tf-regle.has-error { border-color: #f3c0c0; }
+.tf-regle.inactive { background: var(--cx-soft); }
+.tf-regle.inactive .tf-regle-body { opacity: .6; }
+.tf-regle-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--cx-line-2); flex-wrap: wrap; }
+.tf-regle-num { background: var(--cx-ink); color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+.tf-regle-head .tf-libelle { flex: 1; min-width: 200px; }
+.tf-regle-head .tf-libelle .form-control { height: 34px; font-weight: 600; }
+.tf-regle-tools { display: flex; gap: 4px; align-items: center; }
+.tf-regle-tools .cx-switch { margin-right: 8px; font-size: 12px; }
+.tf-regle-resume { width: 100%; font-size: 11.5px; color: var(--cx-muted); }
+.tf-regle-resume b { color: var(--cx-navy-2); }
+.tf-regle-body { padding: 14px; }
+.tf-regle.collapsed .tf-regle-body { display: none; }
+.tf-regle .cx-field { margin-bottom: 10px; }
+.tf-regle .cx-pills { gap: 4px; }
+.tf-regle .cx-pill > span { padding: 4px 11px; font-size: 12px; }
+.tf-modeles-seg { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.tf-modeles-seg .cx-seg-item > span { padding: 8px 10px; }
+.tf-modeles-seg .cx-seg-item > span small { display: block; line-height: 1.3; }
+.tf-editeur { margin-top: 12px; }
+.tf-sous-table { width: 100%; font-size: 12.5px; }
+.tf-sous-table th { font-size: 11px; color: var(--cx-muted); font-weight: 700; text-transform: uppercase; padding: 4px 6px; }
+.tf-sous-table td { padding: 3px 6px; vertical-align: middle; }
+.tf-sous-table .form-control { height: 32px; font-size: 12.5px; }
+.tf-sous-table td.has-error .form-control { border-color: var(--cx-red); }
+.tf-phrase { font-size: 12.5px; color: var(--cx-ink); background: var(--cx-blue-soft); border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
+.tf-apercu { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.tf-apercu span { background: var(--cx-soft); border: 1px solid var(--cx-line); border-radius: 8px; padding: 4px 8px; font-size: 11.5px; color: var(--cx-muted); }
+.tf-apercu span b { color: var(--cx-ink); margin-left: 4px; }
+.tf-regle-errs { margin-top: 10px; }
+.tf-add-regle { display: flex; gap: 8px; flex-wrap: wrap; }
+.tf-add-regle .cx-btn-dashed { flex: 1; }
+
+/* ---------- Simulateur (colonne de droite) ---------- */
+.tf-aside { max-height: calc(100vh - 92px); overflow-y: auto; }
+.tf-sim .cx-field { margin-bottom: 8px; }
+.tf-sim .form-control { height: 34px; font-size: 12.5px; }
+.tf-sim .cx-label { font-size: 11.5px; }
+.tf-sim .row { margin-left: -5px; margin-right: -5px; }
+.tf-sim .row > [class*='col-'] { padding-left: 5px; padding-right: 5px; }
+.tf-sim .cx-seg { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.tf-sim .cx-seg-item > span { padding: 6px 6px; text-align: center; }
+.tf-sim .cx-seg-item > span b { font-size: 12px; }
+.tf-sim .cx-seg-item > span .fa { float: none; display: block; margin: 0 auto 2px; font-size: 14px; }
+.tf-sim-total { font-size: 30px; font-weight: 800; letter-spacing: -.5px; margin-top: 8px; color: #fff; }
+.tf-sim-total small { font-size: 12px; opacity: .7; font-weight: 600; margin-left: 4px; }
+.tf-sim-sub { font-size: 12px; opacity: .75; }
+.tf-dims { display: flex; gap: 4px; align-items: center; }
+.tf-dims .form-control { text-align: center; padding: 4px; }
+.tf-dims span { color: var(--cx-muted); }
+.tf-manq { margin: 4px 0 0; padding-left: 16px; font-size: 11.5px; }
+.tf-foot-btns { display: flex; gap: 8px; margin-top: 8px; }
+.tf-foot-btns .cx-btn { flex: 1; }
+.cx-summary-foot .cx-btn-primary:disabled { background: #94a3b8; }
+
+/* ---------- Contrat ---------- */
+.tf-grille-info { margin-top: 10px; }
+.tf-grille-info ul { margin: 6px 0 0; padding-left: 16px; font-size: 12px; color: var(--cx-muted); }
+
+/* Pastille « Code » dans l'en-tête de carte */
+.cx-code-chip { background: var(--cx-soft); border: 1px solid var(--cx-line); border-radius: 999px; padding: 4px 11px; font-size: 12px; color: var(--cx-muted); white-space: nowrap; }
+.cx-code-chip b { color: var(--cx-navy-2); font-weight: 600; }

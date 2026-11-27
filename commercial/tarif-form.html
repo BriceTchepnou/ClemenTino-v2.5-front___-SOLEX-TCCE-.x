@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Grille tarifaire - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/tarifs.css">
+</head>
+<body class="cx-app" data-page="tarif-form">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> / <a href="tarifs-liste.html">Tarifaires</a> / <span id="crumb-current">Nouvelle grille</span></div>
+            <h1 class="cx-title"><span id="page-title">Nouvelle grille tarifaire</span> <small id="page-sub"></small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <a class="cx-btn cx-btn-ghost" href="tarifs-liste.html"><i class="fa fa-list"></i> Liste des grilles</a>
+        </div>
+    </div>
+
+    <div class="cx-card cx-hidden" id="not-found">
+        <div class="cx-empty"><i class="fa fa-exclamation-circle"></i><b>Grille introuvable</b>
+            Cette grille n'existe pas ou a été supprimée.<br><br><a class="cx-btn cx-btn-primary" href="tarifs-liste.html">Retour à la liste</a></div>
+    </div>
+
+    <div class="cx-note cx-note-warn cx-hidden" id="note-archivee"><i class="fa fa-archive"></i>
+        <div>Cette grille est <b>archivée</b> : elle n'est plus appliquée. Enregistrez-la en « Active » pour la remettre en service.</div></div>
+
+    <form class="cx-layout" id="f-grille" novalidate>
+
+        <!-- ================= Colonne principale ================= -->
+        <div>
+            <!-- 1. Identité & validité -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="identite">1</span>
+                    <div>
+                        <h3 class="cx-card-title">Identité &amp; validité</h3>
+                        <p class="cx-card-sub">Nom de la grille, à qui elle s'adresse et sur quelle période</p>
+                    </div>
+                    <div class="cx-card-tools"><span class="cx-code-chip">Code : <b id="code-display">attribué à l'enregistrement</b></span> <span id="statut-display"></span></div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="nom">Nom de la grille</label>
+                                <input type="text" class="form-control" id="nom" name="nom" maxlength="100" placeholder="Ex. : Tarif pharmacies 2027">
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="cx-field">
+                                <label class="cx-label" for="devise">Devise</label>
+                                <select class="form-control" id="devise" name="devise"><option value="FCFA">FCFA (franc CFA BEAC)</option></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="description">Description <span class="cx-opt">(facultatif)</span></label>
+                        <input type="text" class="form-control" id="description" name="description" maxlength="250" placeholder="Ce que couvre la grille, conditions particulières…">
+                    </div>
+                    <p class="cx-section-label">Type de grille</p>
+                    <div class="cx-seg" id="seg-type">
+                        <label class="cx-seg-item"><input type="radio" name="type" value="STANDARD"><span><i class="fa fa-globe"></i><b>Standard</b><small>Tous les clients sans tarif spécifique</small></span></label>
+                        <label class="cx-seg-item"><input type="radio" name="type" value="CLIENT" checked><span><i class="fa fa-user"></i><b>Client</b><small>Tarif négocié d'un client</small></span></label>
+                        <label class="cx-seg-item"><input type="radio" name="type" value="GROUPE"><span><i class="fa fa-users"></i><b>Groupe</b><small>Tarif commun à un groupe de clients</small></span></label>
+                    </div>
+                    <div class="row" style="margin-top:14px">
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="du">Valable du</label>
+                                <input type="date" class="form-control" id="du" name="du">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="au">au <span class="cx-opt">(vide = sans fin)</span></label>
+                                <input type="date" class="form-control" id="au" name="au">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="cx-help" id="validite-info" style="margin-top:28px"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Base & paramètres -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="base">2</span>
+                    <div>
+                        <h3 class="cx-card-title">Base &amp; paramètres de calcul</h3>
+                        <p class="cx-card-sub">Grille de repli, poids volumétrique, minimum de perception, arrondi, TVA</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <div class="cx-field">
+                                <label class="cx-label" for="baseId">Grille de base <span class="cx-opt">(facultatif)</span></label>
+                                <select class="form-control" id="baseId" name="baseId"></select>
+                                <span class="cx-help">Utilisée quand aucune règle de cette grille ne couvre l'envoi.</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="cx-field">
+                                <label class="cx-label" for="remiseBasePct">Remise sur la grille de base</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control tf-num" id="remiseBasePct" name="remiseBasePct" inputmode="decimal" value="0">
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                                <span class="cx-help">Valeur négative = majoration (ex. −5).</span>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="cx-switch" id="lbl-heriter" style="margin-bottom:12px">
+                        <input type="checkbox" id="heriterSupplements" name="heriterSupplements" checked><span class="cx-switch-track"></span>
+                        <span class="cx-switch-text"><b>Reprendre les suppléments de la grille de base</b><small>Natures, livraison, express, emballage</small></span>
+                    </label>
+                    <hr class="cx-sep">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="cx-field">
+                                <label class="cx-label" for="diviseurVol">Diviseur volumétrique</label>
+                                <select class="form-control" id="diviseurVol" name="diviseurVol">
+                                    <option value="4000">4 000 (aérien express)</option>
+                                    <option value="5000">5 000 (standard)</option>
+                                    <option value="6000">6 000 (routier)</option>
+                                </select>
+                                <span class="cx-help">L × l × H (cm) / diviseur</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="cx-field">
+                                <label class="cx-label" for="minimum">Minimum de perception</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control tf-num" id="minimum" name="minimum" inputmode="numeric" placeholder="0">
+                                    <span class="input-group-addon">F</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="cx-field">
+                                <label class="cx-label" for="arrondi">Arrondi du total</label>
+                                <select class="form-control" id="arrondi" name="arrondi">
+                                    <option value="1">Au franc</option><option value="5">5 F</option><option value="10">10 F</option>
+                                    <option value="25">25 F</option><option value="50">50 F</option><option value="100">100 F</option><option value="500">500 F</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="cx-field">
+                                <label class="cx-label" for="arrondiMode">Sens de l'arrondi</label>
+                                <select class="form-control" id="arrondiMode" name="arrondiMode">
+                                    <option value="SUP">Supérieur</option><option value="PROCHE">Le plus proche</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="cx-switch">
+                        <input type="checkbox" id="tvaIncluse" name="tvaIncluse"><span class="cx-switch-track"></span>
+                        <span class="cx-switch-text"><b>Prix saisis TVA incluse (TTC)</b><small>Sinon les prix sont hors taxes ; TVA <span id="tva-taux"></span> ajoutée à la facturation</small></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- 3. Règles -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="regles">3</span>
+                    <div>
+                        <h3 class="cx-card-title">Règles de tarification</h3>
+                        <p class="cx-card-sub">Pour chaque périmètre (trajet, type d'envoi, nature, poids), un modèle de calcul. La règle la plus précise l'emporte.</p>
+                    </div>
+                    <div class="cx-card-tools" id="regles-resume"></div>
+                </div>
+                <div class="cx-card-body">
+                    <div id="regles"></div>
+                    <div class="cx-empty cx-hidden" id="regles-vide"><i class="fa fa-sliders"></i><b>Aucune règle</b>Ajoutez une règle, ou choisissez une grille de base (carte 2).</div>
+                    <div class="tf-add-regle">
+                        <button type="button" class="cx-btn cx-btn-dashed cx-btn-lg" data-add-modele="INCREMENTIEL"><i class="fa fa-plus"></i> Ajouter une règle</button>
+                        <div class="dropdown">
+                            <button type="button" class="cx-btn cx-btn-ghost cx-btn-lg" data-toggle="dropdown"><i class="fa fa-magic"></i> Selon un modèle <i class="fa fa-angle-down"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-right" id="menu-modeles"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Suppléments -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="supplements">4</span>
+                    <div>
+                        <h3 class="cx-card-title">Suppléments</h3>
+                        <p class="cx-card-sub">Natures particulières, livraison à domicile, express, emballage</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="cx-note cx-note-info cx-hidden" id="supp-herites"><i class="fa fa-link"></i><div>Les suppléments de la grille de base <b id="supp-base-nom"></b> s'appliquent. Désactivez « Reprendre les suppléments » (carte 2) pour les personnaliser.</div></div>
+                    <div id="supp-body">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="cx-block-title">Supplément par nature</div>
+                                <table class="tf-sous-table">
+                                    <thead><tr><th>Nature</th><th style="width:130px">Mode</th><th style="width:110px">Valeur</th><th style="width:40px"></th></tr></thead>
+                                    <tbody id="supp-natures"></tbody>
+                                </table>
+                                <button type="button" class="cx-btn cx-btn-link cx-btn-sm" id="btn-add-nature"><i class="fa fa-plus"></i> Ajouter une nature</button>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="cx-block-title">Livraison à domicile par zone</div>
+                                <table class="tf-sous-table">
+                                    <thead><tr><th>Zone</th><th style="width:130px">Prix</th></tr></thead>
+                                    <tbody id="supp-livraison"></tbody>
+                                </table>
+                                <span class="cx-help">Vide = tarif réseau de la zone.</span>
+                            </div>
+                        </div>
+                        <hr class="cx-sep">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label class="cx-switch" style="margin-bottom:8px">
+                                    <input type="checkbox" id="expressActif"><span class="cx-switch-track"></span>
+                                    <span class="cx-switch-text"><b>Express / urgence</b><small>Remise prioritaire</small></span>
+                                </label>
+                                <div class="row">
+                                    <div class="col-xs-6"><select class="form-control input-sm" id="expressMode" aria-label="Mode du supplément express"><option value="PCT">% du transport</option><option value="FIXE">Forfait (F)</option></select></div>
+                                    <div class="col-xs-6"><input type="text" class="form-control input-sm tf-num" id="expressValeur" inputmode="decimal" aria-label="Valeur du supplément express"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="cx-switch" style="margin-bottom:8px">
+                                    <input type="checkbox" id="emballageActif"><span class="cx-switch-track"></span>
+                                    <span class="cx-switch-text"><b>Emballage</b><small>Carton, film, sachet sécurisé</small></span>
+                                </label>
+                                <div class="row">
+                                    <div class="col-xs-6"><select class="form-control input-sm" id="emballageMode" aria-label="Mode de l'emballage"><option value="PAR_COLIS">Par colis (F)</option><option value="FIXE">Forfait par envoi (F)</option></select></div>
+                                    <div class="col-xs-6"><input type="text" class="form-control input-sm tf-num" id="emballageValeur" inputmode="decimal" aria-label="Prix de l'emballage"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Affectation -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="affectation">5</span>
+                    <div>
+                        <h3 class="cx-card-title">Affectation</h3>
+                        <p class="cx-card-sub">Clients et groupes de clients à qui la grille s'applique</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="cx-note cx-note-info cx-hidden" id="aff-std"><i class="fa fa-globe"></i>
+                        <div>Grille <b>standard</b> : elle s'applique automatiquement à tout client qui n'a ni contrat, ni grille propre, ni groupe tarifé.</div></div>
+                    <div id="aff-bloc">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="affClients">Clients</label>
+                                    <select class="form-control" id="affClients" name="affClients" multiple></select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="affGroupes">Groupes de clients</label>
+                                    <select class="form-control" id="affGroupes" name="affGroupes" multiple></select>
+                                    <span class="cx-help"><a href="tarifs-liste.html#groupes">Gérer les groupes de clients</a></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="aff-conflits"></div>
+                    </div>
+                    <div id="aff-contrats"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= Colonne de droite : simulateur ================= -->
+        <aside class="cx-aside tf-aside" id="simulateur">
+            <div class="cx-summary">
+                <div class="cx-summary-hero">
+                    <div class="cx-hero-top"><span><i class="fa fa-calculator"></i> Simulateur</span><span id="s-grilleNom" class="cx-mono"></span></div>
+                    <div class="tf-sim-total"><span id="s-total">0</span><small>FCFA</small></div>
+                    <div class="tf-sim-sub" id="s-sub">Saisissez un envoi</div>
+                    <div class="cx-hero-tags" id="s-tags"></div>
+                </div>
+                <div class="cx-summary-body tf-sim">
+                    <div class="row">
+                        <div class="col-xs-6"><div class="cx-field"><label class="cx-label" for="s-villeDep">Départ</label><select class="form-control" id="s-villeDep"></select></div></div>
+                        <div class="col-xs-6"><div class="cx-field"><label class="cx-label" for="s-trajet">Trajet</label>
+                            <select class="form-control" id="s-trajet"><option value="">Selon les villes</option></select></div></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12" id="s-destVille"><div class="cx-field"><label class="cx-label" for="s-villeDest">Arrivée</label><select class="form-control" id="s-villeDest"></select></div></div>
+                        <div class="col-xs-12 cx-hidden" id="s-destPays"><div class="cx-field"><label class="cx-label" for="s-pays">Pays de destination</label><select class="form-control" id="s-pays"></select></div></div>
+                    </div>
+                    <div class="cx-field">
+                        <div class="cx-seg cx-seg-soft" id="s-segEnvoi"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6"><div class="cx-field"><label class="cx-label" for="s-nature">Nature</label><select class="form-control" id="s-nature"></select></div></div>
+                        <div class="col-xs-3"><div class="cx-field"><label class="cx-label" for="s-poids">Poids</label><input type="text" class="form-control tf-num" id="s-poids" inputmode="decimal" value="3"></div></div>
+                        <div class="col-xs-3"><div class="cx-field"><label class="cx-label" for="s-nombre">Nombre</label><input type="text" class="form-control tf-num" id="s-nombre" inputmode="numeric" value="1"></div></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-7"><div class="cx-field"><label class="cx-label" for="s-L">L × l × H <span class="cx-opt">(cm)</span></label>
+                            <div class="tf-dims"><input type="text" class="form-control" id="s-L" inputmode="numeric" placeholder="L" aria-label="Longueur"><span>×</span>
+                                <input type="text" class="form-control" id="s-l" inputmode="numeric" placeholder="l" aria-label="Largeur"><span>×</span>
+                                <input type="text" class="form-control" id="s-H" inputmode="numeric" placeholder="H" aria-label="Hauteur"></div></div></div>
+                        <div class="col-xs-5"><div class="cx-field"><label class="cx-label" for="s-valeur">Valeur déclarée</label><input type="text" class="form-control tf-num" id="s-valeur" inputmode="numeric" placeholder="0"></div></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6"><div class="cx-field"><label class="cx-label" for="s-livraison">Remise</label>
+                            <select class="form-control" id="s-livraison"><option value="BUREAU">Retrait au bureau</option><option value="DOMICILE">Livraison à domicile</option></select></div></div>
+                        <div class="col-xs-6"><div class="cx-field"><label class="cx-label" for="s-zone">Zone</label><select class="form-control" id="s-zone" disabled></select></div></div>
+                    </div>
+                    <label class="cx-switch" style="margin-right:14px"><input type="checkbox" id="s-express"><span class="cx-switch-track"></span><span class="cx-switch-text"><b>Express</b></span></label>
+                    <label class="cx-switch"><input type="checkbox" id="s-emballage"><span class="cx-switch-track"></span><span class="cx-switch-text"><b>Emballage</b></span></label>
+
+                    <hr class="cx-sep" style="margin:12px 0">
+                    <div class="cx-section-label">Détail du calcul</div>
+                    <div id="s-detail"></div>
+                </div>
+                <div class="cx-summary-foot">
+                    <div class="cx-note cx-note-warn cx-hidden" id="r-manquants"><i class="fa fa-exclamation-circle"></i>
+                        <div><b id="r-nbManq">0</b> point(s) à corriger<ul class="tf-manq" id="r-listeManq"></ul></div></div>
+                    <button type="button" class="cx-btn cx-btn-primary cx-btn-lg cx-btn-block" id="btn-activer"><i class="fa fa-check"></i> Enregistrer et activer</button>
+                    <div class="tf-foot-btns">
+                        <button type="button" class="cx-btn cx-btn-ghost" id="btn-enregistrer"><i class="fa fa-floppy-o"></i> Brouillon</button>
+                        <a class="cx-btn cx-btn-ghost" id="btn-annuler" href="tarifs-liste.html">Annuler</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </form>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-tarifs.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/tarif-form.js"></script>
+</body>
+</html>

@@ -62,6 +62,7 @@
                 <a data-tab="contacts"><i class="fa fa-users"></i> Contacts <span class="cx-count" id="n-contacts">0</span></a>
                 <a data-tab="expeditions"><i class="fa fa-cube"></i> Expéditions <span class="cx-count" id="n-expeditions">0</span></a>
                 <a data-tab="factures"><i class="fa fa-file-text-o"></i> Factures <span class="cx-count" id="n-factures">0</span></a>
+                <a data-tab="tarif"><i class="fa fa-table"></i> Tarif &amp; contrat <span class="cx-count" id="n-contrats">0</span></a>
                 <a data-tab="cotations"><i class="fa fa-calculator"></i> Cotations <span class="cx-count" id="n-cotations">0</span></a>
                 <a data-tab="historique"><i class="fa fa-history"></i> Historique <span class="cx-count" id="n-historique">0</span></a>
             </div>
@@ -115,6 +116,22 @@
                 <div id="dt-fac"></div>
             </div>
 
+            <!-- Tarif & contrat (grille appliquée, contrat en vigueur, historique des contrats) -->
+            <div class="cx-tab-pane cx-hidden" data-pane="tarif">
+                <div class="cx-card-body">
+                    <div class="row">
+                        <div class="col-md-6"><div id="tarif-grille"></div></div>
+                        <div class="col-md-6"><div id="tarif-contrat"></div></div>
+                    </div>
+                    <div id="tarif-groupes" style="margin-top:14px"></div>
+                </div>
+                <div class="cx-toolbar" style="border-top:1px solid var(--cx-line-2)">
+                    <div class="cx-field cx-grow"><b class="cx-strong">Historique des contrats</b></div>
+                    <div class="cx-field"><a class="cx-btn cx-btn-soft cx-btn-sm" id="a-contrat" href="#"><i class="fa fa-plus"></i> Nouveau contrat</a></div>
+                </div>
+                <div id="dt-ctr"></div>
+            </div>
+
             <!-- Cotations -->
             <div class="cx-tab-pane cx-hidden" data-pane="cotations">
                 <div class="cx-toolbar" style="justify-content:flex-end">
@@ -142,6 +159,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 <script src="assets/cx-core.js"></script>
 <script src="assets/cx-data.js"></script>
+<script src="assets/cx-tarifs.js"></script>
 <script src="assets/cx-shell.js"></script>
 <script src="assets/pages/client-fiche.js"></script>
 </body>

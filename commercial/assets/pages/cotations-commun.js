@@ -62,7 +62,11 @@ CX.cot = {
        d = details (cf. modèle cot() du seed) ; remisePct = remise client
        Retourne tous les montants intermédiaires.
        ------------------------------------------------------------------ */
-    calcExpedition: function (d, remisePct) {
+    /* tarif (facultatif) = résultat de CX.tarifs.resoudre(clientId, date) : si fourni (et cx-tarifs.js
+       chargé), le transport et la livraison automatiques viennent de la grille du client ; sinon on
+       garde le calcul indicatif historique (pages qui ne chargent pas le moteur). */
+    calcExpedition: function (d, remisePct, tarif) {
+        if (tarif && tarif.grille && CX.tarifs) return CX.cot.calcExpeditionGrille(d, remisePct, tarif);
         var U = CX.util, r = { poidsReel: 0, poidsVol: 0, poidsTaxable: 0, nbColis: 0 };
         $.each(d.colis || [], function (_, c) {
             var n = Math.max(1, parseInt(c.nombre, 10) || 1);
@@ -82,6 +86,49 @@ CX.cot = {
         r.transportAuto = d.villeDep && r.poidsTaxable > 0
             ? Math.round(CX.tarif.transport(d.villeDep, destCalc, r.poidsTaxable) * (CX.cot.COEF_TRAJET[type] || 1)) : 0;
         r.livraisonAuto = d.livraison === "DOMICILE" ? CX.tarif.livraison(d.zone) : 0;
+
+        var auto = d.tarifAuto !== false && d.tarifAuto != null;
+        r.transport = auto ? r.transportAuto : U.round(d.transport);
+        r.livraison = auto ? r.livraisonAuto : U.round(d.livraisonMt);
+        r.emballage = U.round(d.emballage);
+        r.autres = U.round(d.autres);
+        r.brut = r.transport + r.livraison + r.emballage + r.autres;
+        r.remisePct = U.num(remisePct);
+        r.remise = U.round(r.brut * r.remisePct / 100);
+        var t = U.taxes(r.brut - r.remise);
+        r.ht = t.ht; r.tva = t.tva; r.ttc = t.ttc; r.taux = t.taux;
+        return r;
+    },
+
+    /* ------------------------------------------------------------------
+       Expédition tarifée par la grille du client (moteur CX.tarifs)
+       r.calcTarif = détail du moteur (lignes pas à pas, alertes, règle)
+       Transport = transport + suppléments + assurance de la grille (HT) ;
+       la livraison à domicile reste sur sa ligne. Mêmes clés que calcExpedition.
+       ------------------------------------------------------------------ */
+    calcExpeditionGrille: function (d, remisePct, tarif) {
+        var U = CX.util, T = CX.tarifs, r = {};
+        var env = {
+            typeTrajet: d.typeTrajet, villeDep: d.villeDep, villeDest: d.villeDest, paysDest: d.paysDest,
+            livraison: d.livraison, zone: d.zone, express: !!d.express,
+            colis: $.map(d.colis || [], function (c) {
+                return { nature: c.nature, poids: c.poids, L: c.L, l: c.l, H: c.H, nombre: c.nombre, valeur: c.valeur };
+            })
+        };
+        var res = T.calculer(tarif.grille, env), div = res.diviseur;
+        r.calcTarif = res;
+        r.tarif = tarif;
+        r.nbColis = 0; r.poidsReel = 0; r.poidsVol = 0; r.poidsTaxable = 0;
+        $.each(d.colis || [], function (_, c) {
+            var n = Math.max(1, parseInt(c.nombre, 10) || 1), reel = U.num(c.poids), vol = T.poidsVolumetrique(c.L, c.l, c.H, div);
+            r.nbColis += n; r.poidsReel += reel * n; r.poidsVol += vol * n; r.poidsTaxable += Math.max(reel, vol) * n;
+        });
+        r.poidsReel = Math.round(r.poidsReel * 10) / 10;
+        r.poidsVol = Math.round(r.poidsVol * 10) / 10;
+        r.poidsTaxable = Math.round(r.poidsTaxable * 10) / 10;
+        var aucunPoids = !r.poidsTaxable && !$.grep(res.regles, function (x) { return x.regle.modele === "PIECE"; }).length;
+        r.transportAuto = d.villeDep && !aucunPoids ? res.parts.transport + res.parts.supplements + res.parts.assurance : 0;
+        r.livraisonAuto = d.livraison === "DOMICILE" && !aucunPoids ? res.parts.livraison : 0;
 
         var auto = d.tarifAuto !== false && d.tarifAuto != null;
         r.transport = auto ? r.transportAuto : U.round(d.transport);

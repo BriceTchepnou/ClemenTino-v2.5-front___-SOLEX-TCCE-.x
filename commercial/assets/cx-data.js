@@ -84,8 +84,14 @@ CX.REF = {
 };
 
 /* =====================================================================
-   Tarification indicative (démo) - à remplacer par le moteur de tarifs
-   réel (route Symfony /commercial/tarif/calcul).
+   Tarification indicative - conservée pour compatibilité.
+   ---------------------------------------------------------------------
+   Le moteur de tarification complet est CX.tarifs (assets/cx-tarifs.js,
+   grilles tarifaires, contrats, groupes de clients). Quand il est chargé
+   dans la page, CX.tarif.transport() et livraison() s'appuient sur la
+   grille STANDARD active ; sinon on garde le calcul indicatif historique
+   (identique aux règles « Urbain · colis » et « National · colis » de la
+   grille standard de démonstration).
    ===================================================================== */
 CX.tarif = {
     /* poids volumétrique : L x l x H (cm) / 5000 */
@@ -94,12 +100,24 @@ CX.tarif = {
 
     /* Transport selon le type de trajet et le poids taxable (kg) */
     transport: function (villeDep, villeDest, poidsTaxable) {
+        if (CX.tarifs && CX.tarifs.transportStandard) {
+            var m = CX.tarifs.transportStandard(villeDep, villeDest, poidsTaxable);
+            if (m != null) return m;
+        }
+        return CX.tarif.transportIndicatif(villeDep, villeDest, poidsTaxable);
+    },
+    /* Calcul historique (sans grille) : urbain 1 500 F + 150 F/kg, national 3 000 F + 250 F/kg, arrondi à 100 F */
+    transportIndicatif: function (villeDep, villeDest, poidsTaxable) {
         var urbain = villeDep && villeDep === villeDest;
         var base = urbain ? 1500 : 3000, parKg = urbain ? 150 : 250;
         var p = Math.max(1, Math.ceil(poidsTaxable || 0));
         return Math.round((base + Math.max(0, p - 1) * parKg) / 100) * 100;
     },
     livraison: function (codeZone) {
+        if (CX.tarifs && CX.tarifs.livraisonStandard) {
+            var m = CX.tarifs.livraisonStandard(codeZone);
+            if (m != null) return m;
+        }
         var z = $.grep(CX.REF.ZONES_LIVRAISON, function (x) { return x.code === codeZone; })[0];
         return z ? z.prix : 0;
     }
@@ -117,7 +135,24 @@ CX.api = (function () {
         if (db) return db;
         try { db = JSON.parse(localStorage.getItem(CX.STORAGE_KEY)); } catch (e) { db = null; }
         if (!db || !db.clients) { db = seed(); persist(); }
+        else if (completer(db)) persist();
         return db;
+    }
+    /* Collections ajoutées après la première version des maquettes : si le
+       navigateur contient déjà des données de démo, on ajoute seulement les
+       collections manquantes (le reste des données saisies est conservé). */
+    var COLLECTIONS_AJOUTEES = ["tarifaires", "groupesClients", "contrats"];
+    function completer(d) {
+        var ajout = null;
+        $.each(COLLECTIONS_AJOUTEES, function (_, k) {
+            if ($.isArray(d[k])) return;
+            ajout = ajout || seedTarifs();
+            d[k] = ajout[k];
+        });
+        if (!ajout) return false;
+        d.seq = d.seq || {};
+        $.each(ajout.seq, function (k, v) { if (!d.seq[k]) d.seq[k] = v; });
+        return true;
     }
     function persist() { localStorage.setItem(CX.STORAGE_KEY, JSON.stringify(db)); }
     function ok(v) { return $.Deferred().resolve(JSON.parse(JSON.stringify(v))).promise(); }   // copie défensive
@@ -127,12 +162,17 @@ CX.api = (function () {
     function nextNumero(coll) {
         var d = load(), year = CX.util.today().substr(0, 4);
         d.seq = d.seq || {};
-        var key = coll + "-" + year;
+        /* séquence annuelle (CLI, COT, FAC, CTR) ou continue (TAR, GRP) */
+        var annuelle = coll !== "tarifaires" && coll !== "groupesClients";
+        var key = annuelle ? coll + "-" + year : coll;
         d.seq[key] = (d.seq[key] || 0) + 1;
         var n = d.seq[key];
         if (coll === "clients") return "CLI-" + ("0000" + n).slice(-4);
         if (coll === "cotations") return "COT-" + year + "-" + ("0000" + n).slice(-4);
         if (coll === "factures") return "FAC-" + year + "-" + ("0000" + n).slice(-4);
+        if (coll === "contrats") return "CTR-" + year + "-" + ("0000" + n).slice(-4);
+        if (coll === "tarifaires") return "TAR-" + ("0000" + n).slice(-4);
+        if (coll === "groupesClients") return "GRP-" + ("000" + n).slice(-3);
         return coll.toUpperCase() + "-" + n;
     }
 
@@ -154,7 +194,7 @@ CX.api = (function () {
             } else {
                 obj.id = list.reduce(function (m, x) { return Math.max(m, x.id); }, 0) + 1;
                 if (!obj.numero) obj.numero = nextNumero(coll);
-                if (coll === "clients" && !obj.code) obj.code = obj.numero;
+                if ((coll === "clients" || coll === "tarifaires" || coll === "groupesClients") && !obj.code) obj.code = obj.numero;
                 obj.dateCreation = obj.dateCreation || CX.util.today();
                 obj.creePar = obj.creePar || CX.CONFIG.USER.nom;
                 list.push(obj);
@@ -192,7 +232,9 @@ CX.api = (function () {
             var c = $.grep(load().clients, function (x) { return x.id == id; })[0];
             return c ? c.raisonSociale : "";
         },
-        clientsSync: function () { return load().clients; }
+        clientsSync: function () { return load().clients; },
+        /* Copie synchrone d'une collection (moteur de tarifs, rendus) */
+        listSync: function (coll) { return JSON.parse(JSON.stringify(load()[coll] || [])); }
     };
 
     /* -----------------------------------------------------------------
@@ -234,7 +276,7 @@ CX.api = (function () {
                 var dep = c.ville;
                 if (dest === dep) dest = dep === "DOUALA" ? "YAOUNDE" : "DOUALA";
                 var poids = ((cid + k) % 7) + 1;
-                var montant = CX.tarif.transport(dep, dest, poids) + ((k % 3 === 0) ? 2500 : 0);
+                var montant = CX.tarif.transportIndicatif(dep, dest, poids) + ((k % 3 === 0) ? 2500 : 0);
                 var nRtMan = carnetSeq[cid] ? String(carnetSeq[cid]++) : null;
                 var depAg = CX.REF.agencesDe(dep)[0], destAg = CX.REF.agencesDe(dest)[0];
                 exps.push({
@@ -306,7 +348,12 @@ CX.api = (function () {
         seq["clients-" + year] = clients.length;
         seq["cotations-" + year] = cotations.length;
         seq["factures-" + year] = fid;
-        return { clients: clients, expeditions: exps, factures: factures, cotations: cotations, seq: seq };
+        var tar = seedTarifs();
+        $.extend(seq, tar.seq);
+        return {
+            clients: clients, expeditions: exps, factures: factures, cotations: cotations,
+            tarifaires: tar.tarifaires, groupesClients: tar.groupesClients, contrats: tar.contrats, seq: seq
+        };
 
         function cli(id, code, rs, sigle, secteur, ville, enCompte, forfait, agenceId, contact, tel, email, delai) {
             return {
@@ -358,5 +405,145 @@ CX.api = (function () {
             }
             return o;
         }
+    }
+
+    /* -----------------------------------------------------------------
+       Données de démonstration de la rubrique « Tarifaires »
+       (grilles, groupes de clients, contrats). Les règles sont décrites
+       dans assets/cx-tarifs.js (modèle de données en tête de fichier).
+       ----------------------------------------------------------------- */
+    function seedTarifs() {
+        var today = CX.util.today(), U = CX.util, year = today.substr(0, 4);
+        function d(n) { return U.addDays(today, n); }
+        function per(o) {
+            return $.extend({ typeTrajet: "", villesDep: [], villesDest: [], bidirectionnel: true, zones: [], typesEnvoi: [], natures: [], poidsMin: "", poidsMax: "" }, o);
+        }
+        function regle(id, libelle, perimetre, modele, params, cumulable) {
+            return { id: id, libelle: libelle, actif: true, cumulable: !!cumulable, perimetre: per(perimetre), modele: modele, params: params };
+        }
+        function grille(o) {
+            return $.extend({
+                description: "", devise: "FCFA", baseId: null, remiseBasePct: 0, heriterSupplements: false,
+                diviseurVol: 5000, minimum: 0, arrondi: 100, arrondiMode: "SUP", tvaIncluse: false, regles: [],
+                supplements: { natures: [], livraison: [], express: { actif: false, mode: "PCT", valeur: 0 }, emballage: { actif: false, mode: "PAR_COLIS", valeur: 0 } },
+                affectation: { clientIds: [], groupeIds: [] }, creePar: "Support KuTiWa", dateCreation: d(-340),
+                historique: [{ date: d(-340) + " 09:00", user: "Support KuTiWa", action: "Grille créée" }]
+            }, o);
+        }
+        var debutAnnee = year + "-01-01";
+
+        var tarifaires = [
+            /* 1. Grille standard nationale : reprend le tarif indicatif historique (urbain / national)
+                  et le complète (plis, Grand Nord, fret, CEMAC, international, assurance). */
+            grille({
+                id: 1, code: "TAR-0001", numero: "TAR-0001", nom: "Grille standard nationale " + year, type: "STANDARD", statut: "ACTIVE",
+                description: "Tarif public du réseau, appliqué à tout client sans contrat ni grille spécifique.",
+                du: debutAnnee, au: "", minimum: 1500, arrondi: 100, arrondiMode: "PROCHE",
+                regles: [
+                    regle("s1", "Urbain · plis et documents", { typeTrajet: "URBAIN", typesEnvoi: ["DOCUMENT"], poidsMax: 2 }, "PIECE",
+                        { prix: 1000, degressif: [{ des: 10, prix: 800 }, { des: 50, prix: 600 }] }),
+                    regle("s2", "Urbain · colis", { typeTrajet: "URBAIN" }, "INCREMENTIEL", { prixBase: 1500, poidsBase: 1, increment: 150, pas: 1 }),
+                    regle("s3", "National · plis et documents", { typeTrajet: "NATIONAL", typesEnvoi: ["DOCUMENT"], poidsMax: 2 }, "TRANCHES",
+                        { tranches: [{ max: 0.5, prix: 2000 }, { max: 1, prix: 2500 }, { max: 2, prix: 3500 }], auDelaParKg: 0, auDelaPas: 1 }),
+                    regle("s4", "National · colis", { typeTrajet: "NATIONAL" }, "INCREMENTIEL", { prixBase: 3000, poidsBase: 1, increment: 250, pas: 1 }),
+                    regle("s5", "Grand Nord (Garoua, Ngaoundéré, Maroua)", {
+                        typeTrajet: "NATIONAL", villesDep: ["DOUALA", "YAOUNDE"], villesDest: ["GAROUA", "NGAOUNDERE", "MAROUA"], typesEnvoi: ["COLIS"]
+                    }, "TRANCHES", {
+                        tranches: [{ max: 1, prix: 4500 }, { max: 5, prix: 7500 }, { max: 10, prix: 11000 }, { max: 20, prix: 17000 }, { max: 30, prix: 23000 }],
+                        auDelaParKg: 600, auDelaPas: 1
+                    }),
+                    regle("s6", "Fret national (messagerie lourde)", { typeTrajet: "NATIONAL", typesEnvoi: ["FRET"] }, "PALIERS", {
+                        paliers: [{ max: 50, prixKg: 300 }, { max: 200, prixKg: 250 }, { max: "", prixKg: 200 }], mode: "CUMULATIF", priseEnCharge: 5000, minimum: 15000
+                    }),
+                    regle("s7", "Régional · zone CEMAC", { typeTrajet: "REGIONAL", zones: ["CEMAC"] }, "AU_KG", { prixKg: 4500, minimum: 15000, pasKg: 0.5 }),
+                    regle("s8", "International", { typeTrajet: "INTERNATIONAL" }, "INCREMENTIEL", { prixBase: 25000, poidsBase: 0.5, increment: 6000, pas: 0.5 }),
+                    regle("s9", "Assurance ad valorem", {}, "AD_VALOREM", { taux: 1, minimum: 1000 }, true)
+                ],
+                supplements: {
+                    natures: [{ nature: "Fragile", mode: "PCT", valeur: 25 }, { nature: "Alimentaire", mode: "PCT", valeur: 15 },
+                        { nature: "Électronique", mode: "PCT", valeur: 10 }, { nature: "Médicament", mode: "FIXE", valeur: 1000 }],
+                    livraison: [{ zone: "Z1", prix: 1500 }, { zone: "Z2", prix: 2500 }, { zone: "Z3", prix: 4000 }],
+                    express: { actif: true, mode: "PCT", valeur: 50 },
+                    emballage: { actif: true, mode: "PAR_COLIS", valeur: 500 }
+                }
+            }),
+            /* 2. Grille de groupe : pharmacies, laboratoires, hôpitaux (base standard - 10 %) */
+            grille({
+                id: 2, code: "TAR-0002", numero: "TAR-0002", nom: "Pharmacies & santé", type: "GROUPE", statut: "ACTIVE",
+                description: "Médicaments au poids par pas de 0,5 kg ; le reste au tarif standard remisé de 10 %.",
+                du: debutAnnee, au: year + "-12-31", baseId: 1, remiseBasePct: 10, heriterSupplements: true,
+                regles: [
+                    regle("p1", "Médicaments · national", { typeTrajet: "NATIONAL", natures: ["Médicament"] }, "INCREMENTIEL",
+                        { prixBase: 2800, poidsBase: 1, increment: 200, pas: 0.5 }),
+                    regle("p2", "Médicaments · urbain", { typeTrajet: "URBAIN", natures: ["Médicament"] }, "AU_KG", { prixKg: 300, minimum: 1200, pasKg: 1 })
+                ],
+                affectation: { clientIds: [], groupeIds: [1] }
+            }),
+            /* 3. Grille propre à PHARMACIE PACIFIC, attachée à son contrat */
+            grille({
+                id: 3, code: "TAR-0003", numero: "TAR-0003", nom: "PHARMACIE PACIFIC - contrat " + year, type: "CLIENT", statut: "ACTIVE",
+                description: "Navette Douala ⇄ Yaoundé au palier atteint, plis urbains à la pièce ; le reste : grille Pharmacies & santé.",
+                du: d(-330), au: d(20), baseId: 2, remiseBasePct: 0, heriterSupplements: true, arrondi: 100, arrondiMode: "SUP",
+                regles: [
+                    regle("c1", "Navette Douala ⇄ Yaoundé", { typeTrajet: "NATIONAL", villesDep: ["DOUALA"], villesDest: ["YAOUNDE"], typesEnvoi: ["COLIS"] }, "PALIERS", {
+                        paliers: [{ max: 5, prixKg: 700 }, { max: 20, prixKg: 500 }, { max: "", prixKg: 400 }], mode: "ATTEINT", priseEnCharge: 0, minimum: 2500
+                    }),
+                    regle("c2", "Plis urbains Douala", { typeTrajet: "URBAIN", villesDep: ["DOUALA"], typesEnvoi: ["DOCUMENT"] }, "PIECE", { prix: 700, degressif: [] })
+                ],
+                affectation: { clientIds: [1], groupeIds: [] }
+            }),
+            /* 4. Banques : plis et documents (base standard pour les colis) */
+            grille({
+                id: 4, code: "TAR-0004", numero: "TAR-0004", nom: "Banques · plis et documents", type: "GROUPE", statut: "ACTIVE",
+                description: "Courrier bancaire : plis à la pièce (dégressif) en urbain, par tranches en national.",
+                du: debutAnnee, au: "", baseId: 1, remiseBasePct: 0, heriterSupplements: true, minimum: 500,
+                regles: [
+                    regle("b1", "Plis urbains", { typeTrajet: "URBAIN", typesEnvoi: ["DOCUMENT"] }, "PIECE",
+                        { prix: 800, degressif: [{ des: 20, prix: 650 }, { des: 100, prix: 500 }] }),
+                    regle("b2", "Plis nationaux", { typeTrajet: "NATIONAL", typesEnvoi: ["DOCUMENT"] }, "TRANCHES",
+                        { tranches: [{ max: 0.5, prix: 1800 }, { max: 1, prix: 2200 }, { max: 2, prix: 3000 }], auDelaParKg: 400, auDelaPas: 1 })
+                ],
+                affectation: { clientIds: [], groupeIds: [2] }
+            }),
+            /* 5. Projet de grille standard de l'année suivante (brouillon, majoration de 5 %) */
+            grille({
+                id: 5, code: "TAR-0005", numero: "TAR-0005", nom: "Grille standard " + (Number(year) + 1) + " (projet)", type: "STANDARD", statut: "BROUILLON",
+                description: "Projet : tarif standard majoré de 5 %, international revu.",
+                du: (Number(year) + 1) + "-01-01", au: "", baseId: 1, remiseBasePct: -5, heriterSupplements: true, minimum: 1500, arrondiMode: "PROCHE",
+                regles: [regle("n1", "International", { typeTrajet: "INTERNATIONAL" }, "INCREMENTIEL", { prixBase: 27000, poidsBase: 0.5, increment: 6500, pas: 0.5 })],
+                dateCreation: d(-10), historique: [{ date: d(-10) + " 15:20", user: "M. NJOYA", action: "Grille créée (brouillon)" }]
+            })
+        ];
+
+        var groupesClients = [
+            { id: 1, code: "GRP-001", numero: "GRP-001", nom: "Pharmacies & laboratoires", description: "Officines, laboratoires d'analyses et hôpitaux du réseau",
+              clientIds: [1, 4, 8], dateCreation: d(-340), creePar: "Support KuTiWa" },
+            { id: 2, code: "GRP-002", numero: "GRP-002", nom: "Banques & assurances", description: "Établissements bancaires et compagnies d'assurance",
+              clientIds: [11], dateCreation: d(-300), creePar: "Support KuTiWa" }
+        ];
+
+        function ctr(id, numero, clientId, objet, sig, du, au, tarifaireId, fichier, cond, statut, extra) {
+            return $.extend({
+                id: id, numero: numero, clientId: clientId, objet: objet, dateSignature: sig, du: du, au: au, tarifaireId: tarifaireId,
+                fichier: fichier, fichierTaille: fichier ? 245760 : 0, conditions: cond, statut: statut,
+                dateCreation: sig, creePar: "Support KuTiWa",
+                historique: [{ date: sig + " 10:30", user: "Support KuTiWa", action: "Contrat enregistré" }]
+            }, extra || {});
+        }
+        var contrats = [
+            ctr(1, "CTR-" + year + "-0001", 1, "Contrat cadre de messagerie " + year, d(-335), d(-330), d(20), 3, "contrat-ppac-" + year + ".pdf",
+                { delaiPaiement: 45, remisePct: 0, plafondCredit: 2000000, notes: "Révision tarifaire possible au renouvellement." }, "ACTIF"),
+            ctr(2, "CTR-" + (Number(year) - 1) + "-0007", 1, "Contrat de messagerie " + (Number(year) - 1), d(-700), d(-695), d(-331), 2, "contrat-ppac-" + (Number(year) - 1) + ".pdf",
+                { delaiPaiement: 30, remisePct: 5, plafondCredit: 1500000, notes: "" }, "ACTIF"),
+            ctr(3, "CTR-" + year + "-0002", 11, "Convention courrier bancaire", d(-120), d(-100), d(265), 4, "convention-afriland.pdf",
+                { delaiPaiement: 30, remisePct: 0, plafondCredit: 3000000, notes: "Ramassage quotidien à 16 h au siège." }, "ACTIF"),
+            ctr(4, "CTR-" + year + "-0003", 6, "Contrat de distribution régionale", d(-200), d(-190), d(175), 1, null,
+                { delaiPaiement: 60, remisePct: 8, plafondCredit: 0, notes: "" }, "RESILIE",
+                { dateResiliation: d(-40), motifResiliation: "Fin de la campagne de distribution" })
+        ];
+
+        var seq = { tarifaires: tarifaires.length, groupesClients: groupesClients.length };
+        seq["contrats-" + year] = 3;
+        return { tarifaires: tarifaires, groupesClients: groupesClients, contrats: contrats, seq: seq };
     }
 })();

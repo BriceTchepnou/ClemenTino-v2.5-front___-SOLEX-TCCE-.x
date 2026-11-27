@@ -33,6 +33,7 @@ $(function () {
     // TODO API : GET /commercial/commerciaux (liste des utilisateurs ayant le rôle commercial)
     var COMMERCIAUX = ["Support KuTiWa", "M. NJOYA Ibrahim", "Mme EBOGO Christelle", "M. TCHAMBA Hervé"];
     var FICHE_MAX_OCTETS = 5 * 1024 * 1024;
+    var GROUPES = CX.api.listSync ? CX.api.listSync("groupesClients") : [];   // groupes de clients (tarification)
 
     var state = {
         client: null,      // client chargé (modification)
@@ -113,6 +114,9 @@ $(function () {
         $("#agenceId").select2({ width: "100%", placeholder: "— Choisir —" });
         $("#commercial").select2({ width: "100%", minimumResultsForSearch: 8 });
         $("#tarifAgences").select2({ width: "100%", placeholder: "Choisir une ou plusieurs agences", closeOnSelect: false });
+        // TODO API : GET /commercial/groupes-clients
+        $("#groupeIds").html($.map(GROUPES, function (g) { return "<option value='" + g.id + "'>" + U.esc(g.nom) + "</option>"; }).join(""))
+            .select2({ width: "100%", placeholder: "Aucun groupe", closeOnSelect: false });
     }
 
     function remplirCommerciaux(actuel) {
@@ -128,7 +132,7 @@ $(function () {
         var o = {};
         $form.find("[name]").each(function () { o[$(this).attr("name")] = ""; });
         return $.extend(o, {
-            typeCompte: "COMPTANT", tarifPortee: "TOUTES", tarifAuto: false, tarifAgences: [],
+            typeCompte: "COMPTANT", tarifPortee: "TOUTES", tarifAuto: false, tarifAgences: [], groupeIds: [],
             periodicite: "MENSUELLE", delaiPaiement: CX.CONFIG.DELAI_PAIEMENT_JOURS, remisePct: 0,
             ville: USER.ville, commercial: USER.nom,
             agenceId: (function () {
@@ -150,6 +154,7 @@ $(function () {
         o.tarifPortee = c.tarifToutesAgences || !(c.tarifAgences || []).length ? "TOUTES" : "CERTAINES";
         o.tarifAgences = $.map(c.tarifAgences || [], function (id) { return String(id); });
         o.agenceId = c.agenceId ? String(c.agenceId) : "";
+        o.groupeIds = $.map($.grep(GROUPES, function (g) { return $.inArray(Number(c.id), $.map(g.clientIds || [], Number)) >= 0; }), function (g) { return String(g.id); });
         if (!c.plafondCredit) o.plafondCredit = "";
         if (!c.montantForfait) o.montantForfait = "";
         $.each(ROLES, function (_, r) {
@@ -338,11 +343,28 @@ $(function () {
         $(".cx-step[data-step='compte']").toggleClass("done", !enCompte ||
             (!!$.trim(raw.emailFacturation) && (type !== "FORFAIT" || U.num(raw.montantForfait) > 0)));
         $(".cx-step[data-step='documents']").toggleClass("done", !!state.fiche);
+        rafraichirGrille();
 
         /* Onglets de contacts renseignés */
         $.each(ROLES, function (_, r) {
             $("#contact-tabs a[data-tab='" + r + "'] .cx-tab-ok").toggleClass("cx-hidden", !$.trim(raw[r + "_nom"] || ""));
         });
+    }
+
+    /* Grille tarifaire qui s'appliquera au client (en tenant compte des groupes cochés) */
+    function rafraichirGrille() {
+        if (!CX.tarifs) return;
+        var T = CX.tarifs, ids = $.map($("#groupeIds").val() || [], Number);
+        /* client pas encore créé : identifiant fictif pour simuler l'appartenance aux groupes cochés */
+        var cid = state.client ? state.client.id : (ids.length ? -1 : null);
+        var r = T.resoudre(cid, U.today(), { groupeIds: ids });
+        var o = T.ORIGINES[r.origine] || { icon: "fa-question", label: "" };
+        $("#bloc-grille").html(r.grille ? "<div class='cx-tarif-chip" + (r.origine === "STANDARD" ? " std" : "") + "'><i class='fa " + o.icon + "'></i><div>" +
+            "Grille appliquée : <a href='tarif-form.html?id=" + r.grille.id + "' target='_blank'>" + U.esc(r.grille.nom) + "</a><small>" + (r.origine === "STANDARD" ? "" : U.esc(o.label) + " · ") + U.esc(r.libelle) +
+            (state.client ? " · <a href='client-fiche.html?id=" + state.client.id + "#tarif'>contrat et historique</a>" : "") + "</small></div></div>" +
+            (state.client && r.origine !== "CONTRAT" ? "<p class='cx-help' style='margin:-4px 0 10px'><a href='contrat-form.html?client=" + state.client.id + "'><i class='fa fa-file-text-o'></i> Enregistrer le contrat du client</a> · " +
+                "<a href='tarif-form.html?type=CLIENT&client=" + state.client.id + "'><i class='fa fa-table'></i> Créer une grille propre</a></p>" : "")
+            : "<div class='cx-note cx-note-warn'><i class='fa fa-exclamation-triangle'></i><div>Aucune grille applicable.</div></div>");
     }
 
     function verifierDoublon() {
@@ -448,6 +470,19 @@ $(function () {
         suite.done(function () { envoyer(raw, puisNouveau); });
     }
 
+    /* Appartenance du client aux groupes de clients (tarification de groupe) */
+    function majGroupes(clientId, groupeIds) {
+        var voulu = $.map(groupeIds || [], Number), appels = [];
+        $.each(GROUPES, function (_, g) {
+            var ids = $.map(g.clientIds || [], Number), dedans = $.inArray(Number(clientId), ids) >= 0, doit = $.inArray(g.id, voulu) >= 0;
+            if (dedans === doit) return;
+            g.clientIds = doit ? ids.concat([Number(clientId)]) : $.grep(ids, function (id) { return id !== Number(clientId); });
+            // TODO API : PUT /commercial/clients/{id}/groupes  { groupeIds }  (une seule requête côté serveur)
+            appels.push(CX.api.patchMany("groupesClients", [g.id], { clientIds: g.clientIds }));
+        });
+        return $.when.apply($, appels);
+    }
+
     function envoyer(raw, puisNouveau) {
         var creation = !state.client, avant = state.client;
         var c = depuisFormulaire(raw);
@@ -466,6 +501,8 @@ $(function () {
             if (typeDe(avant) !== typeDe(saved)) action += " · type de compte : " + LIB_TYPE[typeDe(avant)] + " → " + LIB_TYPE[typeDe(saved)];
             // TODO API : historique écrit côté serveur lors du PUT
             return CX.api.log("clients", saved.id, action);
+        }).then(function (saved) {
+            return majGroupes(saved.id, raw.groupeIds).then(function () { return saved; });
         }).done(function (saved) {
             state.dirty = false;
             var msg = creation ? "Compte client <b>" + U.esc(saved.raisonSociale) + "</b> créé (" + U.esc(saved.code) + ")."

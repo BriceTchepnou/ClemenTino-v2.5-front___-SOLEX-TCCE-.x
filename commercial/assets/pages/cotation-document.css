@@ -15,7 +15,7 @@
     font-size: 12px; line-height: 1.45; position: relative; overflow: hidden;
     display: flex; flex-direction: column;
 }
-@media (max-width: 860px) { .cd-sheet { width: auto; min-height: 0; padding: 18px; } }
+@media screen and (max-width: 860px) { .cd-sheet { width: auto; min-height: 0; padding: 18px; } }
 
 /* En-tête société */
 .cd-head { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 12px; border-bottom: 3px solid var(--cx-navy); }
@@ -95,13 +95,35 @@
 }
 .cd-filigrane.grey { color: rgba(15, 23, 42, .06); }
 
+/* Logo image (CX.CONFIG.SOCIETE.logo) */
+.cd-logo-mark.cd-logo-img { background: transparent; border-radius: 0; width: 52px; height: 52px; }
+.cd-logo-mark.cd-logo-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+/* Export PDF direct (CX.pdf) : feuille clonée hors écran à 794 px = A4 */
+.cd-sheet.cx-pdf-mode {
+    width: 794px !important; max-width: none !important; min-height: 0 !important; margin: 0 !important;
+    padding: 0 12mm !important; box-shadow: none !important; border-radius: 0 !important; display: block !important;
+}
+.cd-sheet.cx-pdf-mode .cd-pied { margin-top: 14px; }
+.cd-sheet.cx-pdf-mode .cd-filigrane { top: 380px; }
+/* même compacité qu'à l'impression : un devis d'expédition tient sur une page */
+.cd-sheet.cx-pdf-mode .cd-titre-row { margin: 10px 0 8px; }
+.cd-sheet.cx-pdf-mode .cd-blocs { margin-bottom: 8px; gap: 8px; }
+.cd-sheet.cx-pdf-mode .cd-section { margin: 8px 0 4px; }
+.cd-sheet.cx-pdf-mode .cd-conditions { margin-top: 10px; font-size: 10.5px; }
+.cd-sheet.cx-pdf-mode .cd-signatures { margin-top: 10px; }
+.cd-sheet.cx-pdf-mode .cd-sign { min-height: 26mm; }
+
 /* ---------------------------------------------------------------------
    Impression
    --------------------------------------------------------------------- */
 @media print {
-    body.cx-app { padding: 0; background: #fff; }
-    .cx-main { padding: 0; margin: 0; max-width: none; }
-    .cd-sheet { width: auto; min-height: 262mm; margin: 0; padding: 0; box-shadow: none; border-radius: 0; font-size: 11px; }
+    /* jamais plus large que la zone imprimable (évite le rognage gauche/droite) */
+    html, body.cx-app { padding: 0 !important; margin: 0 !important; background: #fff; width: auto !important; min-width: 0 !important; }
+    .cx-main { padding: 0 !important; margin: 0 !important; max-width: none !important; width: auto !important; }
+    .cd-sheet { width: 100% !important; max-width: 100% !important; min-height: 262mm; margin: 0; padding: 0; box-shadow: none; border-radius: 0; font-size: 11px; box-sizing: border-box; }
+    .cd-sheet * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .cd-sheet .cd-logo-mark.cd-logo-img { background: transparent !important; }
 
     /* Bootstrap 3 impose en impression « * { color:#000 !important; background:transparent !important } » :
        on rétablit les couleurs utiles du devis (sélecteurs plus spécifiques + !important). */
