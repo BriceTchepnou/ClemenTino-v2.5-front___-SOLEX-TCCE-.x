@@ -202,7 +202,7 @@ CX.api = (function () {
     function load() {
         if (db) return db;
         try { db = JSON.parse(localStorage.getItem(CX.STORAGE_KEY)); } catch (e) { db = null; }
-        if (!db || !db.clients) { db = seed(); persist(); }
+        if (!db || !db.clients) { db = seed(); completer(db); persist(); }
         else if (completer(db)) persist();
         return db;
     }
@@ -232,7 +232,57 @@ CX.api = (function () {
                (uniquement les champs absents : les saisies du navigateur sont conservées) */
             if (d.apporteurs === app.apporteurs) complementsClientsDemo(d.clients || []);
         }
-        return !!(ajout || app);
+        var semaine = false;
+        if (!d.demoSemaine && $.isArray(d.factures) && $.isArray(d.expeditions)) { complementSemaine(d); d.demoSemaine = 1; semaine = true; }
+        return !!(ajout || app || semaine);
+    }
+    /* Jeu de données « semaine » (J-7 à J+4) : factures brouillon / annulée /
+       émise cette semaine et cotations récentes, pour remplir tous les onglets. */
+    function complementSemaine(d) {
+        var U = CX.util, t = U.today(), y = t.substr(0, 4);
+        d.seq = d.seq || {};
+        function num(coll, pre) { var k = coll + "-" + y; d.seq[k] = (d.seq[k] || 0) + 1; return pre + "-" + y + "-" + ("0000" + d.seq[k]).slice(-4); }
+        function nid(coll) { return (d[coll] || []).reduce(function (m, x) { return Math.max(m, x.id); }, 0) + 1; }
+        $.each([
+            { cid: 8, j: -1, statut: "BROUILLON" }, { cid: 4, j: 0, statut: "BROUILLON" },
+            { cid: 11, j: -3, statut: "EMISE" }, { cid: 1, j: -5, statut: "ANNULEE" }
+        ], function (_, p) {
+            var lignes = $.grep(d.expeditions, function (e) { return e.clientId === p.cid && !e.factureId && e.statut === "LIVREE" && e.preuveLivraison && e.montant > 0; }).slice(0, 5);
+            if (!lignes.length) return;
+            var id = nid("factures"), ht = 0, dateEm = U.addDays(t, p.j), du = lignes[0].dateExp, au = lignes[0].dateExp;
+            $.each(lignes, function (_, e) { ht += e.montant; if (e.dateExp < du) du = e.dateExp; if (e.dateExp > au) au = e.dateExp; if (p.statut !== "ANNULEE") e.factureId = id; });
+            var tx = U.taxes(ht), c = $.grep(d.clients, function (x) { return x.id === p.cid; })[0] || {};
+            var f = {
+                id: id, numero: num("factures", "FAC"), clientId: p.cid, dateEmission: dateEm, dateEcheance: U.addDays(dateEm, c.delaiPaiement || 30),
+                periodeDu: du, periodeAu: au, expeditionIds: $.map(lignes, function (e) { return e.id; }),
+                montantHT: tx.ht, remisePct: 0, remise: 0, tauxTva: tx.taux, tva: tx.tva, montantTTC: tx.ttc,
+                statut: p.statut, paiements: [], notes: "", creePar: "Support KuTiWa", dateCreation: dateEm,
+                historique: [{ date: dateEm + " 10:15", user: "Support KuTiWa", action: p.statut === "BROUILLON" ? "Brouillon de facture enregistré" : "Facture émise" }]
+            };
+            if (p.statut === "ANNULEE") {
+                f.dateAnnulation = U.addDays(dateEm, 1);
+                f.historique.unshift({ date: f.dateAnnulation + " 09:05", user: "Support KuTiWa", action: "Facture annulée - erreur de période, expéditions libérées" });
+            }
+            d.factures.push(f);
+        });
+        if ($.isArray(d.cotations) && d.clients.length >= 10) {
+            $.each([
+                { cid: 10, j: -2, statut: "SOUMISE", nom: "Livraison palettes Bafoussam", mt: 185000 },
+                { cid: 6, j: 0, statut: "ENREGISTREE", nom: "Plis urgents Yaoundé - décembre", mt: 36000 }
+            ], function (_, p) {
+                var c = d.clients[p.cid - 1], dt = U.addDays(t, p.j);
+                d.cotations.push({
+                    id: nid("cotations"), numero: num("cotations", "COT"), type: "EXPEDITION", nom: p.nom, description: p.nom, clientId: p.cid,
+                    statut: p.statut, dateCreation: dt, dateSoumission: p.statut === "ENREGISTREE" ? null : dt, dateValidite: U.addDays(t, 4),
+                    creePar: "M. NJOYA", montantHT: p.mt, montantTTC: U.taxes(p.mt).ttc, motifRejet: "",
+                    details: { villeDep: "DOUALA", bureauDep: "AKWA", villeDest: p.cid === 10 ? "BAFOUSSAM" : "YAOUNDE", bureauDest: p.cid === 10 ? "CENTRE" : "CENTRALE",
+                        livraison: "BUREAU", colis: [{ nature: "Colis", poids: p.cid === 10 ? 120 : 2, L: 40, l: 30, H: 25, nombre: p.cid === 10 ? 4 : 6, valeur: 50000, description: p.nom }],
+                        transport: p.mt, emballage: 0, livraisonMt: 0, autres: 0,
+                        expediteur: { nom: c.raisonSociale, tel: c.contacts[0].tel1 }, destinataire: { nom: "Agence " + (c.sigle || ""), tel: "" } },
+                    historique: [{ date: dt + " 11:00", user: "M. NJOYA", action: "Cotation enregistrée" }]
+                });
+            });
+        }
     }
     function persist() { localStorage.setItem(CX.STORAGE_KEY, JSON.stringify(db)); }
     function ok(v) { return $.Deferred().resolve(JSON.parse(JSON.stringify(v))).promise(); }   // copie défensive

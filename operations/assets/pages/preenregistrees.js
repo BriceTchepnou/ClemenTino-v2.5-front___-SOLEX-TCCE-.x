@@ -13,7 +13,8 @@ $(function () {
     var tous = [], onglet = "EN_ATTENTE";
 
     O.selecteurAgence("#ox-agence-slot");
-    $("#f-du").val(U.addDays(today, -15)); $("#f-au").val(today);
+    /* jusqu'à J+7 : les dépôts annoncés par les clients pour les jours à venir sont visibles */
+    $("#f-du").val(U.addDays(today, -15)); $("#f-au").val(U.addDays(today, 7));
     L.remplirFiltres([], { par: null });
     $("#f-ville").val(O.agenceCourante().ville).trigger("change");
 

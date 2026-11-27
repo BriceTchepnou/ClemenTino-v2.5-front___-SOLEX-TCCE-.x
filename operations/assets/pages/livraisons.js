@@ -10,7 +10,15 @@
    ===================================================================== */
 $(function () {
     var U = CX.util, O = CX.ops, G = CX.guichet, A = O.agenceCourante(), S = CX.CONFIG.SOCIETE;
-    var tous = [], f = null, tournees = [], livreurs = [], onglet = "tournees";
+    var tous = [], f = null, tournees = [], livreurs = [], plannings = {}, onglet = "tournees";
+    /* Rattachement : tournée planifiée ou fiche express */
+    function rattachement(t, court) {
+        var p = t.planningId ? plannings[t.planningId] : null;
+        if (p) return "<a class='cx-badge cx-badge-blue cx-no-dot' href='tournees.html?date=" + p.date + "#p" + p.id + "' title='Tournée planifiée " + U.esc(p.heureDebut + "–" + p.heureFin) + "'><i class='fa fa-calendar-check-o'></i> " +
+            (court ? "" : "Tournée ") + U.esc(p.numero) + " · " + U.esc(O.zoneLib(p.zone, true)) + "</a>";
+        if (t.type === "EXPRESS") return "<span class='cx-badge cx-badge-purple cx-no-dot'><i class='fa fa-bolt'></i> Express" + (t.zone ? " · " + U.esc(O.zoneLib(t.zone, true)) : "") + "</span>";
+        return "<span class='cx-muted'>—</span>";
+    }
     var STATUT_LIVREUR = { ACTIF: { label: "Actif", color: "green" }, CONGE: { label: "En congé", color: "orange" }, INACTIF: { label: "Inactif", color: "grey" } };
 
     O.selecteurAgence("#ox-agence-slot");
@@ -41,6 +49,7 @@ $(function () {
             var c = compteTournee(t), vieille = t.date < U.today();
             return "<div class='ox-bcard' data-t='" + t.id + "'><div class='ox-bcard-top'><span class='ox-bcard-num'>" + U.esc(t.numero) + "</span>" + O.badge(O.STATUT_TOURNEE, t.statut) + "</div>" +
                 "<div class='ox-bcard-route'><i class='fa fa-motorcycle cx-muted'></i> " + U.esc(t.livreurNom) + (t.matricule ? " <span class='cx-tag cx-mono'>" + U.esc(t.matricule) + "</span>" : "") + "</div>" +
+                "<div>" + rattachement(t) + "</div>" +
                 "<div class='ox-bcard-meta'><span><i class='fa fa-calendar'></i> " + U.toFr(t.date) + " " + U.esc(t.heure || "") + "</span><span><i class='fa fa-cube'></i> " + O.pl(t.expeditionIds.length, "expédition") + "</span>" +
                 (c.agence ? "<span><i class='fa fa-undo'></i> " + c.agence + " en agence</span>" : "") + (c.livre ? "<span style='color:var(--cx-green)'><i class='fa fa-check'></i> " + c.livre + " livré" + (c.livre > 1 ? "s" : "") + "</span>" : "") + "</div>" +
                 (vieille ? "<div class='cx-note cx-note-warn' style='margin:0'><i class='fa fa-clock-o'></i><div>Fiche du " + U.toFr(t.date) + " non clôturée : coursier pas encore revenu ?</div></div>" : "") +
@@ -55,6 +64,7 @@ $(function () {
             { key: "numero", title: "N° fiche", render: function (t) { return "<span class='cx-mono cx-strong'>" + U.esc(t.numero) + "</span>"; } },
             { key: "date", title: "Date", render: function (t) { return U.toFr(t.date); } },
             { key: "livreurNom", title: "Livreur", render: function (t) { return U.esc(t.livreurNom) + (t.matricule ? "<div class='cx-cell-sub cx-mono'>" + U.esc(t.matricule) + "</div>" : ""); } },
+            { key: "planningId", title: "Tournée", sortValue: function (t) { return t.planningId ? (plannings[t.planningId] || {}).numero || "" : "~" + (t.type || ""); }, render: function (t) { return rattachement(t, true); } },
             { key: "nb", title: "Colis", className: "num", sortValue: function (t) { return t.expeditionIds.length; }, render: function (t) { return t.expeditionIds.length; } },
             { key: "res", title: "Résultat", sortable: false, render: function (t) { var c = compteTournee(t); return "<span class='cx-badge cx-badge-green cx-no-dot'>" + c.livre + " livré(s)</span> " + (c.echec ? "<span class='cx-badge cx-badge-red cx-no-dot'>" + c.echec + " échec(s)</span> " : "") + (c.agence ? "<span class='cx-badge cx-badge-blue cx-no-dot'>" + c.agence + " en agence</span>" : ""); } },
             { key: "dateCloture", title: "Clôturée le", render: function (t) { return U.esc(U.toFr(t.dateCloture || "")); } },
@@ -67,7 +77,7 @@ $(function () {
         var lignes = $.map(t.expeditionIds, function (id) { return parId(id) || null; });
         return "<div class='ox-sheet' id='feuille-sheet'><div class='ox-sh-head'><div class='ox-sh-soc'><b>" + U.esc(S.nom) + "</b><span>" + U.esc(O.agenceLib(t.agenceId)) + " · " + U.esc(S.tel || "") + "</span></div>" +
             "<div class='ox-sh-titre'><h1>FICHE DE LIVRAISON</h1><div class='ox-sh-num'>" + U.esc(t.numero) + "</div><div style='font-size:10px'>" + U.esc(U.toFrLong(t.date)) + " · départ " + U.esc(t.heure || "") + "</div></div></div>" +
-            "<div class='ox-sh-infos'><div><small>Livreur</small><b>" + U.esc(t.livreurNom) + "</b></div><div><small>Véhicule</small><b>" + U.esc((t.vehicule || "") + (t.matricule ? " " + t.matricule : "") || "—") + "</b></div>" +
+            "<div class='ox-sh-infos ox-sh-5'><div><small>Livreur</small><b>" + U.esc(t.livreurNom) + "</b></div><div><small>Tournée</small><b>" + U.esc(t.planningId && plannings[t.planningId] ? plannings[t.planningId].numero + " · " + O.zoneLib(plannings[t.planningId].zone, true) : t.type === "EXPRESS" ? "Express" : "—") + "</b></div><div><small>Véhicule</small><b>" + U.esc((t.vehicule || "") + (t.matricule ? " " + t.matricule : "") || "—") + "</b></div>" +
             "<div><small>Colis</small><b>" + lignes.length + "</b></div><div><small>Statut</small><b>" + U.esc(O.STATUT_TOURNEE[t.statut].label) + "</b></div></div>" +
             "<table class='ox-sh-table'><thead><tr><th>#</th><th>RT n° / réf.</th><th>Destinataire / téléphone</th><th>Quartier · repère</th><th>Colis</th><th>À encaisser</th><th>Heure</th><th>Nom et signature du receveur</th></tr></thead><tbody>" +
             $.map(lignes, function (e, i) {
@@ -226,8 +236,9 @@ $(function () {
     }
     function charger() {
         // TODO API : GET /exploitation/tournees?agence={id}  et  GET /exploitation/livreurs?ville=
-        return $.when(O.charger(), CX.api.list("tournees"), CX.api.list("livreurs")).done(function (r1, t, l) {
+        return $.when(O.charger(), CX.api.list("tournees"), CX.api.list("livreurs"), CX.api.list("plannings")).done(function (r1, t, l, pl) {
             tous = r1[0]; f = O.files(r1[0], r1[1]);
+            plannings = {}; $.each(pl, function (_, p) { plannings[p.id] = p; });
             tournees = $.grep(t, function (x) { return O.estMoi(x.agenceId); });
             livreurs = l;
             var la = livreursAgence(false);

@@ -20,6 +20,14 @@ $(function () {
     O.selecteurAgence("#ox-agence-slot");
     if (U.queryParam("anciennete")) $("#f-age").val(U.queryParam("anciennete"));
     var filtreAvis = U.queryParam("avis");
+    /* Arrivée depuis le planning (« Affecter des colis ») : la tournée sera proposée dans la fiche de livraison */
+    (function () {
+        var tid = U.queryParam("tournee"), p = tid ? $.grep(CX.api.listSync("plannings"), function (x) { return String(x.id) === String(tid); })[0] : null;
+        if (!p) return;
+        $(".ox-scan").after("<div class='cx-note cx-note-info'><i class='fa fa-calendar-check-o'></i><div>Affectation à la tournée <b class='cx-mono'>" + U.esc(p.numero) + "</b> · " +
+            U.esc(p.heureDebut + "–" + p.heureFin) + " · " + U.esc(O.zoneLib(p.zone)) + " · " + U.esc(p.livreurNom || "livreur à désigner") +
+            " : cochez les colis à confier puis cliquez « Remettre au coursier ». <a href='tournees.html?date=" + p.date + "#p" + p.id + "'>Retour au planning</a></div></div>");
+    })();
 
     function parId(id) { return $.grep(tous, function (e) { return String(e.id) === String(id); })[0]; }
     function age(e) { return O.ageInstance(e); }

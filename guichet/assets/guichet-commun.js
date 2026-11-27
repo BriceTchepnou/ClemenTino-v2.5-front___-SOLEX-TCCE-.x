@@ -308,14 +308,35 @@ CX.guichet = (function () {
         SOURCES: SOURCES_PREENREG, STATUTS: STATUTS_PREENREG, VALIDITE_J: PREENREG_VALIDITE_J,
         /* Jeu de démonstration (une seule fois, sans effacer les saisies du navigateur) */
         assurer: function () {
-            var deja = $.grep(CX.api.listSync("meta"), function (x) { return x.cle === "demoPreenregistrements"; }).length > 0;
-            if (deja) return;
-            var t = U.today();
+            var meta = CX.api.listSync("meta"), t = U.today();
             function p(code, age, ag, o) {
                 var a = CX.REF.agence(ag);
-                CX.api.save("preenregistrements", $.extend({ code: code, numero: code, dateExp: U.addDays(t, -age), dateCreation: U.addDays(t, -age),
+                CX.api.save("preenregistrements", $.extend({ code: code, numero: code, dateExp: U.addDays(t, -age), dateCreation: U.addDays(t, -Math.max(0, age)),
                     ville: a.ville, agenceId: a.id, agence: a.nom, statut: "EN_ATTENTE", clientId: null, livraison: "BUREAU", quartier: "", zone: "", repere: "" }, o));
             }
+            /* Compléments « semaine » : validés, annulés, dépôts annoncés pour les jours à venir */
+            if (!$.grep(meta, function (x) { return x.cle === "demoPreenregistrements2"; }).length) {
+                var rt = $.grep(CX.api.listSync("expeditions"), function (e) { return e.dateExp === U.addDays(t, -1) && e.typeClient === "PARTICULIER"; })[0];
+                p("PRE-0047", 2, 1, { source: "WHATSAPP", service: "NATIONALE", villeDest: "YAOUNDE", bureauDest: "BASTOS", statut: "VALIDE",
+                    expeditionId: rt ? rt.id : null, nRt: rt ? rt.nRt : "", dateValidation: U.addDays(t, -1) + " 09:40", validePar: "M. NJOYA",
+                    exp: { nom: "Nadège Fotso", tel: "699552211" }, dst: { nom: "Luc Atangana", tel: "677118899" },
+                    colis: [{ nature: "Colis", poids: 6, nombre: 1, valeur: 40000, description: "Pagnes et sacs" }] });
+                p("PRE-0048", 3, 1, { source: "WEB", service: "NATIONALE", villeDest: "LIMBE", bureauDest: "CENTRE", statut: "ANNULE",
+                    annulation: { date: U.addDays(t, -2) + " 15:10", user: "M. NJOYA", motif: "Doublon de saisie du client" },
+                    exp: { nom: "Samuel Djoko", tel: "690778844" }, dst: { nom: "Rose Ewane", tel: "655440022" },
+                    colis: [{ nature: "Document", poids: 0.5, nombre: 1, valeur: 0, description: "Dossier de candidature" }] });
+                p("PRE-0049", -1, 1, { source: "COMPTE", clientId: 4, service: "NATIONALE", villeDest: "GAROUA", bureauDest: "CENTRE",
+                    exp: { nom: "LABORATOIRE CARINE MONGOUE", tel: "655010203" }, dst: { nom: "Clinique du Plateau", tel: "699301122" },
+                    colis: [{ nature: "Médicament", poids: 12, nombre: 3, valeur: 300000, description: "Réactifs de laboratoire (dépôt annoncé)" }] });
+                p("PRE-0050", -2, 1, { source: "WEB", service: "URBAINE", villeDest: "DOUALA", bureauDest: "AKWA", livraison: "DOMICILE", quartier: "Makepe", zone: "Z2", repere: "Rue des écoles",
+                    exp: { nom: "Christian Talla", tel: "677901234" }, dst: { nom: "Sandrine Mbarga", tel: "690456789" },
+                    colis: [{ nature: "Électronique", poids: 3, nombre: 1, valeur: 180000, description: "Ordinateur portable" }] });
+                p("PRE-0051", -4, 1, { source: "WHATSAPP", service: "NATIONALE", villeDest: "BAFOUSSAM", bureauDest: "CENTRE",
+                    exp: { nom: "Joëlle Kamga", tel: "699887711" }, dst: { nom: "Hervé Nana", tel: "677665544" },
+                    colis: [{ nature: "Alimentaire", poids: 15, nombre: 2, valeur: 30000, description: "Vivres (dépôt prévu)" }] });
+                CX.api.save("meta", { cle: "demoPreenregistrements2", version: 1, date: U.now(), numero: "META-PRE-2" });
+            }
+            if ($.grep(meta, function (x) { return x.cle === "demoPreenregistrements"; }).length) return;
             p("PRE-0042", 0, 1, { source: "WEB", service: "NATIONALE", villeDest: "YAOUNDE", bureauDest: "CENTRALE", livraison: "DOMICILE", quartier: "Bastos", zone: "Z1", repere: "Face à la boulangerie du carrefour",
                 exp: { nom: "Mireille Ngassa", tel: "699001122" }, dst: { nom: "Paul Etoundi", tel: "677003344" },
                 colis: [{ nature: "Colis", poids: 4, L: 40, l: 30, H: 25, nombre: 1, valeur: 25000, description: "Vêtements et chaussures" }] });

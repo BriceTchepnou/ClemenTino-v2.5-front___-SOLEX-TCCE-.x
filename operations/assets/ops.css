@@ -223,6 +223,7 @@ body.ox-vue-client .ox-interne { display: none !important; }
 .ox-sh-titre .ox-sh-num { font-family: Consolas, "Courier New", monospace; font-size: 14px; font-weight: 700; margin-top: 2px; }
 .ox-sh-qr svg { width: 74px; height: 74px; }
 .ox-sh-infos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0; }
+.ox-sh-infos.ox-sh-5 { grid-template-columns: repeat(5, 1fr); }
 .ox-sh-infos div { border: 1px solid #dfe4ec; border-radius: 6px; padding: 6px 8px; }
 .ox-sh-infos small { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: .5px; color: #6b7280; font-weight: 700; }
 .ox-sh-infos b { font-size: 11.5px; }
@@ -261,3 +262,54 @@ tr.ox-suspendu td { background: #f5f5f5; color: #8a8f99; }
 .ox-lignes-be .form-control { height: 32px; padding: 4px 6px; font-size: 12px; min-width: 90px; }
 .ox-lignes-be .ox-dt { display: flex; gap: 4px; }
 .ox-lignes-be .ox-dt input[type=time] { min-width: 80px; width: 84px; }
+
+/* =====================================================================
+   Tournées de livraison (planning des coursiers par zone)
+   ===================================================================== */
+.ox-week-nav { display: flex; align-items: center; gap: 6px; height: 36px; }
+.ox-week-nav b { margin-left: 6px; font-size: 13px; color: var(--cx-ink); white-space: nowrap; }
+.ox-legende { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; margin-bottom: 10px; align-items: center; }
+.ox-legende span { display: inline-flex; align-items: center; gap: 6px; }
+.ox-dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #9ca3af; }
+.ox-dot-blue { background: var(--cx-navy-2); } .ox-dot-purple { background: var(--cx-purple); } .ox-dot-orange { background: var(--cx-orange); }
+.ox-planning-wrap { overflow-x: auto; border: 1px solid var(--cx-line); border-radius: var(--cx-radius-sm); }
+.ox-planning { width: 100%; min-width: 980px; border-collapse: collapse; table-layout: fixed; }
+.ox-planning th, .ox-planning td { border-bottom: 1px solid var(--cx-line); border-right: 1px solid var(--cx-line); padding: 6px; vertical-align: top; }
+.ox-planning thead th { background: var(--cx-soft); font-size: 12px; font-weight: 700; color: var(--cx-text); text-align: left; white-space: nowrap; }
+.ox-planning tr:last-child > * { border-bottom: 0; }
+.ox-planning tr > *:last-child { border-right: 0; }
+.ox-planning .ox-pl-liv { width: 170px; background: #fff; }
+.ox-planning tbody .ox-pl-liv b { display: block; font-size: 13px; color: var(--cx-ink); }
+.ox-planning tbody .ox-pl-liv small { color: var(--cx-muted); font-weight: 400; font-size: 11.5px; }
+.ox-planning .ox-pl-today { background: #f3f7ff; }
+.ox-planning thead .ox-pl-today { background: var(--cx-blue-soft); color: var(--cx-navy-2); }
+.ox-planning .ox-pl-past { background: #fafbfc; }
+.ox-planning .ox-pl-off { background: repeating-linear-gradient(45deg, #fafbfc, #fafbfc 6px, #f2f4f8 6px, #f2f4f8 12px); }
+.ox-planning td { height: 74px; position: relative; }
+.ox-pl-add { display: block; width: 100%; border: 1px dashed transparent; background: none; color: transparent; border-radius: 6px; padding: 2px 0; font-size: 11px; }
+.ox-planning td:hover .ox-pl-add { border-color: var(--cx-line); color: var(--cx-muted); }
+.ox-pl-add:hover, .ox-pl-add:focus { border-color: var(--cx-navy-2) !important; color: var(--cx-navy-2) !important; outline: 0; }
+.ox-tour { display: flex; flex-direction: column; gap: 2px; width: 100%; text-align: left; border: 1px solid var(--cx-line); border-left: 4px solid #9ca3af; border-radius: 6px;
+    background: #fff; padding: 5px 7px; margin-bottom: 5px; font-size: 11.5px; line-height: 1.3; box-shadow: var(--cx-shadow); cursor: pointer; }
+.ox-tour:hover { box-shadow: 0 0 0 2px rgba(29,79,163,.18); }
+.ox-tour-blue { border-left-color: var(--cx-navy-2); } .ox-tour-purple { border-left-color: var(--cx-purple); } .ox-tour-orange { border-left-color: var(--cx-orange); }
+.ox-tour-h { font-weight: 700; color: var(--cx-ink); }
+.ox-tour-z { color: var(--cx-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ox-tour-f { display: flex; align-items: center; gap: 6px; }
+.ox-tour-f small { color: var(--cx-muted); }
+.ox-tour-f .fa { margin-left: auto; color: var(--cx-muted); }
+.ox-tour-en_cours { background: var(--cx-orange-soft); } .ox-tour-en_cours .ox-tour-f .fa { color: var(--cx-orange); }
+.ox-tour-terminee { opacity: .78; } .ox-tour-terminee .ox-tour-f .fa { color: var(--cx-green); }
+.ox-tour-annulee { opacity: .55; text-decoration: line-through; }
+.ox-tour-non_realisee { opacity: .6; border-style: dashed; }
+.ox-tour-bar { flex: 1 1 auto; height: 5px; border-radius: 3px; background: #e9edf4; overflow: hidden; min-width: 30px; }
+.ox-tour-bar i { display: block; height: 100%; background: var(--cx-green); border-radius: 3px; }
+.ox-tour-cap { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--cx-muted); }
+.ox-bcard-tour { border-left-width: 4px; }
+.ox-tour-bord-blue { border-left-color: var(--cx-navy-2); } .ox-tour-bord-purple { border-left-color: var(--cx-purple); } .ox-tour-bord-orange { border-left-color: var(--cx-orange); }
+.ox-info { margin-bottom: 12px; }
+.ox-info small { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--cx-muted); margin-bottom: 2px; }
+.ox-info b { font-weight: 600; color: var(--cx-ink); }
+.ox-h5 { font-size: 13px; font-weight: 700; color: var(--cx-ink); margin: 16px 0 8px; }
+.ox-histo { list-style: none; padding: 0; margin: 0; font-size: 12.5px; }
+.ox-histo li { padding: 4px 0; border-bottom: 1px dashed var(--cx-line); }

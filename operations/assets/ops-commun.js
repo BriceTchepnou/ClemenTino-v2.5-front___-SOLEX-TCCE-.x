@@ -26,9 +26,16 @@
                    chauffeur { nom, tel }, scelle, expeditionIds[], statut PREPARE | PARTI |
                    ARRIVE | CLOTURE, dateDepart, dateArrivee, recus[], ecarts[], observations,
                    historique[] }
-     tournees    { numero TRN-AAMMJJ-NN, date, agenceId, ville, agence, livreurId, livreurNom,
+     tournees    (= FICHES DE LIVRAISON remises au coursier)
+                 { numero TRN-AAMMJJ-NN, date, agenceId, ville, agence, livreurId, livreurNom,
+                   type TOURNEE | EXPRESS, planningId (tournée planifiée), zone,
                    expeditionIds[], statut EN_COURS | CLOTUREE, resultats { idExp: {...} },
                    dateCloture, historique[] }
+     plannings   (= TOURNÉES PLANIFIÉES : disponibilités des coursiers par zone)
+                 { numero TOU-AAMMJJ-NN, date, heureDebut, heureFin, agenceId, ville, agence,
+                   zone Z1 | Z2 | Z3, quartiers[], livreurId, livreurNom, vehicule, capacite,
+                   statut PLANIFIEE | ANNULEE (statut affiché : statutPlanning()),
+                   ficheIds[], observations, historique[] }
    Champs ajoutés à une expédition : etape, suivi[] (cx-demo-exploitation.js),
    positionAgenceId (agence où se trouve physiquement le colis), bordereau,
    bordereauId, tourneeId, livreurId, avis[], remise {…}, reorientations[],
@@ -83,6 +90,29 @@ CX.ops = (function () {
         EN_COURS: { label: "En cours", color: "orange" },
         CLOTUREE: { label: "Clôturée", color: "green" }
     };
+    /* Tournée planifiée : statut affiché, déduit des fiches de livraison rattachées */
+    var STATUT_PLANNING = {
+        PLANIFIEE: { label: "Planifiée", color: "blue" },
+        EN_COURS: { label: "En cours", color: "orange" },
+        TERMINEE: { label: "Réalisée", color: "green" },
+        NON_REALISEE: { label: "Non réalisée", color: "grey" },
+        ANNULEE: { label: "Annulée", color: "red" }
+    };
+    /* fiches : objet { id: fiche } ou tableau de fiches de livraison */
+    function statutPlanning(p, fiches) {
+        if (p.statut === "ANNULEE") return "ANNULEE";
+        var map = {};
+        $.each(fiches || [], function (k, f) { if (f) map[f.id] = f; });
+        var liees = $.map(p.ficheIds || [], function (id) { return map[id] || null; });
+        if ($.grep(liees, function (f) { return f.statut === "EN_COURS"; }).length) return "EN_COURS";
+        if (liees.length) return "TERMINEE";
+        return p.date < U.today() ? "NON_REALISEE" : "PLANIFIEE";
+    }
+    function zoneLib(code, court) {
+        var z = $.grep(CX.REF.ZONES_LIVRAISON, function (x) { return x.code === code; })[0];
+        if (!z) return code || "Zone non précisée";
+        return court ? z.nom.split(" · ")[0] : z.nom;
+    }
     var MOTIFS_ECHEC = ["Destinataire absent", "Adresse introuvable", "Refus du destinataire", "Téléphone injoignable", "Zone inaccessible", "Autre"];
     var MOTIFS_REORIENTATION = ["Erreur de destination à la saisie", "Demande de l'expéditeur", "Demande du destinataire", "Agence plus proche du destinataire", "Retour à l'expéditeur", "Autre"];
     var TYPES_INCIDENT = {
@@ -368,6 +398,7 @@ CX.ops = (function () {
         return "(" + (e.nbColis || 1) + ") " + String(nat).toUpperCase() + " (" + G.kg(e.poids) + ")";
     }
     function numeroTournee(iso) { return prochainNumero("tournees", "TRN", iso, 2); }
+    function numeroPlanning(iso) { return prochainNumero("plannings", "TOU", iso, 2); }
 
     /* =================================================================
        Données de démonstration : bordereaux et tournées reconstitués à
@@ -643,12 +674,40 @@ CX.ops = (function () {
         var ok = $.grep(exps, function (e) { return !e.suspendu && $.inArray(e.etape, ["ARRIVEE", "ECHEC", "EN_INSTANCE"]) >= 0 && estMoi(e.agDestId) && estMoi(e.positionId); });
         if (!ok.length) { U.toast("Aucune expédition de la sélection ne peut être remise au coursier (elle doit être dans l'agence, à destination de l'agence, non suspendue).", "warning"); return dfd.reject().promise(); }
         var livreurs = $.grep(CX.api.listSync("livreurs"), function (l) { return l.ville === A.ville && l.statut === "ACTIF"; });
+        /* Tournées planifiées du jour de l'agence (non annulées, non réalisées) */
+        var fichesTout = CX.api.listSync("tournees"), today = U.today();
+        var plans = $.grep(CX.api.listSync("plannings"), function (p) {
+            var s = statutPlanning(p, fichesTout);
+            return estMoi(p.agenceId) && p.date === today && (s === "PLANIFIEE" || s === "EN_COURS");
+        }).sort(function (a, b) { return a.heureDebut > b.heureDebut ? 1 : -1; });
+        function chargePlan(p) {
+            var n = 0;
+            $.each(fichesTout, function (_, f) { if ($.inArray(f.id, p.ficheIds || []) >= 0) n += (f.expeditionIds || []).length; });
+            return n;
+        }
+        /* Tournée proposée : celle demandée (?tournee=ID depuis le planning), sinon celle de la zone la plus fréquente */
+        var cible = (/[?&]tournee=(\d+)/.exec(window.location.search) || [])[1], zones = {};
+        $.each(ok, function (_, e) { var z = e.livraison.zone || ""; zones[z] = (zones[z] || 0) + 1; });
+        var zoneMaj = null; $.each(zones, function (z, n) { if (z && (!zoneMaj || n > zones[zoneMaj])) zoneMaj = z; });
+        var propose = $.grep(plans, function (p) { return String(p.id) === String(cible); })[0] ||
+            $.grep(plans, function (p) { return p.zone === zoneMaj && statutPlanning(p, fichesTout) === "PLANIFIEE"; })[0] ||
+            $.grep(plans, function (p) { return p.zone === zoneMaj; })[0] || null;
+        var blocType =
+            "<div class='cx-field'><label class='cx-label req'>Type de fiche</label><div class='ox-flex ox-wrap'>" +
+            "<label class='cx-pill'><input type='radio' name='cr-type' value='TOURNEE'" + (plans.length ? (propose ? " checked" : "") : " disabled") + "><span><i class='fa fa-calendar-check-o'></i> Intégrée à une tournée planifiée</span></label>" +
+            "<label class='cx-pill'><input type='radio' name='cr-type' value='EXPRESS'" + (propose ? "" : " checked") + "><span><i class='fa fa-bolt'></i> Fiche express (spontanée)</span></label></div>" +
+            (plans.length ? "" : "<span class='cx-help'>Aucune tournée planifiée disponible aujourd'hui · <a href='tournees.html'>planifier une tournée</a></span>") + "</div>" +
+            "<div class='cx-field" + (propose ? "" : " cx-hidden") + "' id='cr-bloc-plan'><label class='cx-label req' for='cr-planning'>Tournée du jour</label>" +
+            "<select class='form-control' id='cr-planning'>" + $.map(plans, function (p) {
+                var n = chargePlan(p);
+                return "<option value='" + p.id + "'" + (propose && p.id === propose.id ? " selected" : "") + ">" + U.esc(p.numero + " · " + p.heureDebut + "–" + p.heureFin + " · " + zoneLib(p.zone) + " · " + (p.livreurNom || "livreur à désigner") + " (" + n + "/" + (p.capacite || "∞") + " colis)") + "</option>";
+            }).join("") + "</select><span class='cx-help' id='cr-plan-aide'></span></div>";
         var corps = (ok.length < exps.length ? "<div class='cx-note cx-note-warn'><i class='fa fa-exclamation-triangle'></i><div>" + pl(exps.length - ok.length, "expédition ignorée", "expéditions ignorées") + " (hors agence, suspendue ou déjà livrée).</div></div>" : "") +
             "<div class='cx-table-wrap' style='max-height:220px;overflow:auto;margin-bottom:12px'><table class='cx-table ox-mini'><thead><tr><th>RT n°</th><th>Destinataire</th><th>Quartier / zone</th><th>Contenu</th></tr></thead><tbody>" +
             $.map(ok, function (e) {
                 return "<tr><td class='cx-mono cx-strong'>" + U.esc(e.nRt) + "</td><td>" + U.esc(e.destinataireInfo.nom) + "<div class='cx-cell-sub'>" + U.esc(G.telAff(e.livraison.telAppel || e.destinataireInfo.tel)) + "</div></td>" +
                     "<td>" + U.esc(e.livraison.quartier || "—") + (e.livraison.zone ? " · " + U.esc(e.livraison.zone) : "") + "</td><td>" + U.esc(contenuCourt(e)) + "</td></tr>";
-            }).join("") + "</tbody></table></div>" +
+            }).join("") + "</tbody></table></div>" + blocType +
             "<div class='ox-grid-3'>" +
             champ("cr-livreur", "Nom du livreur", "<select class='form-control' id='cr-livreur'><option value=''></option>" + $.map(livreurs, function (l) {
                 return "<option value='" + l.id + "'>" + U.esc(l.nom + " · " + l.vehicule) + "</option>";
@@ -658,12 +717,32 @@ CX.ops = (function () {
             "</div>";
         var $m = modale("ox-coursier", "Nouvelle fiche de livraison", "fa-motorcycle", corps,
             "<button type='button' class='cx-btn cx-btn-ghost' data-dismiss='modal'>Annuler</button><button type='button' class='cx-btn cx-btn-primary' id='cr-ok'><i class='fa fa-motorcycle'></i> Remettre au coursier</button>", "modal-lg");
+        function planChoisi() {
+            if ($m.find("input[name=cr-type]:checked").val() !== "TOURNEE") return null;
+            return $.grep(plans, function (p) { return String(p.id) === String($("#cr-planning").val()); })[0] || null;
+        }
+        /* Tournée choisie : livreur, heure de départ et contrôle de capacité / de zone */
+        function appliquerPlan() {
+            var p = planChoisi();
+            $("#cr-bloc-plan").toggleClass("cx-hidden", $m.find("input[name=cr-type]:checked").val() !== "TOURNEE");
+            if (!p) { $("#cr-plan-aide").html(""); return; }
+            if (p.livreurId) $("#cr-livreur").val(String(p.livreurId)).trigger("change");
+            $("#cr-heure").val(p.heureDebut || $("#cr-heure").val());
+            var charge = chargePlan(p) + ok.length, horsZone = $.grep(ok, function (e) { return e.livraison.zone && e.livraison.zone !== p.zone; }).length;
+            $("#cr-plan-aide").html("<i class='fa fa-map-marker'></i> " + U.esc((p.quartiers || []).join(", ") || zoneLib(p.zone)) +
+                (p.capacite && charge > p.capacite ? " · <b style='color:var(--cx-red)'>capacité dépassée (" + charge + "/" + p.capacite + ")</b>" : " · " + charge + "/" + (p.capacite || "∞") + " colis après remise") +
+                (horsZone ? " · <span style='color:var(--cx-orange)'>" + pl(horsZone, "colis hors zone", "colis hors zone") + "</span>" : ""));
+        }
         $m.on("shown.bs.modal", function () {
             if ($.fn.select2) $("#cr-livreur").select2({ width: "100%", tags: true, placeholder: "Coursier (liste ou saisie libre)", dropdownParent: $m });
+            appliquerPlan();
         });
+        $m.on("change", "input[name=cr-type], #cr-planning", appliquerPlan);
         var fait = null;
         $m.on("click", "#cr-ok", function () {
             effacerErreurs($m);
+            var p = planChoisi();
+            if ($m.find("input[name=cr-type]:checked").val() === "TOURNEE" && !p) return erreurChamp($m, "#cr-planning", "Choisissez la tournée planifiée.");
             var v = $("#cr-livreur").val(), l = $.grep(livreurs, function (x) { return String(x.id) === String(v); })[0];
             var nomLiv = l ? l.nom : $.trim(v || "");
             if (nomLiv.length < 3) return erreurChamp($m, "#cr-livreur", "Choisissez ou saisissez le livreur.");
@@ -671,16 +750,27 @@ CX.ops = (function () {
             var t = {
                 numero: numeroTournee(U.today()), date: U.today(), heure: $("#cr-heure").val() || "", agenceId: A.id, ville: A.ville, agence: A.nom,
                 livreurId: l ? l.id : null, livreurNom: nomLiv, vehicule: l ? l.vehicule : "", matricule: $.trim($("#cr-matricule").val()),
-                expeditionIds: [], statut: "EN_COURS", resultats: {}, historique: [{ date: U.now(), user: CX.CONFIG.USER.nom, action: "Fiche de livraison créée" }]
+                type: p ? "TOURNEE" : "EXPRESS", planningId: p ? p.id : null, zone: p ? p.zone : (zoneMaj || ""),
+                expeditionIds: [], statut: "EN_COURS", resultats: {},
+                historique: [{ date: U.now(), user: CX.CONFIG.USER.nom, action: "Fiche de livraison créée" + (p ? " (tournée " + p.numero + ")" : " (express)") }]
             };
-            // TODO API : POST /exploitation/fiches-livraison  { livreurId | livreurNom, matricule, heure, expeditionIds[] }
+            // TODO API : POST /exploitation/fiches-livraison  { type TOURNEE | EXPRESS, planningId, livreurId | livreurNom, matricule, heure, expeditionIds[] }
             CX.api.save("tournees", t).then(function (tt) {
                 return avancerLot($.map(ok, function (e) { return e.id; }), "EN_LIVRAISON", function (x) {
-                    return { note: "Remis au coursier " + nomLiv + " · fiche " + tt.numero, position: A.id,
+                    return { note: "Remis au coursier " + nomLiv + " · fiche " + tt.numero + (p ? " (tournée " + p.numero + ")" : " (express)"), position: A.id,
                         patch: { tourneeId: tt.id, livreurId: tt.livreurId, coursier: nomLiv, livraison: $.extend({}, x.livraison || {}, { mode: "DOMICILE" }) } };
                 }).then(function (res, ko) {
                     tt.expeditionIds = $.map(res, function (e) { return e.id; });
-                    return CX.api.save("tournees", tt).then(function (t2) { return { tournee: t2, ok: res, ko: ko }; });
+                    return CX.api.save("tournees", tt).then(function (t2) {
+                        if (!p) return { tournee: t2, ok: res, ko: ko };
+                        /* rattachement de la fiche à la tournée planifiée */
+                        return CX.api.get("plannings", p.id).then(function (pp) {
+                            pp.ficheIds = (pp.ficheIds || []).concat([t2.id]);
+                            pp.historique = pp.historique || [];
+                            pp.historique.unshift({ date: U.now(), user: CX.CONFIG.USER.nom, action: "Fiche " + t2.numero + " rattachée (" + pl(res.length, "colis", "colis") + ")" });
+                            return CX.api.save("plannings", pp);
+                        }).then(function () { return { tournee: t2, ok: res, ko: ko }; });
+                    });
                 });
             }).done(function (r) { fait = r; $m.modal("hide"); }).fail(function (m) { U.busy($b, false); U.toast(U.esc(m || "Échec."), "error"); });
         });
@@ -1505,6 +1595,7 @@ CX.ops = (function () {
 
     return {
         ETAPES: ETAPES, TRANSITIONS: TRANSITIONS, STATUT_BORDEREAU: STATUT_BORDEREAU, STATUT_TOURNEE: STATUT_TOURNEE,
+        STATUT_PLANNING: STATUT_PLANNING, statutPlanning: statutPlanning, zoneLib: zoneLib, numeroPlanning: numeroPlanning,
         MOTIFS_ECHEC: MOTIFS_ECHEC, MOTIFS_REORIENTATION: MOTIFS_REORIENTATION, TYPES_INCIDENT: TYPES_INCIDENT, PIECES: PIECES, PARTENAIRES: PARTENAIRES,
         CHAUFFEURS: CHAUFFEURS, VEHICULES: VEHICULES, SLA: SLA, INSTANCE_ALERTE_J: INSTANCE_ALERTE_J, INSTANCE_RETOUR_J: INSTANCE_RETOUR_J,
         etapeBadge: etapeBadge, badge: badge, pl: pl,

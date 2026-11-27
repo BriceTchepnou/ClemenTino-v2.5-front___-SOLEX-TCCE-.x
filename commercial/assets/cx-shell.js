@@ -89,6 +89,7 @@ CX.MENU_OPERATIONS = [
             { page: "o-groupage", href: "../operations/groupage.html", label: "Envoi des colis", desc: "Grouper les expéditions, manifeste de voyage" },
             { page: "o-degroupage", href: "../operations/degroupage.html", label: "Réception des colis", desc: "Mettre en agence, en transit ou en livraison" },
             { page: "o-instance", href: "../operations/instance.html", label: "Livraison de colis", desc: "En agence, chez le coursier, livrées" },
+            { page: "o-tournees", href: "../operations/tournees.html", label: "Tournées de livraison", desc: "Planning des tournées par livreur et par zone" },
             { page: "o-livraisons", href: "../operations/livraisons.html", label: "Fiches de livraison", desc: "Coursiers, tournées, retours de tournée" }
         ]
     },
@@ -151,7 +152,7 @@ CX.MODULES = [
 
 CX.PAGE_GROUP = {
     "o-dashboard": "o-dashboard", "o-groupage": "o-groupage", "o-degroupage": "o-degroupage", "o-instance": "o-instance",
-    "o-livraisons": "o-livraisons", "o-lettres": "o-lettres", "o-preenregistrees": "o-preenregistrees", "o-provisoires": "o-provisoires", "o-international": "o-international", "o-inter-groupage": "o-international", "o-inter-degroupage": "o-international", "o-bordereaux": "o-bordereaux", "o-bordereau": "o-bordereaux", "o-tracking": "o-tracking",
+    "o-livraisons": "o-livraisons", "o-tournees": "o-tournees","o-lettres": "o-lettres", "o-preenregistrees": "o-preenregistrees", "o-provisoires": "o-provisoires", "o-international": "o-international", "o-inter-groupage": "o-international", "o-inter-degroupage": "o-international", "o-bordereaux": "o-bordereaux", "o-bordereau": "o-bordereaux", "o-tracking": "o-tracking",
     "e-index": "e-index", "e-ca": "e-ca", "e-journal": "e-journal", "e-production": "e-production", "e-volumique": "e-volumique",
     "e-livraisons": "e-livraisons", "e-tresorerie": "e-tresorerie", "e-statistiques": "e-statistiques",
     "journal-vente": "facturation", "apporteurs-liste": "apporteurs", "apporteur-form": "apporteurs", "commissions": "apporteurs",
