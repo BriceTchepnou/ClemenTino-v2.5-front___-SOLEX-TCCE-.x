@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Suivi des cotations - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/cotations-liste.css">
+</head>
+<body class="cx-app" data-page="cotations-liste">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> / Cotations</div>
+            <h1 class="cx-title">Liste des cotations <small id="l-resume"></small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <button type="button" class="cx-btn cx-btn-new" id="btnNouvelle"><i class="fa fa-plus"></i> Nouvelle cotation</button>
+        </div>
+    </div>
+
+    <div class="cx-card">
+        <!-- Onglets par étape du circuit (compteurs mis à jour par le JS) -->
+        <div class="cx-tabs" id="tabs">
+            <a data-tab="ENREGISTREES" class="active">Enregistrées <span class="cx-count" data-count="ENREGISTREES">0</span></a>
+            <a data-tab="SOUMISES">Soumises <span class="cx-count" data-count="SOUMISES">0</span></a>
+            <a data-tab="VALIDEES">Validées <span class="cx-count" data-count="VALIDEES">0</span></a>
+            <a data-tab="EN_ATTENTE">En attente de validation client <span class="cx-count" data-count="EN_ATTENTE">0</span></a>
+            <a data-tab="REJETEES">Rejetées / Annulées <span class="cx-count" data-count="REJETEES">0</span></a>
+            <a data-tab="TOUTES">Toutes <span class="cx-count" data-count="TOUTES">0</span></a>
+        </div>
+
+        <!-- Filtres -->
+        <div class="cx-toolbar">
+            <div class="cx-field cx-grow">
+                <label class="cx-label" for="q">Recherche</label>
+                <div class="cx-search"><i class="fa fa-search"></i>
+                    <input type="text" class="form-control" id="q" placeholder="N° de cotation, nom, description…">
+                </div>
+            </div>
+            <div class="cx-field cl-f-client">
+                <label class="cx-label" for="fClient">Client</label>
+                <select class="form-control" id="fClient"><option value="">Tous les clients</option></select>
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="fType">Type</label>
+                <select class="form-control" id="fType">
+                    <option value="">Tous les types</option>
+                    <option value="EXPEDITION">Expédition</option>
+                    <option value="FRET">Mise à disposition (FRET)</option>
+                    <option value="TARIFAIRE">Tarifaire</option>
+                </select>
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="fDu">Créée du</label>
+                <input type="date" class="form-control" id="fDu">
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="fAu">au</label>
+                <input type="date" class="form-control" id="fAu">
+            </div>
+            <div class="cx-field">
+                <button type="button" class="cx-btn cx-btn-ghost" id="fReset" title="Effacer les filtres"><i class="fa fa-eraser"></i> Effacer</button>
+            </div>
+        </div>
+
+        <!-- Tableau (CX.DataTable) -->
+        <div id="tCotations"></div>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur ·
+        <a href="#" id="resetDemo">Réinitialiser les données</a></p>
+</main>
+
+<div id="cx-footer"></div>
+
+<!-- =================================================================
+     Modale « Nouvelle cotation » : choix du type
+     ================================================================= -->
+<div class="modal fade" id="modalNouvelle" tabindex="-1" role="dialog" aria-labelledby="modalNouvelleTitre">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">&times;</button>
+                <h4 class="modal-title" id="modalNouvelleTitre"><i class="fa fa-calculator"></i>Nouvelle cotation</h4>
+            </div>
+            <div class="modal-body">
+                <p class="cx-muted" style="margin-top:0">Quel type de cotation souhaitez-vous émettre ?</p>
+                <div class="cl-types" id="choixType">
+                    <label class="cl-type">
+                        <input type="radio" name="typeCotation" value="EXPEDITION">
+                        <span>
+                            <i class="fa fa-cube cl-type-ico"></i>
+                            <b>Cotation pour expédition</b>
+                            <small>Devis pour un envoi de colis ou de plis : trajet, colis, poids taxable, livraison.</small>
+                        </span>
+                    </label>
+                    <label class="cl-type">
+                        <input type="radio" name="typeCotation" value="FRET">
+                        <span>
+                            <i class="fa fa-truck cl-type-ico"></i>
+                            <b>Cotation de mise à disposition</b>
+                            <small>Location d'un véhicule (FRET) à la journée, avec chauffeur, carburant, manutention.</small>
+                        </span>
+                    </label>
+                    <label class="cl-type">
+                        <input type="radio" name="typeCotation" value="TARIFAIRE">
+                        <span>
+                            <i class="fa fa-table cl-type-ico"></i>
+                            <b>Cotation tarifaire</b>
+                            <small>Grille de prix négociée pour un client : trajets, tranches de poids, remise.</small>
+                        </span>
+                    </label>
+                </div>
+                <p class="cx-help" id="nvClientInfo"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="cx-btn cx-btn-ghost" data-dismiss="modal">Annuler</button>
+                <button type="button" class="cx-btn cx-btn-primary" id="btnContinuer" disabled>Continuer <i class="fa fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =================================================================
+     Modale « Motif » (rejet interne, refus client, annulation)
+     ================================================================= -->
+<div class="modal fade" id="modalMotif" tabindex="-1" role="dialog" aria-labelledby="modalMotifTitre">
+    <div class="modal-dialog" role="document" style="max-width:480px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">&times;</button>
+                <h4 class="modal-title" id="modalMotifTitre"><i class="fa fa-ban"></i><span id="motifTitre">Rejeter la cotation</span></h4>
+            </div>
+            <div class="modal-body" id="motifForm">
+                <p id="motifIntro" style="margin-top:0"></p>
+                <div class="cx-field">
+                    <label class="cx-label req" for="motifTexte">Motif</label>
+                    <textarea class="form-control" id="motifTexte" name="motif" rows="3" placeholder="Expliquez la raison…"></textarea>
+                    <div class="cl-motifs" id="motifSuggestions"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="cx-btn cx-btn-ghost" data-dismiss="modal">Fermer</button>
+                <button type="button" class="cx-btn cx-btn-danger" id="btnMotifOk">Confirmer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =================================================================
+     Modale « Historique »
+     ================================================================= -->
+<div class="modal fade" id="modalHisto" tabindex="-1" role="dialog" aria-labelledby="modalHistoTitre">
+    <div class="modal-dialog" role="document" style="max-width:520px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">&times;</button>
+                <h4 class="modal-title" id="modalHistoTitre"><i class="fa fa-history"></i>Historique <span id="histoNumero" class="cx-mono"></span></h4>
+            </div>
+            <div class="modal-body"><ul class="cx-timeline" id="histoListe"></ul></div>
+            <div class="modal-footer">
+                <button type="button" class="cx-btn cx-btn-ghost" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/cotations-commun.js"></script>
+<script src="assets/pages/cotations-liste.js"></script>
+</body>
+</html>

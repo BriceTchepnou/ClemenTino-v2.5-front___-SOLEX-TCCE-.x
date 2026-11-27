@@ -1,0 +1,174 @@
+/* =====================================================================
+   Commercial · Facture imprimable A4 - styles spécifiques (préfixe « fx- »)
+   ---------------------------------------------------------------------
+   À l'écran : une feuille A4 centrée sur fond gris.
+   À l'impression : la feuille occupe la page, l'en-tête du tableau des
+   expéditions est répété sur chaque page, filigrane répété.
+   ===================================================================== */
+
+.fx-main { max-width: 1000px; }
+
+/* ---------- Feuille ---------- */
+.fx-sheet {
+    position: relative; overflow: hidden;
+    width: 210mm; max-width: 100%; min-height: 297mm; margin: 0 auto 20px;
+    background: #fff; color: #1a2233; box-shadow: 0 6px 24px rgba(16,24,40,.12);
+    border: 1px solid var(--cx-line); border-radius: 4px;
+    padding: 14mm 13mm 12mm; font-size: 11.5px; line-height: 1.45;
+    display: flex; flex-direction: column;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.fx-sheet h1 { margin: 0; }
+.fx-small { font-size: 10.5px; color: #4b5563; margin-top: 3px; }
+.fx-sub { font-size: 10px; color: #6b7280; }
+.fx-mono { font-family: Consolas, "Courier New", monospace; font-size: 10.5px; }
+.fx-nowrap { white-space: nowrap; }
+.fx-box-title {
+    font-size: 9.5px; letter-spacing: .7px; text-transform: uppercase; font-weight: 700;
+    color: var(--cx-navy-2); margin-bottom: 4px;
+}
+
+/* ---------- Filigrane ---------- */
+.fx-watermark {
+    position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%) rotate(-32deg);
+    font-size: 120px; font-weight: 800; letter-spacing: 10px; color: rgba(15, 27, 51, .07);
+    white-space: nowrap; pointer-events: none; z-index: 0; user-select: none;
+}
+.fx-watermark.fx-watermark-red { color: rgba(220, 38, 38, .11); }
+.fx-sheet > *:not(.fx-watermark) { position: relative; z-index: 1; }
+
+/* ---------- En-tête ---------- */
+.fx-head { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 12px; border-bottom: 3px solid var(--cx-navy); }
+.fx-logo { display: flex; align-items: center; gap: 10px; }
+.fx-logo-mark {
+    width: 46px; height: 46px; border-radius: 10px; background: var(--cx-navy); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; letter-spacing: .5px;
+}
+.fx-logo-nom { font-size: 19px; font-weight: 800; color: var(--cx-navy); letter-spacing: .3px; }
+.fx-logo-slogan { font-size: 10.5px; color: #6b7280; }
+.fx-soc-coord { margin-top: 8px; font-size: 10.5px; color: #4b5563; }
+
+.fx-titre { text-align: right; }
+.fx-titre h1 { font-size: 28px; font-weight: 800; color: var(--cx-navy); letter-spacing: 3px; }
+.fx-numero { font-size: 14px; font-weight: 700; margin: 2px 0 8px; }
+.fx-numero span { font-family: Consolas, "Courier New", monospace; }
+.fx-meta { margin-left: auto; font-size: 11px; }
+.fx-meta th { font-weight: 500; color: #6b7280; padding: 1px 10px 1px 0; text-align: right; }
+.fx-meta td { font-weight: 700; text-align: right; white-space: nowrap; }
+
+/* ---------- Parties (client / objet) ---------- */
+.fx-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+.fx-box { border: 1px solid #d9dee8; border-radius: 6px; padding: 9px 11px; }
+.fx-box-client { border-color: var(--cx-navy-2); border-left-width: 4px; }
+.fx-client-nom { font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
+.fx-notes { margin-top: 6px; font-style: italic; }
+
+/* ---------- Tableau des expéditions ---------- */
+.fx-lignes { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+.fx-lignes thead { display: table-header-group; }   /* répété sur chaque page imprimée */
+.fx-lignes th {
+    background: var(--cx-navy); color: #fff; font-weight: 700; font-size: 9.5px; text-transform: uppercase;
+    letter-spacing: .3px; padding: 6px 6px; text-align: left; white-space: nowrap;
+}
+.fx-lignes td { padding: 5px 6px; border-bottom: 1px solid #e5e9f0; vertical-align: top; }
+.fx-lignes tbody#fx-lignes tr:nth-child(even) td { background: #f7f9fc; }
+.fx-lignes .num { text-align: right; font-variant-numeric: tabular-nums; }
+.fx-lignes tr { page-break-inside: avoid; break-inside: avoid; }
+.fx-soustotal td { font-weight: 700; background: #eef2f8; border-top: 2px solid var(--cx-navy); border-bottom: 0; }
+.fx-vide { text-align: center; color: #6b7280; padding: 20px !important; }
+
+/* ---------- Bas de facture : lettres / paiements / conditions + totaux ---------- */
+.fx-bas { display: flex; gap: 18px; margin-top: 14px; page-break-inside: avoid; break-inside: avoid; }
+.fx-bas-gauche { flex: 1; min-width: 0; }
+.fx-lettres { border: 1px dashed #9aa6bd; border-radius: 6px; padding: 8px 10px; background: #fafbfd; margin-bottom: 10px; }
+.fx-lettres b { display: block; margin-top: 2px; color: #0f172a; }
+.fx-paie { width: 100%; border-collapse: collapse; font-size: 10.5px; margin-bottom: 4px; }
+.fx-paie th { text-align: left; font-weight: 600; color: #6b7280; border-bottom: 1px solid #d9dee8; padding: 3px 4px; }
+.fx-paie td { padding: 3px 4px; border-bottom: 1px solid #eef1f6; }
+.fx-paie .num { text-align: right; }
+.fx-acquittee { color: #17784a; font-weight: 700; margin: 4px 0 8px; }
+.fx-conditions { margin-top: 10px; }
+.fx-conditions p { margin: 0 0 8px; font-size: 10.5px; color: #374151; }
+
+.fx-totaux { width: 76mm; flex: 0 0 76mm; }
+.fx-totaux table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.fx-totaux th { font-weight: 500; color: #4b5563; padding: 4px 8px; text-align: left; }
+.fx-totaux td { text-align: right; padding: 4px 8px; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fx-totaux tr + tr th, .fx-totaux tr + tr td { border-top: 1px solid #eef1f6; }
+.fx-totaux .fx-ttc th, .fx-totaux .fx-ttc td { background: var(--cx-navy); color: #fff; font-size: 13.5px; font-weight: 800; padding: 7px 8px; }
+.fx-totaux .fx-row-reste th, .fx-totaux .fx-row-reste td { font-weight: 800; color: #b42318; }
+.fx-devise { font-size: 9.5px; color: #6b7280; text-align: right; margin-top: 4px; }
+
+/* ---------- Signature / cachet ---------- */
+.fx-signature { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; margin-top: 16px; page-break-inside: avoid; break-inside: avoid; }
+.fx-fait { font-size: 11px; color: #374151; }
+.fx-cachet { width: 76mm; text-align: center; }
+.fx-cachet-zone {
+    height: 30mm; border: 1px dashed #b8c1d3; border-radius: 6px; margin: 4px 0;
+    display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px;
+    font-size: 9.5px; color: #9aa6bd;
+}
+
+/* ---------- Pied de page (mentions légales) ---------- */
+.fx-pied {
+    margin-top: auto; padding-top: 8px; border-top: 1px solid #d9dee8;
+    font-size: 9px; color: #6b7280; text-align: center; line-height: 1.5;
+}
+.fx-signature + .fx-pied { margin-top: auto; }
+.fx-sheet .fx-signature { margin-bottom: 14px; }
+
+.fx-histo { max-width: 210mm; margin: 0 auto 30px; }
+
+@media screen and (max-width: 860px) {   /* « screen » : ne pas s'appliquer sur papier A4 (≈ 718 px) */
+    .fx-sheet { padding: 16px; min-height: 0; }
+    .fx-head, .fx-bas { flex-direction: column; }
+    .fx-titre { text-align: left; }
+    .fx-meta { margin-left: 0; }
+    .fx-parties { grid-template-columns: 1fr; }
+    .fx-totaux { width: 100%; flex: none; }
+}
+
+/* =====================================================================
+   Impression
+   ===================================================================== */
+@page {
+    size: A4;
+    margin: 12mm 11mm 14mm;
+    @bottom-right { content: "Page " counter(page) " / " counter(pages); font-size: 8pt; color: #6b7280; }
+}
+@media print {
+    html, body.cx-app { background: #fff !important; }
+    .fx-main { max-width: none; padding: 0 !important; margin: 0; }
+    .fx-sheet {
+        width: auto; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none !important;
+        display: block; overflow: visible; font-size: 9.5pt;
+    }
+    .fx-lignes { font-size: 8.5pt; }
+    .fx-lignes td { padding: 4px 5px; }
+    /* Filigrane répété sur chaque page */
+    .fx-watermark { position: fixed; top: 50%; font-size: 110pt; }
+    .fx-pied { margin-top: 14px; }
+    .fx-histo, #fx-alertes { display: none !important; }
+
+    /* Bootstrap 3 (print) force « * { background: transparent !important; color: #000 !important } » :
+       on rétablit les couleurs du document (sélecteurs plus spécifiques + !important). */
+    .fx-sheet .fx-watermark { color: rgba(15, 27, 51, .07) !important; }
+    .fx-sheet .fx-watermark.fx-watermark-red { color: rgba(220, 38, 38, .11) !important; }
+    .fx-sheet .fx-logo-mark { background: var(--cx-navy) !important; color: #fff !important; }
+    .fx-sheet .fx-logo-nom, .fx-sheet .fx-titre h1 { color: var(--cx-navy) !important; }
+    .fx-sheet .fx-box-title, .fx-sheet .fx-box-title * { color: var(--cx-navy-2) !important; }
+    .fx-sheet .fx-cachet-zone { height: 18mm; }
+    .fx-sheet .fx-signature { margin-top: 8px; margin-bottom: 6px; }
+    .fx-sheet .fx-parties { margin: 10px 0; }
+    .fx-sheet .fx-pied { margin-top: 6px; padding-top: 5px; break-inside: avoid; page-break-inside: avoid; }
+    .fx-sheet .fx-lignes th { background: var(--cx-navy) !important; color: #fff !important; }
+    .fx-sheet tbody#fx-lignes tr:nth-child(even) td { background: #f7f9fc !important; }
+    .fx-sheet .fx-soustotal td { background: #eef2f8 !important; }
+    .fx-sheet .fx-lettres { background: #fafbfd !important; }
+    .fx-sheet .fx-totaux .fx-ttc th, .fx-sheet .fx-totaux .fx-ttc td { background: var(--cx-navy) !important; color: #fff !important; }
+    .fx-sheet .fx-totaux .fx-row-reste th, .fx-sheet .fx-totaux .fx-row-reste td { color: #b42318 !important; }
+    .fx-sheet .fx-acquittee { color: #17784a !important; }
+    .fx-sheet .fx-small, .fx-sheet .fx-sub, .fx-sheet .fx-soc-coord, .fx-sheet .fx-logo-slogan,
+    .fx-sheet .fx-meta th, .fx-sheet .fx-devise, .fx-sheet .fx-pied { color: #4b5563 !important; }
+    .fx-sheet .fx-cachet-zone { color: #9aa6bd !important; }
+}

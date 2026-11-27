@@ -4,7 +4,7 @@
     {
       "name": "maquettes-carnets",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["--yes", "http-server", "maquettes-carnets", "-p", "8765", "-c-1"],
+      "runtimeArgs": ["--yes", "http-server", ".", "-p", "8765", "-c-1"],
       "port": 8765
     }
   ]

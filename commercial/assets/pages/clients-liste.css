@@ -1,0 +1,22 @@
+/* =====================================================================
+   Commercial · Liste des comptes clients (clients-liste.html)
+   Compléments locaux à la charte cx.css
+   ===================================================================== */
+
+/* L'interrupteur s'aligne sur le bas des champs de la barre de filtres */
+.cx-toolbar .cx-filter-switch { padding-bottom: 7px; }
+.cx-toolbar select.form-control { min-width: 140px; }
+
+/* KPI actif (filtre appliqué) */
+.cx-kpi.active { border-color: var(--cx-navy-3); box-shadow: 0 0 0 3px rgba(42,99,196,.12); }
+
+/* Menus d'actions : positionnés en « fixed » par clients-liste.js pour ne pas
+   être rognés par .cx-table-wrap (overflow-x:auto). */
+#dt-clients .dropdown-menu { min-width: 230px; z-index: 1050; }
+
+.cx-cli-name { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cx-cli-badges { display: flex; flex-wrap: wrap; gap: 4px; }
+.cx-cli-contact a { color: var(--cx-text); }
+.cx-cli-contact a:hover { color: var(--cx-navy-2); }
+.cx-app .dropdown-menu > li.disabled > a { cursor: not-allowed; }
+.cx-app .dropdown-menu > li.disabled > a small { display: block; padding-left: 18px; font-size: 11px; }

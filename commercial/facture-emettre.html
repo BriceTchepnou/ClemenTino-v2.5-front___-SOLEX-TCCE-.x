@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Émission d'une facture - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/facture-emettre.css">
+</head>
+<body class="cx-app" data-page="facture-emettre">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> › <a href="factures-suivi.html">Facturation</a></div>
+            <h1 class="cx-title">Émission d'une facture <small>clients en compte</small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <a class="cx-btn cx-btn-ghost" href="factures-suivi.html"><i class="fa fa-list"></i> Suivi des factures</a>
+        </div>
+    </div>
+
+    <!-- =============================================================
+         1. Critères de recherche
+         (Symfony : formulaire GET, champs pré-remplis par Twig)
+         ============================================================= -->
+    <div class="cx-card">
+        <div class="cx-card-head">
+            <span class="cx-step">1</span>
+            <div>
+                <h3 class="cx-card-title">Critères de recherche</h3>
+                <p class="cx-card-sub">Expéditions des clients en compte, non encore facturées</p>
+            </div>
+        </div>
+        <div class="cx-card-body">
+            <form id="f-filtres" autocomplete="off" onsubmit="return false">
+                <div class="row">
+                    <div class="col-md-4 cx-field">
+                        <label class="cx-label" for="f-client">Client</label>
+                        <select id="f-client" name="client" class="form-control" style="width:100%">
+                            <option value="">Tous les clients en compte</option>
+                        </select>
+                    </div>
+                    <div class="col-md-8 cx-field">
+                        <label class="cx-label">Période d'expédition</label>
+                        <div class="fe-periode">
+                            <div class="cx-pills" id="f-raccourcis">
+                                <label class="cx-pill"><input type="radio" name="periode" value="prec" checked><span>Mois dernier</span></label>
+                                <label class="cx-pill"><input type="radio" name="periode" value="courant"><span>Ce mois</span></label>
+                                <label class="cx-pill"><input type="radio" name="periode" value="perso"><span>Personnalisé</span></label>
+                            </div>
+                            <div class="fe-dates">
+                                <input type="date" id="f-du" name="du" class="form-control" title="Date début">
+                                <span class="cx-muted">au</span>
+                                <input type="date" id="f-au" name="au" class="form-control" title="Date fin">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-md-3 cx-field">
+                        <label class="cx-label" for="f-villeDep">Ville d'expédition</label>
+                        <select id="f-villeDep" name="villeDep" class="form-control"><option value="">Toutes</option></select>
+                    </div>
+                    <div class="col-sm-6 col-md-3 cx-field">
+                        <label class="cx-label" for="f-bureauDep">Bureau d'expédition</label>
+                        <select id="f-bureauDep" name="bureauDep" class="form-control" disabled><option value="">Tous</option></select>
+                    </div>
+                    <div class="col-sm-6 col-md-3 cx-field">
+                        <label class="cx-label" for="f-villeDest">Ville de destination</label>
+                        <select id="f-villeDest" name="villeDest" class="form-control"><option value="">Toutes</option></select>
+                    </div>
+                    <div class="col-sm-6 col-md-3 cx-field">
+                        <label class="cx-label" for="f-bureauDest">Bureau de destination</label>
+                        <select id="f-bureauDest" name="bureauDest" class="form-control" disabled><option value="">Tous</option></select>
+                    </div>
+                </div>
+                <div class="fe-filter-actions">
+                    <button type="button" class="cx-btn cx-btn-ghost" id="btn-reinit"><i class="fa fa-undo"></i> Réinitialiser</button>
+                    <button type="button" class="cx-btn cx-btn-ghost" id="btn-export"><i class="fa fa-file-excel-o"></i> Exporter en Excel</button>
+                    <button type="submit" class="cx-btn cx-btn-primary" id="btn-afficher"><i class="fa fa-search"></i> Afficher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- =============================================================
+         2. Liste des expéditions + récapitulatif collant
+         ============================================================= -->
+    <div class="cx-layout">
+        <div>
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step">2</span>
+                    <div>
+                        <h3 class="cx-card-title">Liste des expéditions en attente</h3>
+                        <p class="cx-card-sub" id="l-sous-titre">Cochez les expéditions à reprendre sur la facture</p>
+                    </div>
+                </div>
+
+                <div class="cx-tabs" id="tabs" style="margin-top:10px">
+                    <a data-tab="facturer" class="active"><i class="fa fa-check-circle-o"></i> Expéditions à facturer <span class="cx-count" id="cnt-facturer">0</span></a>
+                    <a data-tab="regulariser"><i class="fa fa-exclamation-triangle"></i> Expéditions à régulariser <span class="cx-count" id="cnt-regulariser">0</span></a>
+                </div>
+
+                <div class="cx-toolbar">
+                    <div class="cx-field cx-grow cx-search">
+                        <i class="fa fa-search"></i>
+                        <input type="text" id="q" class="form-control" placeholder="Rechercher : N° RT, N° de feuille, destinataire, contenu…">
+                    </div>
+                    <div class="cx-field" id="tb-facturer">
+                        <button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" id="btn-tout">
+                            <i class="fa fa-check-square-o"></i> Tout cocher</button>
+                        <button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" id="btn-aucun">
+                            <i class="fa fa-square-o"></i> Tout décocher</button>
+                    </div>
+                </div>
+
+                <!-- Onglet « À facturer » : tableau sélectionnable -->
+                <div id="pane-facturer">
+                    <div id="dt-facturer"></div>
+                </div>
+
+                <!-- Onglet « À régulariser » : actions en ligne -->
+                <div id="pane-regulariser" class="cx-hidden">
+                    <div class="cx-note cx-note-warn" style="margin:0 16px 12px">
+                        <i class="fa fa-info-circle"></i>
+                        <div>Une expédition ne peut être facturée que si elle est <b>livrée</b>, que son <b>montant</b> est connu et que la
+                            <b>preuve de livraison</b> (feuille du carnet signée par le destinataire) est revenue au siège.
+                            Régularisez la ligne : elle passe alors dans l'onglet « À facturer ».</div>
+                    </div>
+                    <div id="dt-regulariser"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colonne de droite : récapitulatif de la facture en préparation -->
+        <aside class="cx-aside">
+            <div class="cx-summary">
+                <div class="cx-summary-hero">
+                    <div class="cx-hero-top"><span>Facture en préparation</span><i class="fa fa-file-text-o"></i></div>
+                    <div class="cx-hero-title" id="s-client">Aucun client</div>
+                    <div class="cx-hero-sub" id="s-client-sub">Cochez des expéditions dans la liste</div>
+                    <div class="cx-hero-tags">
+                        <span id="s-periode"><i class="fa fa-calendar"></i> —</span>
+                        <span class="light" id="s-nb">0 expédition</span>
+                    </div>
+                </div>
+                <div class="cx-summary-body">
+                    <div class="cx-note cx-note-err cx-hidden" id="s-multi">
+                        <i class="fa fa-ban"></i>
+                        <div><b>Plusieurs clients sélectionnés.</b> Une facture ne concerne qu'un seul client :
+                            décochez les expéditions des autres clients.<div id="s-multi-liste" class="fe-multi-liste"></div></div>
+                    </div>
+                    <div class="cx-sum-line"><span>Total HT</span><b id="s-ht">0 FCFA</b></div>
+                    <div class="cx-sum-line">
+                        <span>Remise <small class="cx-muted" id="s-remise-info"></small></span>
+                        <div class="fe-remise">
+                            <div class="input-group input-group-sm">
+                                <input type="text" id="s-remisePct" class="form-control" value="0" inputmode="decimal">
+                                <span class="input-group-addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cx-sum-line"><span>Montant de la remise</span><b id="s-remise">0 FCFA</b></div>
+                    <div class="cx-sum-line"><span>Net HT</span><b id="s-net">0 FCFA</b></div>
+                    <div class="cx-sum-line"><span>TVA <span id="s-taux"></span></span><b id="s-tva">0 FCFA</b></div>
+                    <div class="cx-sum-total"><span>Total TTC</span><b id="s-ttc">0<small>FCFA</small></b></div>
+                    <div class="fe-lettres" id="s-lettres"></div>
+                </div>
+                <div class="cx-summary-foot">
+                    <button type="button" class="cx-btn cx-btn-new cx-btn-lg cx-btn-block" id="btn-creer" disabled>
+                        <i class="fa fa-file-text-o"></i> Créer la facture</button>
+                    <p class="cx-help" style="text-align:center">Un aperçu vous sera présenté avant l'enregistrement.</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur.</p>
+</main>
+
+<!-- =============================================================
+     Modale : aperçu avant création de la facture
+     ============================================================= -->
+<div class="modal fade" id="m-creer" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg"><div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-file-text-o"></i>Aperçu de la facture</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-7">
+                    <div class="cx-block">
+                        <div class="cx-block-title">Client facturé</div>
+                        <div class="cx-strong" id="c-client" style="font-size:15px"></div>
+                        <div class="cx-cell-sub" id="c-client-sub"></div>
+                        <hr class="cx-sep" style="margin:10px 0">
+                        <dl class="cx-dl fe-dl">
+                            <dt>Période facturée</dt><dd id="c-periode"></dd>
+                            <dt>Expéditions</dt><dd id="c-nb"></dd>
+                            <dt>Feuilles de carnet</dt><dd id="c-feuilles"></dd>
+                        </dl>
+                    </div>
+                    <div class="row" style="margin-top:14px">
+                        <div class="col-sm-6 cx-field">
+                            <label class="cx-label req" for="c-dateEmission">Date d'émission</label>
+                            <input type="date" id="c-dateEmission" class="form-control">
+                        </div>
+                        <div class="col-sm-6 cx-field">
+                            <label class="cx-label" for="c-dateEcheance">Date d'échéance</label>
+                            <input type="date" id="c-dateEcheance" class="form-control" readonly>
+                            <span class="cx-help" id="c-delai"></span>
+                        </div>
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="c-notes">Notes <span class="cx-opt">(imprimées sur la facture)</span></label>
+                        <textarea id="c-notes" class="form-control" rows="2" placeholder="Ex. : Bon de commande n° …, référence interne client…"></textarea>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="cx-block">
+                        <div class="cx-block-title">Montants</div>
+                        <div class="cx-sum-line"><span>Total HT</span><b id="c-ht"></b></div>
+                        <div class="cx-sum-line"><span>Remise <span id="c-remisePct"></span></span><b id="c-remise"></b></div>
+                        <div class="cx-sum-line"><span>Net HT</span><b id="c-net"></b></div>
+                        <div class="cx-sum-line"><span>TVA <span id="c-taux"></span></span><b id="c-tva"></b></div>
+                        <div class="cx-sum-total"><span>Total TTC</span><b id="c-ttc"></b></div>
+                        <div class="fe-lettres" id="c-lettres"></div>
+                    </div>
+                    <label class="cx-label" style="margin-top:14px">Enregistrer la facture comme…</label>
+                    <div class="cx-seg" style="grid-template-columns:1fr">
+                        <label class="cx-seg-item"><input type="radio" name="c-mode" value="EMISE" checked>
+                            <span><i class="fa fa-paper-plane-o"></i><b>Émettre la facture</b><small>Numéro définitif, compte dans l'encours client</small></span></label>
+                        <label class="cx-seg-item"><input type="radio" name="c-mode" value="BROUILLON">
+                            <span><i class="fa fa-pencil"></i><b>Brouillon</b><small>À relire avant émission (filigrane « BROUILLON »)</small></span></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="cx-btn cx-btn-ghost" data-dismiss="modal">Retour</button>
+            <button type="button" class="cx-btn cx-btn-new" id="c-valider"><i class="fa fa-check"></i> Créer la facture</button>
+        </div>
+    </div></div>
+</div>
+
+<!-- =============================================================
+     Modale : réception de la preuve de livraison
+     ============================================================= -->
+<div class="modal fade" id="m-preuve" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="max-width:480px"><div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-check-square-o"></i>Preuve de livraison reçue</h4>
+        </div>
+        <div class="modal-body">
+            <p>La feuille <b id="p-feuille"></b> (expédition <b id="p-rt" class="cx-mono"></b>), signée par le destinataire
+                <b id="p-dest"></b>, est revenue au service facturation.</p>
+            <div class="cx-field">
+                <label class="cx-label req" for="p-dateLiv">Date de livraison (indiquée sur la feuille)</label>
+                <input type="date" id="p-dateLiv" class="form-control">
+            </div>
+            <div class="cx-note cx-note-info cx-hidden" id="p-transit">
+                <i class="fa fa-truck"></i><div>Cette expédition est encore « en transit » : elle sera marquée <b>livrée</b>.</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="cx-btn cx-btn-ghost" data-dismiss="modal">Annuler</button>
+            <button type="button" class="cx-btn cx-btn-success" id="p-ok"><i class="fa fa-check"></i> Confirmer la réception</button>
+        </div>
+    </div></div>
+</div>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/facture-emettre.js"></script>
+</body>
+</html>

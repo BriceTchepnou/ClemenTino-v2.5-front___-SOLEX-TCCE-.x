@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Compte client - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/client-form.css">
+</head>
+<body class="cx-app" data-page="client-form">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> / <a href="clients-liste.html">Comptes clients</a> / <span id="crumb-current">Nouveau</span></div>
+            <h1 class="cx-title"><span id="page-title">Nouveau compte client</span> <small id="page-sub">Les champs marqués * sont obligatoires</small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <a class="cx-btn cx-btn-ghost" href="clients-liste.html"><i class="fa fa-list"></i> Liste des clients</a>
+        </div>
+    </div>
+
+    <!-- Client introuvable (mode modification avec un id inconnu) -->
+    <div class="cx-card cx-hidden" id="not-found">
+        <div class="cx-empty">
+            <i class="fa fa-exclamation-circle"></i><b>Client introuvable</b>
+            Ce compte client n'existe pas ou a été supprimé.<br><br>
+            <a class="cx-btn cx-btn-primary" href="clients-liste.html">Retour à la liste</a>
+        </div>
+    </div>
+
+    <form id="f-client" class="cx-layout" novalidate autocomplete="off">
+        <!-- ================= Colonne principale ================= -->
+        <div>
+
+            <!-- 1. Entreprise -->
+            <section class="cx-card" id="card-entreprise">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="entreprise">1</span>
+                    <div>
+                        <h3 class="cx-card-title">L'entreprise</h3>
+                        <p class="cx-card-sub">Identité, identifiants fiscaux et coordonnées</p>
+                    </div>
+                    <div class="cx-card-tools">
+                        <span class="cx-code-chip"><i class="fa fa-hashtag"></i> Code client : <b id="code-display">attribué à l'enregistrement</b></span>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="raisonSociale">Raison sociale</label>
+                                <input type="text" class="form-control" id="raisonSociale" name="raisonSociale" maxlength="150" placeholder="Ex. : PHARMACIE DU LITTORAL SARL">
+                                <span class="cx-help cx-hidden" id="dup-help"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="sigle">Sigle <span class="cx-opt">(facultatif)</span></label>
+                                <input type="text" class="form-control" id="sigle" name="sigle" maxlength="20" placeholder="Ex. : PDL">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="secteur">Secteur d'activité</label>
+                                <select class="form-control" id="secteur" name="secteur"></select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="rccm" id="lbl-rccm">Registre de commerce (RCCM)</label>
+                                <input type="text" class="form-control cx-upper" id="rccm" name="rccm" maxlength="40" placeholder="RC/DLA/2020/B/1234">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="niu" id="lbl-niu">Carte de contribuable (NIU)</label>
+                                <input type="text" class="form-control cx-upper" id="niu" name="niu" maxlength="20" placeholder="M012345678901Z">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="ville">Ville</label>
+                                <select class="form-control" id="ville" name="ville"></select>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="cx-field">
+                                <label class="cx-label" for="localisation">Localisation</label>
+                                <input type="text" class="form-control" id="localisation" name="localisation" maxlength="150" placeholder="Quartier, rue, repère (ex. : Akwa, face pharmacie du Centre)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="telStandard">Téléphone standard</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-phone"></i></span>
+                                    <input type="tel" class="form-control" id="telStandard" name="telStandard" data-phone placeholder="233 42 12 34">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="email">Email de l'entreprise</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
+                                    <input type="email" class="form-control" id="email" name="email" data-email placeholder="contact@entreprise.cm">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="adresse">Adresse postale</label>
+                                <input type="text" class="form-control" id="adresse" name="adresse" maxlength="150" placeholder="BP 1234 Douala">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="cx-field">
+                                <label class="cx-label" for="activites">Activités de l'entreprise</label>
+                                <textarea class="form-control" id="activites" name="activites" rows="3" placeholder="Ce que fait l'entreprise, nature habituelle des envois…"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="cx-field">
+                                <label class="cx-label" for="note">Note interne</label>
+                                <textarea class="form-control" id="note" name="note" rows="3" placeholder="Informations utiles à l'équipe (non imprimées sur les documents)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Contacts -->
+            <section class="cx-card" id="card-contacts">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="contacts">2</span>
+                    <div>
+                        <h3 class="cx-card-title">Contacts</h3>
+                        <p class="cx-card-sub">Interlocuteurs de l'entreprise pour les enlèvements, la facturation et les relances</p>
+                    </div>
+                </div>
+                <div class="cx-tabs cx-contact-tabs" id="contact-tabs" style="margin-top:10px">
+                    <a class="active" data-tab="PRINCIPAL"><i class="fa fa-star"></i> Contact principal <i class="fa fa-check-circle cx-tab-ok cx-hidden"></i></a>
+                    <a data-tab="SECOND"><i class="fa fa-user"></i> Second contact <i class="fa fa-check-circle cx-tab-ok cx-hidden"></i></a>
+                    <a data-tab="DG"><i class="fa fa-briefcase"></i> Directeur général <i class="fa fa-check-circle cx-tab-ok cx-hidden"></i></a>
+                </div>
+                <div class="cx-card-body">
+
+                    <!-- Contact principal -->
+                    <div class="cx-contact-pane" data-pane="PRINCIPAL">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="PRINCIPAL_nom" id="lbl-principal-nom">Nom &amp; prénoms</label>
+                                    <input type="text" class="form-control" id="PRINCIPAL_nom" name="PRINCIPAL_nom" maxlength="100" placeholder="Ex. : Mme NGO BASSA Esther">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="PRINCIPAL_titre">Titre / fonction</label>
+                                    <input type="text" class="form-control" id="PRINCIPAL_titre" name="PRINCIPAL_titre" maxlength="60" placeholder="Responsable courrier">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="PRINCIPAL_tel1" id="lbl-principal-tel">Téléphone 1</label>
+                                    <input type="tel" class="form-control" id="PRINCIPAL_tel1" name="PRINCIPAL_tel1" data-phone placeholder="6XX XX XX XX">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="PRINCIPAL_tel2">Téléphone 2 <span class="cx-opt">(facultatif)</span></label>
+                                    <input type="tel" class="form-control" id="PRINCIPAL_tel2" name="PRINCIPAL_tel2" data-phone placeholder="6XX XX XX XX">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="PRINCIPAL_email">Email</label>
+                                    <input type="email" class="form-control" id="PRINCIPAL_email" name="PRINCIPAL_email" data-email placeholder="nom@entreprise.cm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Second contact -->
+                    <div class="cx-contact-pane cx-hidden" data-pane="SECOND">
+                        <div class="cx-pane-tools">
+                            <button type="button" class="cx-btn cx-btn-soft cx-btn-xs" data-copy-principal="SECOND"><i class="fa fa-clone"></i> Copier le contact principal</button>
+                            <button type="button" class="cx-btn cx-btn-link cx-btn-xs" data-clear-contact="SECOND"><i class="fa fa-eraser"></i> Vider</button>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="SECOND_nom">Nom &amp; prénoms</label>
+                                    <input type="text" class="form-control" id="SECOND_nom" name="SECOND_nom" maxlength="100">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="SECOND_titre">Titre / fonction</label>
+                                    <input type="text" class="form-control" id="SECOND_titre" name="SECOND_titre" maxlength="60">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="SECOND_tel1">Téléphone 1</label>
+                                    <input type="tel" class="form-control" id="SECOND_tel1" name="SECOND_tel1" data-phone placeholder="6XX XX XX XX">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="SECOND_tel2">Téléphone 2</label>
+                                    <input type="tel" class="form-control" id="SECOND_tel2" name="SECOND_tel2" data-phone placeholder="6XX XX XX XX">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="SECOND_email">Email</label>
+                                    <input type="email" class="form-control" id="SECOND_email" name="SECOND_email" data-email>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Directeur général -->
+                    <div class="cx-contact-pane cx-hidden" data-pane="DG">
+                        <div class="cx-pane-tools">
+                            <button type="button" class="cx-btn cx-btn-soft cx-btn-xs" data-copy-principal="DG"><i class="fa fa-clone"></i> Copier le contact principal</button>
+                            <button type="button" class="cx-btn cx-btn-link cx-btn-xs" data-clear-contact="DG"><i class="fa fa-eraser"></i> Vider</button>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="DG_nom">Nom &amp; prénoms</label>
+                                    <input type="text" class="form-control" id="DG_nom" name="DG_nom" maxlength="100">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="DG_tel1">Téléphone 1</label>
+                                    <input type="tel" class="form-control" id="DG_tel1" name="DG_tel1" data-phone placeholder="6XX XX XX XX">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="DG_tel2">Téléphone 2</label>
+                                    <input type="tel" class="form-control" id="DG_tel2" name="DG_tel2" data-phone placeholder="6XX XX XX XX">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="DG_email">Email</label>
+                                    <input type="email" class="form-control" id="DG_email" name="DG_email" data-email>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="cx-help"><i class="fa fa-info-circle"></i> Formats acceptés : 699 12 34 56, 699123456, +237 699 12 34 56. Les numéros sont remis en forme automatiquement.</span>
+                </div>
+            </section>
+
+            <!-- 3. Type de compte & conditions commerciales -->
+            <section class="cx-card" id="card-compte">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="compte">3</span>
+                    <div>
+                        <h3 class="cx-card-title">Type de compte &amp; conditions commerciales</h3>
+                        <p class="cx-card-sub">Mode de règlement des expéditions et facturation de fin de période</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="cx-seg" id="seg-type">
+                        <label class="cx-seg-item">
+                            <input type="radio" name="typeCompte" value="COMPTANT" checked>
+                            <span><i class="fa fa-money"></i><b>Au comptant</b><small>Paie chaque expédition au guichet</small></span>
+                        </label>
+                        <label class="cx-seg-item">
+                            <input type="radio" name="typeCompte" value="COMPTE">
+                            <span><i class="fa fa-calendar-check-o"></i><b>En compte</b><small>Facturé en fin de période</small></span>
+                        </label>
+                        <label class="cx-seg-item">
+                            <input type="radio" name="typeCompte" value="FORFAIT">
+                            <span><i class="fa fa-refresh"></i><b>Forfait</b><small>Montant fixe par période</small></span>
+                        </label>
+                    </div>
+
+                    <!-- Conditions du compte (en compte / forfait) -->
+                    <div class="cx-block cx-hidden" id="bloc-compte" style="margin-top:14px">
+                        <div class="cx-block-title">Facturation de fin de période</div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="periodicite">Périodicité de facturation</label>
+                                    <select class="form-control" id="periodicite" name="periodicite">
+                                        <option value="MENSUELLE">Mensuelle (fin de mois)</option>
+                                        <option value="QUINZAINE">Par quinzaine</option>
+                                        <option value="HEBDOMADAIRE">Hebdomadaire</option>
+                                        <option value="TRIMESTRIELLE">Trimestrielle</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="delaiPaiement">Délai de paiement</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="delaiPaiement" name="delaiPaiement" min="0" max="180" step="1">
+                                        <span class="input-group-addon">jours</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="plafondCredit">Plafond de crédit</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="plafondCredit" name="plafondCredit" min="0" step="50000" placeholder="0 = sans plafond">
+                                        <span class="input-group-addon">FCFA</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="remisePct">Remise accordée</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="remisePct" name="remisePct" min="0" max="100" step="0.5">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="emailFacturation">Email de facturation</label>
+                                    <div class="input-group">
+                                        <input type="email" class="form-control" id="emailFacturation" name="emailFacturation" data-email placeholder="comptabilite@entreprise.cm">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" id="btn-copy-email" title="Reprendre l'email de l'entreprise ou du contact principal" data-toggle="tooltip"><i class="fa fa-magic"></i></button>
+                                        </span>
+                                    </div>
+                                    <span class="cx-help">Les factures et relances seront envoyées à cette adresse.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cx-note cx-note-info" style="margin-bottom:0">
+                            <i class="fa fa-info-circle"></i>
+                            <div>Un client en compte doit avoir son <b>NIU</b>, son <b>RCCM</b>, un <b>contact principal avec téléphone</b> et un <b>email de facturation</b>.</div>
+                        </div>
+                    </div>
+
+                    <!-- Forfait -->
+                    <div class="cx-block cx-hidden" id="bloc-forfait" style="margin-top:12px">
+                        <div class="cx-block-title">Forfait</div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="cx-field" style="margin-bottom:0">
+                                    <label class="cx-label req" for="montantForfait">Montant du forfait (HT, par période)</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="montantForfait" name="montantForfait" min="0" step="5000">
+                                        <span class="input-group-addon">FCFA</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="cx-help" style="margin-top:26px">Facturé à chaque période quel que soit le nombre d'expéditions.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="cx-sep">
+
+                    <!-- Tarification automatique -->
+                    <label class="cx-switch">
+                        <input type="checkbox" name="tarifAuto" id="tarifAuto">
+                        <span class="cx-switch-track"></span>
+                        <span class="cx-switch-text"><b>Activer la tarification automatique</b><small>Le tarif négocié du client est appliqué automatiquement au guichet</small></span>
+                    </label>
+                    <div class="cx-hidden" id="bloc-tarif" style="margin:12px 0 0 48px">
+                        <div class="cx-seg cx-seg-soft" style="max-width:520px">
+                            <label class="cx-seg-item">
+                                <input type="radio" name="tarifPortee" value="TOUTES" checked>
+                                <span><i class="fa fa-globe"></i><b>Toutes les agences</b><small>Partout dans le réseau</small></span>
+                            </label>
+                            <label class="cx-seg-item">
+                                <input type="radio" name="tarifPortee" value="CERTAINES">
+                                <span><i class="fa fa-map-marker"></i><b>Certaines agences</b><small>Uniquement celles choisies</small></span>
+                            </label>
+                        </div>
+                        <div class="cx-field cx-hidden" id="bloc-tarif-agences" style="margin-top:10px">
+                            <label class="cx-label" for="tarifAgences">Agences appliquant le tarif</label>
+                            <select class="form-control" id="tarifAgences" name="tarifAgences" multiple style="width:100%"></select>
+                        </div>
+                    </div>
+
+                    <hr class="cx-sep">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="cx-field">
+                                <label class="cx-label" for="agenceId">Agence de rattachement</label>
+                                <select class="form-control" id="agenceId" name="agenceId" style="width:100%"></select>
+                                <span class="cx-help">Agence qui suit le compte et émet les factures.</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="cx-field">
+                                <label class="cx-label" for="commercial">Commercial en charge</label>
+                                <select class="form-control" id="commercial" name="commercial" style="width:100%"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Documents -->
+            <section class="cx-card" id="card-documents">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="documents">4</span>
+                    <div>
+                        <h3 class="cx-card-title">Documents</h3>
+                        <p class="cx-card-sub">Fiche client signée (PDF, 5 Mo maximum)</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <label class="cx-drop" id="drop-fiche" for="ficheFile">
+                        <input type="file" id="ficheFile" accept="application/pdf,.pdf">
+                        <i class="fa fa-file-pdf-o"></i>
+                        <span><b>Choisir la fiche client</b><small>ou glisser-déposer le fichier PDF ici</small></span>
+                    </label>
+                    <div class="cx-file cx-hidden" id="fiche-current">
+                        <i class="fa fa-file-pdf-o"></i>
+                        <div class="cx-file-name"><b id="fiche-name"></b><small id="fiche-meta"></small></div>
+                        <button type="button" class="cx-btn cx-btn-ghost cx-btn-xs" id="btn-fiche-change"><i class="fa fa-exchange"></i> Remplacer</button>
+                        <button type="button" class="cx-btn cx-btn-danger cx-btn-xs" id="btn-fiche-remove"><i class="fa fa-trash-o"></i> Retirer</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= Colonne de droite (collante) ================= -->
+        <aside class="cx-aside">
+            <div class="cx-summary">
+                <div class="cx-summary-hero">
+                    <div class="cx-hero-top"><span id="ap-mode">Nouveau compte</span><span id="ap-statut"></span></div>
+                    <div class="cx-ap-who">
+                        <span class="cx-avatar cx-avatar-lg" id="ap-avatar">?</span>
+                        <div style="min-width:0">
+                            <div class="cx-hero-title" id="ap-nom">Raison sociale</div>
+                            <div class="cx-hero-sub" id="ap-sub">Code attribué à l'enregistrement</div>
+                        </div>
+                    </div>
+                    <div class="cx-hero-tags" id="ap-tags"></div>
+                </div>
+                <div class="cx-summary-body">
+                    <div class="cx-ap-progress">
+                        <span>Complétude de la fiche</span><b id="ap-pct">0 %</b>
+                    </div>
+                    <div class="cx-bar" style="margin:6px 0 12px"><i id="ap-bar" style="width:0"></i></div>
+                    <ul class="cx-checklist" id="ap-checklist"></ul>
+                    <div class="cx-note cx-note-warn cx-hidden" id="ap-dup"><i class="fa fa-exclamation-triangle"></i><div id="ap-dup-text"></div></div>
+                </div>
+                <div class="cx-summary-foot">
+                    <button type="submit" class="cx-btn cx-btn-primary cx-btn-lg cx-btn-block" id="btn-save"><i class="fa fa-check"></i> Enregistrer</button>
+                    <button type="button" class="cx-btn cx-btn-ghost cx-btn-block" id="btn-save-new" style="margin-top:8px"><i class="fa fa-plus"></i> Enregistrer et créer un autre</button>
+                    <button type="button" class="cx-btn cx-btn-link cx-btn-block" id="btn-cancel" style="margin-top:4px">Annuler</button>
+                </div>
+            </div>
+        </aside>
+    </form>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/client-form.js"></script>
+</body>
+</html>

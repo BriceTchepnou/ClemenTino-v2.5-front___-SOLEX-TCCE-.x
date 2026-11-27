@@ -1,0 +1,14 @@
+/* =====================================================================
+   Commercial · Suivi des factures - styles spécifiques (préfixe « fs- »)
+   ===================================================================== */
+.fs-client { min-width: 240px; }
+.cx-app .fs-client .select2-container--default .select2-selection--single { min-height: 36px; height: 36px; }
+.cx-app .fs-client .select2-container--default .select2-selection--single .select2-selection__rendered { line-height: 34px; }
+.cx-app .fs-client .select2-container--default .select2-selection--single .select2-selection__arrow { height: 34px; }
+
+/* Boutons d'action par ligne (icônes seules + info-bulle) */
+.fs-actions { display: inline-flex; gap: 4px; justify-content: flex-end; flex-wrap: nowrap; }
+.fs-actions .cx-btn-xs { width: 28px; height: 28px; padding: 0; }
+
+.fs-retard { color: var(--cx-red) !important; font-weight: 600; }
+#r-texte { font-size: 12.5px; line-height: 1.5; }

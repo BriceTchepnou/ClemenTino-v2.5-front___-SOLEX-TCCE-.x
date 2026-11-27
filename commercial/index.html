@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Tableau de bord - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+</head>
+<body class="cx-app" data-page="dashboard">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb">Commercial</div>
+            <h1 class="cx-title">Tableau de bord commercial <small id="d-periode"></small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <a class="cx-btn cx-btn-ghost" href="client-form.html"><i class="fa fa-building-o"></i> Nouveau client</a>
+            <a class="cx-btn cx-btn-ghost" href="cotations-liste.html#nouvelle"><i class="fa fa-calculator"></i> Nouvelle cotation</a>
+            <a class="cx-btn cx-btn-primary" href="facture-emettre.html"><i class="fa fa-file-text-o"></i> Émettre une facture</a>
+        </div>
+    </div>
+
+    <!-- Indicateurs -->
+    <div class="cx-kpis" id="kpis"></div>
+
+    <div class="row">
+        <!-- Colonne gauche -->
+        <div class="col-md-7">
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <div>
+                        <h3 class="cx-card-title">Expéditions à facturer par client</h3>
+                        <p class="cx-card-sub">Expéditions livrées des clients en compte, pas encore facturées</p>
+                    </div>
+                    <div class="cx-card-tools"><a href="facture-emettre.html">Tout voir <i class="fa fa-angle-right"></i></a></div>
+                </div>
+                <div class="cx-card-body cx-flush" style="margin-top:12px">
+                    <div class="cx-table-wrap">
+                        <table class="cx-table">
+                            <thead><tr><th>Client</th><th class="num">Expéditions</th><th class="num">À régulariser</th><th class="num">Montant HT</th><th></th></tr></thead>
+                            <tbody id="t-afacturer"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <div>
+                        <h3 class="cx-card-title">Factures échues ou bientôt échues</h3>
+                        <p class="cx-card-sub">À relancer en priorité</p>
+                    </div>
+                    <div class="cx-card-tools"><a href="factures-suivi.html">Suivi des factures <i class="fa fa-angle-right"></i></a></div>
+                </div>
+                <div class="cx-card-body cx-flush" style="margin-top:12px">
+                    <div class="cx-table-wrap">
+                        <table class="cx-table">
+                            <thead><tr><th>Facture</th><th>Client</th><th>Échéance</th><th class="num">Reste à payer</th><th></th></tr></thead>
+                            <tbody id="t-echues"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colonne droite -->
+        <div class="col-md-5">
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <div><h3 class="cx-card-title">Cotations en cours</h3><p class="cx-card-sub">Par étape du circuit de validation</p></div>
+                    <div class="cx-card-tools"><a href="cotations-liste.html">Suivi <i class="fa fa-angle-right"></i></a></div>
+                </div>
+                <div class="cx-card-body" id="b-cotations"></div>
+            </div>
+
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <div><h3 class="cx-card-title">Meilleurs clients</h3><p class="cx-card-sub">Chiffre d'affaires facturé (TTC) depuis le début de l'année</p></div>
+                </div>
+                <div class="cx-card-body" id="b-top"></div>
+            </div>
+        </div>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur ·
+        <a href="#" id="resetDemo">Réinitialiser les données</a></p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/dashboard.js"></script>
+</body>
+</html>

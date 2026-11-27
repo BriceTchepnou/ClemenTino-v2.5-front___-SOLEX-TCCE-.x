@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Fiche client - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/client-fiche.css">
+</head>
+<body class="cx-app" data-page="client-fiche">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <!-- Client introuvable -->
+    <div class="cx-card cx-hidden" id="not-found">
+        <div class="cx-empty">
+            <i class="fa fa-exclamation-circle"></i><b>Client introuvable</b>
+            Ce compte client n'existe pas ou a été supprimé.<br><br>
+            <a class="cx-btn cx-btn-primary" href="clients-liste.html">Retour à la liste</a>
+        </div>
+    </div>
+
+    <div id="fiche" class="cx-hidden">
+        <!-- En-tête de la fiche -->
+        <div class="cx-page-head">
+            <div class="cx-fiche-who">
+                <span class="cx-avatar cx-avatar-xl" id="h-avatar"></span>
+                <div>
+                    <div class="cx-crumb"><a href="index.html">Commercial</a> / <a href="clients-liste.html">Comptes clients</a> / <span id="h-crumb"></span></div>
+                    <h1 class="cx-title"><span id="h-nom"></span> <small id="h-sigle"></small></h1>
+                    <div class="cx-fiche-meta" id="h-meta"></div>
+                </div>
+            </div>
+            <div class="cx-page-actions">
+                <a class="cx-btn cx-btn-ghost" id="a-modifier" href="#"><i class="fa fa-pencil"></i> Modifier</a>
+                <a class="cx-btn cx-btn-ghost" id="a-cotation" href="#"><i class="fa fa-calculator"></i> Nouvelle cotation</a>
+                <a class="cx-btn cx-btn-primary" id="a-facturer" href="#"><i class="fa fa-file-text-o"></i> Facturer</a>
+                <button type="button" class="cx-btn cx-btn-danger" id="a-suspendre"><i class="fa fa-pause-circle"></i> Suspendre</button>
+            </div>
+        </div>
+
+        <!-- Bandeau d'alerte (compte suspendu, plafond dépassé…) -->
+        <div id="h-alertes"></div>
+
+        <!-- Indicateurs -->
+        <div class="cx-kpis" id="kpis"></div>
+
+        <!-- Onglets -->
+        <div class="cx-card">
+            <div class="cx-tabs" id="tabs">
+                <a data-tab="infos" class="active"><i class="fa fa-info-circle"></i> Informations</a>
+                <a data-tab="contacts"><i class="fa fa-users"></i> Contacts <span class="cx-count" id="n-contacts">0</span></a>
+                <a data-tab="expeditions"><i class="fa fa-cube"></i> Expéditions <span class="cx-count" id="n-expeditions">0</span></a>
+                <a data-tab="factures"><i class="fa fa-file-text-o"></i> Factures <span class="cx-count" id="n-factures">0</span></a>
+                <a data-tab="cotations"><i class="fa fa-calculator"></i> Cotations <span class="cx-count" id="n-cotations">0</span></a>
+                <a data-tab="historique"><i class="fa fa-history"></i> Historique <span class="cx-count" id="n-historique">0</span></a>
+            </div>
+
+            <!-- Informations -->
+            <div class="cx-tab-pane" data-pane="infos">
+                <div class="cx-card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="cx-block-title">L'entreprise</div>
+                            <dl class="cx-dl" id="dl-entreprise"></dl>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cx-block-title cx-mt-sm">Compte &amp; conditions commerciales</div>
+                            <dl class="cx-dl" id="dl-compte"></dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contacts -->
+            <div class="cx-tab-pane cx-hidden" data-pane="contacts">
+                <div class="cx-card-body">
+                    <div class="cx-contacts" id="contacts"></div>
+                </div>
+            </div>
+
+            <!-- Expéditions -->
+            <div class="cx-tab-pane cx-hidden" data-pane="expeditions">
+                <div class="cx-toolbar">
+                    <div class="cx-field cx-grow">
+                        <div class="cx-search"><i class="fa fa-search"></i>
+                            <input type="search" class="form-control" id="q-exp" placeholder="N° RT, destinataire, ville, contenu…"></div>
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-switch">
+                            <input type="checkbox" id="f-exp-nonfact">
+                            <span class="cx-switch-track"></span>
+                            <span class="cx-switch-text"><b>Non facturées uniquement</b></span>
+                        </label>
+                    </div>
+                    <div class="cx-field">
+                        <a class="cx-btn cx-btn-soft cx-btn-sm" id="a-facturer-exp" href="#"><i class="fa fa-file-text-o"></i> Facturer les expéditions</a>
+                    </div>
+                </div>
+                <div id="dt-exp"></div>
+            </div>
+
+            <!-- Factures -->
+            <div class="cx-tab-pane cx-hidden" data-pane="factures">
+                <div id="dt-fac"></div>
+            </div>
+
+            <!-- Cotations -->
+            <div class="cx-tab-pane cx-hidden" data-pane="cotations">
+                <div class="cx-toolbar" style="justify-content:flex-end">
+                    <a class="cx-btn cx-btn-soft cx-btn-sm" id="a-cotation-2" href="#"><i class="fa fa-plus"></i> Nouvelle cotation</a>
+                </div>
+                <div id="dt-cot"></div>
+            </div>
+
+            <!-- Historique -->
+            <div class="cx-tab-pane cx-hidden" data-pane="historique">
+                <div class="cx-card-body">
+                    <ul class="cx-timeline" id="timeline"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/client-fiche.js"></script>
+</body>
+</html>

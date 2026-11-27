@@ -1,0 +1,86 @@
+/* =====================================================================
+   Commercial · Formulaire de cotation - styles propres à la page
+   ===================================================================== */
+
+.cx-app .select2-container { width: 100% !important; }
+
+/* Bloc DÉPART -> DESTINATION */
+.cf-route { display: grid; grid-template-columns: 1fr 36px 1fr; gap: 8px; align-items: center; margin-top: 16px; }
+.cf-route .cx-block { height: 100%; }
+.cf-route-arrow { text-align: center; color: var(--cx-muted); font-size: 20px; }
+@media (max-width: 767px) {
+    .cf-route { grid-template-columns: 1fr; }
+    .cf-route-arrow { transform: rotate(90deg); }
+}
+
+/* ---------------------------------------------------------------------
+   Cartes « colis »
+   --------------------------------------------------------------------- */
+.cf-colis { border: 1px solid var(--cx-line); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; background: #fff; }
+.cf-colis.has-error { border-color: #f3c0c0; }
+.cf-colis-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.cf-colis-head .cf-colis-num {
+    background: var(--cx-ink); color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 11.5px; font-weight: 700;
+}
+.cf-colis-head .cf-colis-titre { font-weight: 700; color: var(--cx-ink); }
+.cf-colis-head .cf-colis-del { margin-left: auto; }
+.cf-colis .cx-field { margin-bottom: 12px; }
+.cf-dims { display: flex; align-items: center; gap: 6px; }
+.cf-dims .form-control { text-align: center; padding-left: 4px; padding-right: 4px; }
+.cf-dims span { color: var(--cx-muted); }
+
+/* Barres poids réel / poids volumétrique */
+.cf-poids { background: var(--cx-soft); border-radius: 10px; padding: 10px 12px; display: grid; grid-template-columns: 1fr 1fr auto; gap: 14px; align-items: center; }
+.cf-poids-item { font-size: 11.5px; color: var(--cx-muted); }
+.cf-poids-item b { color: var(--cx-ink); font-size: 12.5px; float: right; }
+.cf-poids-item .cx-bar { margin-top: 5px; }
+.cf-poids-item.win b { color: var(--cx-navy-2); }
+.cf-taxable { text-align: right; border-left: 1px dashed #cfd6e3; padding-left: 14px; }
+.cf-taxable small { display: block; font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; color: var(--cx-muted); font-weight: 700; }
+.cf-taxable b { font-size: 18px; color: var(--cx-ink); }
+@media (max-width: 767px) { .cf-poids { grid-template-columns: 1fr; } .cf-taxable { text-align: left; border: 0; padding: 0; } }
+
+/* Expéditeur / destinataire */
+.cf-partie { height: 100%; margin-bottom: 12px; }
+.cf-toggle { font-size: 12.5px; font-weight: 600; cursor: pointer; text-decoration: none !important; }
+
+/* ---------------------------------------------------------------------
+   FRET
+   --------------------------------------------------------------------- */
+.cf-vehicules { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.cf-vehicules .cx-seg-item > span em { display: block; font-style: normal; font-size: 11.5px; font-weight: 700; margin-top: 4px; color: var(--cx-navy-2); }
+.cf-vehicules .cx-seg-item input:checked + span em { color: #c7d7f5; }
+.cx-field.has-error .cf-vehicules .cx-seg-item > span { border-color: #f3c0c0; }
+.cf-opt { display: flex; align-items: flex-end; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--cx-line-2); }
+.cf-opt-label { flex: 1; }
+.cf-opt-label > b { display: block; color: var(--cx-ink); font-size: 13px; }
+.cf-opt-label > small { color: var(--cx-muted); font-size: 11.5px; }
+.cf-opt-prix { width: 210px; margin-bottom: 0 !important; }
+.cf-num { text-align: right; }
+.cx-app .form-control.has-error { border-color: var(--cx-red); }
+.cf-off { opacity: .45; }
+
+/* ---------------------------------------------------------------------
+   TARIFAIRE
+   --------------------------------------------------------------------- */
+.cf-grille-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 12px; }
+.cf-grille-tools .cx-field { margin: 0; }
+.cf-grille-tools .cf-remise { margin-left: auto; width: 150px; }
+.cf-grille-wrap { border: 1px solid var(--cx-line); border-radius: 10px; }
+.cf-grille td { padding: 6px 8px; }
+.cf-grille .form-control { height: 34px; font-size: 12.5px; }
+.cf-grille td.has-error .form-control { border-color: var(--cx-red); }
+.cf-grille tr.cf-doublon td { background: var(--cx-red-soft) !important; }
+
+/* ---------------------------------------------------------------------
+   Récapitulatif
+   --------------------------------------------------------------------- */
+.cf-hero-badge { background: rgba(255,255,255,.14) !important; color: #fff !important; letter-spacing: 0; text-transform: none; }
+.cx-summary-hero .cx-hero-route small { display: block; }
+.cx-sum-line span small { color: var(--cx-muted); font-size: 11px; }
+.cf-manq { margin: 4px 0 0; padding-left: 16px; font-size: 11.5px; }
+.cf-manq li { cursor: pointer; }
+.cf-manq li:hover { text-decoration: underline; }
+.cf-foot-btns { display: flex; gap: 8px; margin-top: 8px; }
+.cf-foot-btns .cx-btn { flex: 1; }
+.cx-summary-foot .cx-btn-primary:disabled { background: #94a3b8; }

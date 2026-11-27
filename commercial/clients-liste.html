@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Comptes clients - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/clients-liste.css">
+</head>
+<body class="cx-app" data-page="clients-liste">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> / Comptes clients</div>
+            <h1 class="cx-title">Comptes clients <small id="l-count"></small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-refresh"><i class="fa fa-refresh"></i> Rafraîchir</button>
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-export"><i class="fa fa-download"></i> Exporter (CSV)</button>
+            <a class="cx-btn cx-btn-new" href="client-form.html"><i class="fa fa-plus"></i> Nouveau client</a>
+        </div>
+    </div>
+
+    <!-- Indicateurs (cliquables : appliquent le filtre correspondant) -->
+    <div class="cx-kpis" id="kpis"></div>
+
+    <div class="cx-card">
+        <!-- Barre de filtres -->
+        <div class="cx-toolbar" id="filtres">
+            <div class="cx-field cx-grow">
+                <label class="cx-label" for="q">Recherche</label>
+                <div class="cx-search">
+                    <i class="fa fa-search"></i>
+                    <input type="search" class="form-control" id="q" placeholder="Nom, sigle, code, contact, téléphone, email…">
+                </div>
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="f-type">Type de compte</label>
+                <select class="form-control" id="f-type">
+                    <option value="">Tous</option>
+                    <option value="COMPTANT">Au comptant</option>
+                    <option value="COMPTE">En compte</option>
+                    <option value="FORFAIT">Forfait</option>
+                </select>
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="f-statut">Statut</label>
+                <select class="form-control" id="f-statut"></select>
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="f-ville">Ville</label>
+                <select class="form-control" id="f-ville"></select>
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="f-agence">Agence</label>
+                <select class="form-control" id="f-agence"></select>
+            </div>
+            <div class="cx-field cx-filter-switch">
+                <label class="cx-switch">
+                    <input type="checkbox" id="f-encompte">
+                    <span class="cx-switch-track"></span>
+                    <span class="cx-switch-text"><b>En compte uniquement</b></span>
+                </label>
+            </div>
+            <div class="cx-field">
+                <button type="button" class="cx-btn cx-btn-link cx-btn-sm cx-hidden" id="btn-reset"><i class="fa fa-times"></i> Effacer les filtres</button>
+            </div>
+        </div>
+
+        <!-- Tableau (CX.DataTable) -->
+        <div id="dt-clients"></div>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/clients-liste.js"></script>
+</body>
+</html>

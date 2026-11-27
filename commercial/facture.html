@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Facture - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/facture.css">
+</head>
+<body class="cx-app" data-page="facture">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main fx-main">
+
+    <!-- ===== Barre d'outils (non imprimée) ===== -->
+    <div class="cx-page-head cx-no-print">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> › <a href="factures-suivi.html">Suivi des factures</a></div>
+            <h1 class="cx-title">Facture <span id="h-numero" class="cx-mono"></span> <small id="h-statut"></small></h1>
+        </div>
+        <div class="cx-page-actions" id="fx-outils">
+            <a class="cx-btn cx-btn-ghost" href="factures-suivi.html" id="btn-retour"><i class="fa fa-arrow-left"></i> Retour au suivi</a>
+            <button type="button" class="cx-btn cx-btn-soft cx-hidden" id="btn-emettre"><i class="fa fa-check"></i> Émettre</button>
+            <button type="button" class="cx-btn cx-btn-ghost cx-hidden" id="btn-paiement"><i class="fa fa-money"></i> Enregistrer un paiement</button>
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-envoyer"><i class="fa fa-envelope-o"></i> Envoyer</button>
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-pdf"><i class="fa fa-file-pdf-o"></i> Télécharger en PDF</button>
+            <button type="button" class="cx-btn cx-btn-primary" id="btn-imprimer"><i class="fa fa-print"></i> Imprimer</button>
+        </div>
+    </div>
+    <div class="cx-no-print" id="fx-alertes"></div>
+
+    <!-- Facture introuvable -->
+    <div class="cx-card cx-hidden" id="fx-erreur">
+        <div class="cx-empty"><i class="fa fa-file-o"></i><b>Facture introuvable</b>
+            <span id="fx-erreur-texte"></span><br><br>
+            <a class="cx-btn cx-btn-primary" href="factures-suivi.html">Aller au suivi des factures</a></div>
+    </div>
+
+    <!-- =============================================================
+         Document A4
+         (Symfony : ce bloc peut aussi servir de gabarit Twig pour la
+          génération PDF serveur - wkhtmltopdf / KnpSnappyBundle)
+         ============================================================= -->
+    <article class="fx-sheet cx-hidden" id="fx-doc">
+        <div class="fx-watermark cx-hidden" id="fx-filigrane"></div>
+
+        <header class="fx-head">
+            <div class="fx-societe">
+                <div class="fx-logo">
+                    <span class="fx-logo-mark" id="fx-logo-mark"></span>
+                    <div>
+                        <div class="fx-logo-nom" id="fx-soc-nom"></div>
+                        <div class="fx-logo-slogan" id="fx-soc-slogan"></div>
+                    </div>
+                </div>
+                <div class="fx-soc-coord" id="fx-soc-coord"></div>
+            </div>
+            <div class="fx-titre">
+                <h1>FACTURE</h1>
+                <div class="fx-numero">N° <span id="fx-numero"></span></div>
+                <table class="fx-meta">
+                    <tr><th>Date d'émission</th><td id="fx-dateEmission"></td></tr>
+                    <tr><th>Date d'échéance</th><td id="fx-dateEcheance"></td></tr>
+                    <tr><th>Période facturée</th><td id="fx-periode"></td></tr>
+                    <tr><th>Code client</th><td id="fx-codeClient"></td></tr>
+                </table>
+            </div>
+        </header>
+
+        <section class="fx-parties">
+            <div class="fx-box fx-box-client">
+                <div class="fx-box-title">Facturé à</div>
+                <div class="fx-client-nom" id="fx-client-nom"></div>
+                <div id="fx-client-adresse"></div>
+                <div id="fx-client-ids" class="fx-small"></div>
+                <div id="fx-client-contact" class="fx-small"></div>
+            </div>
+            <div class="fx-box">
+                <div class="fx-box-title">Objet</div>
+                <div id="fx-objet"></div>
+                <div id="fx-notes" class="fx-small fx-notes"></div>
+            </div>
+        </section>
+
+        <table class="fx-lignes">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>N° RT</th>
+                    <th>N° LT manuel</th>
+                    <th>Trajet</th>
+                    <th>Destinataire</th>
+                    <th>Contenu</th>
+                    <th class="num">Colis</th>
+                    <th class="num">Poids (kg)</th>
+                    <th class="num">Montant HT</th>
+                </tr>
+            </thead>
+            <tbody id="fx-lignes"></tbody>
+            <tbody class="fx-soustotal">
+                <tr>
+                    <td colspan="6">Sous-total · <span id="fx-nb"></span></td>
+                    <td class="num" id="fx-tot-colis"></td>
+                    <td class="num" id="fx-tot-poids"></td>
+                    <td class="num" id="fx-soustotal"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <section class="fx-bas">
+            <div class="fx-bas-gauche">
+                <div class="fx-lettres">
+                    Arrêtée la présente facture à la somme de :
+                    <b id="fx-lettres"></b>
+                </div>
+                <div id="fx-paiements"></div>
+                <div class="fx-conditions">
+                    <div class="fx-box-title">Conditions de paiement</div>
+                    <p id="fx-conditions"></p>
+                    <div class="fx-box-title">Coordonnées bancaires</div>
+                    <p id="fx-banque"></p>
+                </div>
+            </div>
+            <div class="fx-totaux">
+                <table>
+                    <tr><th>Total HT</th><td id="fx-ht"></td></tr>
+                    <tr id="fx-row-remise"><th>Remise <span id="fx-remisePct"></span></th><td id="fx-remise"></td></tr>
+                    <tr><th>Net HT</th><td id="fx-net"></td></tr>
+                    <tr><th>TVA <span id="fx-taux"></span></th><td id="fx-tva"></td></tr>
+                    <tr class="fx-ttc"><th>Total TTC</th><td id="fx-ttc"></td></tr>
+                    <tr class="fx-row-paye cx-hidden" id="fx-row-paye"><th>Déjà réglé</th><td id="fx-paye"></td></tr>
+                    <tr class="fx-row-reste cx-hidden" id="fx-row-reste"><th>Reste à payer</th><td id="fx-reste"></td></tr>
+                </table>
+                <div class="fx-devise">Montants en francs CFA (XAF)</div>
+            </div>
+        </section>
+
+        <section class="fx-signature">
+            <div class="fx-fait" id="fx-fait"></div>
+            <div class="fx-cachet">
+                <div class="fx-box-title">Pour <span id="fx-soc-nom2"></span></div>
+                <div class="fx-cachet-zone">Cachet et signature</div>
+                <div class="fx-small" id="fx-signataire"></div>
+            </div>
+        </section>
+
+        <footer class="fx-pied" id="fx-pied"></footer>
+    </article>
+
+    <!-- Historique (non imprimé) -->
+    <div class="cx-card cx-no-print fx-histo cx-hidden" id="fx-histo-card">
+        <div class="cx-card-head"><div><h3 class="cx-card-title">Historique de la facture</h3></div></div>
+        <div class="cx-card-body"><ul class="cx-timeline" id="fx-historique"></ul></div>
+    </div>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/facturation.js"></script>
+<script src="assets/pages/facture.js"></script>
+</body>
+</html>

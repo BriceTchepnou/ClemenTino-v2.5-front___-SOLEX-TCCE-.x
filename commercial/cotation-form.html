@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Nouvelle cotation - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/cotation-form.css">
+</head>
+<body class="cx-app" data-page="cotation-form">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> / <a href="cotations-liste.html">Cotations</a> / <span id="pageCrumb">Nouvelle</span></div>
+            <h1 class="cx-title" id="pageTitre">Nouvelle cotation</h1>
+        </div>
+        <div class="cx-page-actions">
+            <a class="cx-btn cx-btn-ghost" href="cotations-liste.html"><i class="fa fa-list"></i> Liste des cotations</a>
+        </div>
+    </div>
+
+    <!-- Cotation non modifiable (statut ≠ Enregistrée) -->
+    <div class="cx-note cx-note-warn cx-hidden" id="f-lecture"><i class="fa fa-lock"></i><div id="f-lectureTexte"></div></div>
+
+    <div class="cx-layout" id="formCot">
+
+        <!-- ============================================================
+             Colonne principale
+             ============================================================ -->
+        <div>
+
+            <!-- ======== Carte 1 : client (+ trajet / véhicule / validité selon le type) ======== -->
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step">1</span>
+                    <div>
+                        <h3 class="cx-card-title" id="c1-titre">Client &amp; trajet</h3>
+                        <p class="cx-card-sub" id="c1-sub">Pour qui est la cotation, et d'où part l'envoi ?</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="clientId">Client</label>
+                                <select class="form-control" id="clientId" name="clientId"><option value=""></option></select>
+                                <span class="cx-help" id="clientInfo">Recherchez par raison sociale, sigle ou code client.</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="cx-field">
+                                <label class="cx-label" for="validiteJours">Validité de l'offre</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="validiteJours" name="validiteJours" min="1" max="365" value="30">
+                                    <span class="input-group-addon">jours</span>
+                                </div>
+                                <span class="cx-help" id="validiteInfo"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <div class="cx-field">
+                                <label class="cx-label" for="nom">Intitulé de la cotation <span class="cx-opt">(proposé automatiquement si vide)</span></label>
+                                <input type="text" class="form-control" id="nom" name="nom" maxlength="120" placeholder="Ex. : Envoi mensuel d'échantillons">
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="cx-field">
+                                <label class="cx-label" for="description">Description <span class="cx-opt">(facultatif)</span></label>
+                                <input type="text" class="form-control" id="description" name="description" maxlength="250" placeholder="Précisions pour le client">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ----- EXPÉDITION : trajet ----- -->
+                    <div data-type="EXPEDITION">
+                        <hr class="cx-sep">
+                        <p class="cx-section-label">Type d'expédition <span class="cx-muted" style="font-weight:400" id="trajetAutoInfo">· déduit des villes, modifiable</span></p>
+                        <div class="cx-seg" id="segTrajet">
+                            <label class="cx-seg-item"><input type="radio" name="typeTrajet" value="URBAINE"><span><i class="fa fa-building-o"></i><b>Urbaine</b><small>Même ville</small></span></label>
+                            <label class="cx-seg-item"><input type="radio" name="typeTrajet" value="NATIONALE" checked><span><i class="fa fa-road"></i><b>Nationale</b><small>Entre villes du Cameroun</small></span></label>
+                            <label class="cx-seg-item"><input type="radio" name="typeTrajet" value="REGIONALE"><span><i class="fa fa-globe"></i><b>Régionale</b><small>Zone CEMAC</small></span></label>
+                            <label class="cx-seg-item"><input type="radio" name="typeTrajet" value="INTERNATIONALE"><span><i class="fa fa-plane"></i><b>Internationale</b><small>Reste du monde</small></span></label>
+                        </div>
+                        <div class="cx-note cx-note-warn cx-hidden" id="trajetIncoherent"><i class="fa fa-exclamation-triangle"></i><div id="trajetIncoherentTexte"></div></div>
+
+                        <div class="cf-route">
+                            <div class="cx-block">
+                                <div class="cx-block-title"><i class="fa fa-circle-o"></i> Départ</div>
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="villeDep">Ville d'expédition</label>
+                                    <select class="form-control" id="villeDep" name="villeDep"></select>
+                                </div>
+                                <div class="cx-field" style="margin-bottom:0">
+                                    <label class="cx-label req" for="bureauDep">Bureau d'expédition</label>
+                                    <select class="form-control" id="bureauDep" name="bureauDep"></select>
+                                </div>
+                            </div>
+                            <div class="cf-route-arrow"><i class="fa fa-long-arrow-right"></i></div>
+                            <div class="cx-block">
+                                <div class="cx-block-title"><i class="fa fa-map-marker"></i> Destination</div>
+                                <div id="destNational">
+                                    <div class="cx-field">
+                                        <label class="cx-label req" for="villeDest">Ville de destination</label>
+                                        <select class="form-control" id="villeDest" name="villeDest"></select>
+                                    </div>
+                                    <div class="cx-field" style="margin-bottom:0">
+                                        <label class="cx-label req" for="bureauDest">Bureau de destination</label>
+                                        <select class="form-control" id="bureauDest" name="bureauDest"></select>
+                                    </div>
+                                </div>
+                                <div id="destEtranger" class="cx-hidden">
+                                    <div class="cx-field">
+                                        <label class="cx-label req" for="paysDest">Pays de destination</label>
+                                        <select class="form-control" id="paysDest" name="paysDest"></select>
+                                    </div>
+                                    <div class="cx-field" style="margin-bottom:0">
+                                        <label class="cx-label req" for="villeDestLibre">Ville</label>
+                                        <input type="text" class="form-control" id="villeDestLibre" name="villeDestLibre" maxlength="60" placeholder="Ex. : Libreville">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="cx-section-label" style="margin-top:16px">Remise au destinataire</p>
+                        <div class="cx-seg cx-seg-soft" id="segLivraison">
+                            <label class="cx-seg-item"><input type="radio" name="livraison" value="BUREAU" checked><span><i class="fa fa-building"></i><b>Retrait au bureau</b><small>Le destinataire vient retirer son colis</small></span></label>
+                            <label class="cx-seg-item"><input type="radio" name="livraison" value="DOMICILE"><span><i class="fa fa-home"></i><b>Livraison à domicile</b><small>Livré à l'adresse indiquée</small></span></label>
+                        </div>
+                        <div class="cx-note cx-note-info cx-hidden" id="sansBureauDest"><i class="fa fa-info-circle"></i><div>Aucun bureau dans la ville de destination : la livraison à domicile est obligatoire.</div></div>
+                        <div class="row cx-hidden" id="blocDomicile" style="margin-top:12px">
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="quartier">Quartier</label>
+                                    <input type="text" class="form-control" id="quartier" name="quartier" maxlength="80" placeholder="Ex. : Bastos">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="zone">Zone de livraison</label>
+                                    <select class="form-control" id="zone" name="zone"></select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="repere">Point de repère</label>
+                                    <input type="text" class="form-control" id="repere" name="repere" maxlength="120" placeholder="Ex. : face pharmacie du Lac">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ----- FRET : véhicule ----- -->
+                    <div data-type="FRET">
+                        <hr class="cx-sep">
+                        <p class="cx-section-label">Type de véhicule <span class="cx-label req" style="display:inline"></span></p>
+                        <div class="cx-field" style="margin-bottom:0">
+                            <div class="cx-seg cf-vehicules" id="vehicules"></div>
+                            <input type="hidden" name="vehiculeCtrl" id="vehiculeCtrl">
+                        </div>
+                    </div>
+
+                    <!-- ----- TARIFAIRE : date d'effet ----- -->
+                    <div data-type="TARIFAIRE">
+                        <hr class="cx-sep">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="dateEffet">Date d'effet de la grille</label>
+                                    <input type="date" class="form-control" id="dateEffet" name="dateEffet">
+                                    <span class="cx-help">Date à partir de laquelle les prix s'appliquent au compte client.</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="cx-note cx-note-info" style="margin-top:22px"><i class="fa fa-info-circle"></i>
+                                    <div>Les prix de la grille sont exprimés <b>HT par envoi</b>. La remise globale s'applique à toutes les lignes.</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======== EXPÉDITION · Carte 2 : colis ======== -->
+            <div class="cx-card" data-type="EXPEDITION">
+                <div class="cx-card-head">
+                    <span class="cx-step">2</span>
+                    <div>
+                        <h3 class="cx-card-title">Colis à expédier</h3>
+                        <p class="cx-card-sub">Le poids taxable est le plus grand du poids réel et du poids volumétrique (L × l × H / 5 000)</p>
+                    </div>
+                    <div class="cx-card-tools" id="colisResume"></div>
+                </div>
+                <div class="cx-card-body">
+                    <div id="colisList"></div>
+                    <button type="button" class="cx-btn cx-btn-dashed cx-btn-block cx-btn-lg" id="btnAddColis"><i class="fa fa-plus"></i> Ajouter un colis</button>
+                </div>
+            </div>
+
+            <!-- ======== EXPÉDITION · Carte 3 : expéditeur & destinataire ======== -->
+            <div class="cx-card" data-type="EXPEDITION">
+                <div class="cx-card-head">
+                    <span class="cx-step">3</span>
+                    <div>
+                        <h3 class="cx-card-title">Expéditeur et destinataire</h3>
+                        <p class="cx-card-sub">L'expéditeur est pré-rempli depuis la fiche client</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="cx-block cf-partie">
+                                <div class="cx-block-title"><i class="fa fa-user-o"></i> Expéditeur</div>
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="expTel">Téléphone</label>
+                                    <div class="input-group"><span class="input-group-addon">+237</span>
+                                        <input type="tel" class="form-control" id="expTel" name="expTel" maxlength="16" placeholder="6XX XX XX XX"></div>
+                                </div>
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="expNom">Nom / raison sociale</label>
+                                    <input type="text" class="form-control" id="expNom" name="expNom" maxlength="120">
+                                </div>
+                                <a class="cf-toggle" data-toggle-bloc="#expPlus"><i class="fa fa-plus-circle"></i> Ajouter l'adresse et l'email</a>
+                                <div id="expPlus" class="cx-hidden" style="margin-top:10px">
+                                    <div class="cx-field">
+                                        <label class="cx-label" for="expAdresse">Adresse</label>
+                                        <input type="text" class="form-control" id="expAdresse" name="expAdresse" maxlength="160">
+                                    </div>
+                                    <div class="cx-field" style="margin-bottom:0">
+                                        <label class="cx-label" for="expEmail">Email</label>
+                                        <input type="email" class="form-control" id="expEmail" name="expEmail" maxlength="120">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cx-block cf-partie">
+                                <div class="cx-block-title"><i class="fa fa-user"></i> Destinataire</div>
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="destTel">Téléphone</label>
+                                    <div class="input-group"><span class="input-group-addon">+237</span>
+                                        <input type="tel" class="form-control" id="destTel" name="destTel" maxlength="16" placeholder="6XX XX XX XX"></div>
+                                </div>
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="destNom">Nom</label>
+                                    <input type="text" class="form-control" id="destNom" name="destNom" maxlength="120">
+                                </div>
+                                <a class="cf-toggle" data-toggle-bloc="#destPlus"><i class="fa fa-plus-circle"></i> Ajouter l'adresse et l'email</a>
+                                <div id="destPlus" class="cx-hidden" style="margin-top:10px">
+                                    <div class="cx-field">
+                                        <label class="cx-label" for="destAdresse">Adresse</label>
+                                        <input type="text" class="form-control" id="destAdresse" name="destAdresse" maxlength="160">
+                                    </div>
+                                    <div class="cx-field" style="margin-bottom:0">
+                                        <label class="cx-label" for="destEmail">Email</label>
+                                        <input type="email" class="form-control" id="destEmail" name="destEmail" maxlength="120">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======== FRET · Carte 2 : période & trajet ======== -->
+            <div class="cx-card" data-type="FRET">
+                <div class="cx-card-head">
+                    <span class="cx-step">2</span>
+                    <div>
+                        <h3 class="cx-card-title">Période et trajet</h3>
+                        <p class="cx-card-sub">Durée de la mise à disposition et lieu d'intervention</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="dateDebut">Date de début</label>
+                                <input type="date" class="form-control" id="dateDebut" name="dateDebut">
+                            </div>
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="nbJours">Nombre de jours</label>
+                                <div class="cx-stepper" data-stepper>
+                                    <button type="button" data-step="-1" aria-label="Moins">−</button>
+                                    <input type="text" id="nbJours" name="nbJours" value="1" inputmode="numeric">
+                                    <button type="button" data-step="1" aria-label="Plus">+</button>
+                                </div>
+                                <span class="cx-help" id="periodeInfo"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="cx-section-label">Lieu d'intervention</p>
+                    <div class="cx-seg cx-seg-soft" id="segModeFret">
+                        <label class="cx-seg-item"><input type="radio" name="modeFret" value="TRAJET" checked><span><i class="fa fa-exchange"></i><b>Trajet</b><small>D'une ville à une autre</small></span></label>
+                        <label class="cx-seg-item"><input type="radio" name="modeFret" value="ZONE"><span><i class="fa fa-map-o"></i><b>Zone</b><small>Tournées dans une ville / une zone</small></span></label>
+                    </div>
+                    <div class="row" id="fretTrajet" style="margin-top:12px">
+                        <div class="col-sm-6">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="fVilleDep">Ville de départ</label>
+                                <select class="form-control" id="fVilleDep" name="fVilleDep"></select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="fVilleDest">Ville d'arrivée</label>
+                                <select class="form-control" id="fVilleDest" name="fVilleDest"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row cx-hidden" id="fretZone" style="margin-top:12px">
+                        <div class="col-sm-5">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="fZoneVille">Ville</label>
+                                <select class="form-control" id="fZoneVille" name="fZoneVille"></select>
+                            </div>
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="fZone">Zone / itinéraire</label>
+                                <input type="text" class="form-control" id="fZone" name="fZone" maxlength="160" placeholder="Ex. : Akwa, Bonanjo, Bonabéri (tournée pharmacies)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======== FRET · Carte 3 : options & tarif ======== -->
+            <div class="cx-card" data-type="FRET">
+                <div class="cx-card-head">
+                    <span class="cx-step">3</span>
+                    <div>
+                        <h3 class="cx-card-title">Options et tarif</h3>
+                        <p class="cx-card-sub">Prix par jour pré-remplis selon le véhicule, ajustables</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="cf-opt">
+                        <div class="cf-opt-label"><b>Location du véhicule</b><small id="vehiculeLibelle">Choisissez un véhicule</small></div>
+                        <div class="cx-field cf-opt-prix">
+                            <label class="cx-label req" for="prixJour">Prix / jour</label>
+                            <div class="input-group"><input type="text" class="form-control cf-num" id="prixJour" name="prixJour" inputmode="numeric"><span class="input-group-addon">FCFA</span></div>
+                        </div>
+                    </div>
+                    <div class="cf-opt">
+                        <label class="cx-switch cf-opt-label">
+                            <input type="checkbox" id="chauffeur" name="chauffeur" checked><span class="cx-switch-track"></span>
+                            <span class="cx-switch-text"><b>Chauffeur</b><small>Chauffeur professionnel fourni</small></span>
+                        </label>
+                        <div class="cx-field cf-opt-prix">
+                            <label class="cx-label" for="chauffeurJour">Prix / jour</label>
+                            <div class="input-group"><input type="text" class="form-control cf-num" id="chauffeurJour" name="chauffeurJour" inputmode="numeric"><span class="input-group-addon">FCFA</span></div>
+                        </div>
+                    </div>
+                    <div class="cf-opt">
+                        <label class="cx-switch cf-opt-label">
+                            <input type="checkbox" id="carburant" name="carburant" checked><span class="cx-switch-track"></span>
+                            <span class="cx-switch-text"><b>Carburant</b><small>Forfait carburant inclus</small></span>
+                        </label>
+                        <div class="cx-field cf-opt-prix">
+                            <label class="cx-label" for="carburantJour">Forfait / jour</label>
+                            <div class="input-group"><input type="text" class="form-control cf-num" id="carburantJour" name="carburantJour" inputmode="numeric"><span class="input-group-addon">FCFA</span></div>
+                        </div>
+                    </div>
+                    <div class="cf-opt">
+                        <div class="cf-opt-label">
+                            <b>Manutentionnaires</b><small>Chargement / déchargement</small>
+                            <div class="cx-stepper" data-stepper data-min="0" style="margin-top:6px">
+                                <button type="button" data-step="-1" aria-label="Moins">−</button>
+                                <input type="text" id="manutention" name="manutention" value="0" inputmode="numeric">
+                                <button type="button" data-step="1" aria-label="Plus">+</button>
+                            </div>
+                        </div>
+                        <div class="cx-field cf-opt-prix">
+                            <label class="cx-label" for="manutJour">Prix / personne / jour</label>
+                            <div class="input-group"><input type="text" class="form-control cf-num" id="manutJour" name="manutJour" inputmode="numeric"><span class="input-group-addon">FCFA</span></div>
+                        </div>
+                    </div>
+                    <div class="cf-opt" style="border-bottom:0">
+                        <div class="cf-opt-label">
+                            <b>Frais annexes</b><small>Péages, gardiennage, frais de route… (forfait)</small>
+                            <input type="text" class="form-control input-sm" id="fraisLibelle" name="fraisLibelle" maxlength="80" placeholder="Libellé (ex. : péages Douala - Yaoundé)" style="margin-top:6px">
+                        </div>
+                        <div class="cx-field cf-opt-prix">
+                            <label class="cx-label" for="frais">Montant</label>
+                            <div class="input-group"><input type="text" class="form-control cf-num" id="frais" name="frais" inputmode="numeric" value="0"><span class="input-group-addon">FCFA</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======== TARIFAIRE · Carte 2 : grille ======== -->
+            <div class="cx-card" data-type="TARIFAIRE">
+                <div class="cx-card-head">
+                    <span class="cx-step">2</span>
+                    <div>
+                        <h3 class="cx-card-title">Grille tarifaire</h3>
+                        <p class="cx-card-sub">Un prix par trajet et par tranche de poids</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="cf-grille-tools">
+                        <div class="cx-field">
+                            <label class="cx-label" for="pfVilleDep">Ville de départ</label>
+                            <select class="form-control" id="pfVilleDep"></select>
+                        </div>
+                        <div class="cx-field">
+                            <button type="button" class="cx-btn cx-btn-soft" id="btnPrefill"><i class="fa fa-magic"></i> Pré-remplir depuis la grille standard</button>
+                        </div>
+                        <div class="cx-field cf-remise">
+                            <label class="cx-label" for="remiseGlobale">Remise globale</label>
+                            <div class="input-group"><input type="number" class="form-control" id="remiseGlobale" name="remiseGlobale" min="0" max="80" step="0.5" value="0"><span class="input-group-addon">%</span></div>
+                        </div>
+                    </div>
+                    <div class="cx-table-wrap cf-grille-wrap">
+                        <table class="cx-table cf-grille">
+                            <thead><tr>
+                                <th style="width:34px">#</th><th>Ville de départ</th><th>Ville de destination</th><th>Tranche de poids</th>
+                                <th class="num" style="width:150px">Prix HT</th><th class="num" style="width:120px">Prix net</th><th style="width:44px"></th>
+                            </tr></thead>
+                            <tbody id="grilleBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="cx-empty" id="grilleVide"><i class="fa fa-table"></i><b>Aucune ligne</b>Ajoutez des lignes ou pré-remplissez depuis la grille standard.</div>
+                    <span class="cx-help cx-error-text cx-hidden" id="grilleErreur"></span>
+                    <button type="button" class="cx-btn cx-btn-dashed cx-btn-block" id="btnAddLigne" style="margin-top:12px"><i class="fa fa-plus"></i> Ajouter une ligne</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             Colonne de droite : récapitulatif collant
+             ============================================================ -->
+        <aside class="cx-aside">
+            <div class="cx-summary">
+                <div class="cx-summary-hero">
+                    <div class="cx-hero-top"><span id="r-kind">Cotation d'expédition</span><span class="cx-badge cx-badge-dark cf-hero-badge" id="r-statut">Brouillon</span></div>
+                    <div class="cx-hero-route" id="r-route">
+                        <div><b id="r-dep">- - -</b><small id="r-depSub">Bureau ?</small></div>
+                        <div class="cx-route-line"></div>
+                        <div class="cx-right"><b id="r-dest">- - -</b><small id="r-destSub">Bureau ?</small></div>
+                    </div>
+                    <div class="cx-hero-title cx-hidden" id="r-titre"></div>
+                    <div class="cx-hero-sub" id="r-client">Client non sélectionné</div>
+                    <div class="cx-hero-tags" id="r-tags"></div>
+                </div>
+
+                <div class="cx-summary-body">
+                    <!-- EXPÉDITION -->
+                    <div id="rb-EXPEDITION" data-type="EXPEDITION">
+                        <label class="cx-switch" style="margin-bottom:8px">
+                            <input type="checkbox" id="tarifAuto" checked><span class="cx-switch-track"></span>
+                            <span class="cx-switch-text"><b>Tarification automatique</b><small>Transport et livraison selon la grille</small></span>
+                        </label>
+                        <div class="cx-sum-line"><span>Transport</span><b id="r-transport">0 FCFA</b>
+                            <input type="text" class="form-control cf-num cx-hidden" id="in-transport" name="transport" aria-label="Montant du transport"></div>
+                        <div class="cx-sum-line"><span>Emballage</span>
+                            <input type="text" class="form-control cf-num" id="in-emballage" name="emballage" value="0" aria-label="Montant de l'emballage"></div>
+                        <div class="cx-sum-line"><span>Livraison</span><b id="r-livraison">0 FCFA</b>
+                            <input type="text" class="form-control cf-num cx-hidden" id="in-livraison" name="livraisonMt" aria-label="Montant de la livraison"></div>
+                        <div class="cx-sum-line"><span>Autres frais</span>
+                            <input type="text" class="form-control cf-num" id="in-autres" name="autres" value="0" aria-label="Autres frais"></div>
+                    </div>
+                    <!-- FRET -->
+                    <div id="rb-FRET" data-type="FRET">
+                        <div class="cx-sum-line"><span>Location <small id="r-locationSub"></small></span><b id="r-location">0 FCFA</b></div>
+                        <div class="cx-sum-line"><span>Chauffeur</span><b id="r-chauffeur">—</b></div>
+                        <div class="cx-sum-line"><span>Carburant</span><b id="r-carburant">—</b></div>
+                        <div class="cx-sum-line"><span>Manutention</span><b id="r-manut">—</b></div>
+                        <div class="cx-sum-line"><span>Frais annexes</span><b id="r-frais">—</b></div>
+                    </div>
+                    <!-- TARIFAIRE -->
+                    <div id="rb-TARIFAIRE" data-type="TARIFAIRE">
+                        <div class="cx-sum-line"><span>Lignes de tarif</span><b id="r-nbLignes">0</b></div>
+                        <div class="cx-sum-line"><span>Trajets couverts</span><b id="r-trajets">0</b></div>
+                        <div class="cx-sum-line"><span>Remise globale</span><b id="r-remiseG">0 %</b></div>
+                        <div class="cx-sum-line"><span>Prix net minimum</span><b id="r-min">—</b></div>
+                        <div class="cx-sum-line"><span>Prix net maximum</span><b id="r-max">—</b></div>
+                    </div>
+
+                    <!-- Totaux (expédition / FRET) -->
+                    <div id="r-totaux">
+                        <div class="cx-sum-line" style="border-top:1px solid var(--cx-line-2);margin-top:6px;padding-top:10px"><span>Sous-total</span><b id="r-brut">0 FCFA</b></div>
+                        <div class="cx-sum-line"><span id="r-remiseLbl">Remise client</span><b id="r-remise">0 FCFA</b></div>
+                        <div class="cx-sum-line"><span>Total HT</span><b id="r-ht">0 FCFA</b></div>
+                        <div class="cx-sum-line"><span id="r-tvaLbl">TVA</span><b id="r-tva">0 FCFA</b></div>
+                        <div class="cx-sum-total"><span>Montant total TTC</span><b><span id="r-ttc">0</span><small>FCFA</small></b></div>
+                    </div>
+                    <div class="cx-sum-line"><span>Offre valable jusqu'au</span><b id="r-validite">—</b></div>
+                </div>
+
+                <div class="cx-summary-foot">
+                    <div class="cx-note cx-note-warn" id="r-manquants">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <div><b id="r-nbManq">0</b> champ(s) obligatoire(s) à compléter
+                            <ul class="cf-manq" id="r-listeManq"></ul></div>
+                    </div>
+                    <div class="cx-note cx-note-ok cx-hidden" id="r-ok"><i class="fa fa-check-circle"></i><div>Cotation complète, prête à être soumise.</div></div>
+                    <button type="button" class="cx-btn cx-btn-primary cx-btn-lg cx-btn-block" id="btnSoumettre" disabled><i class="fa fa-paper-plane-o"></i> Enregistrer &amp; soumettre</button>
+                    <div class="cf-foot-btns">
+                        <button type="button" class="cx-btn cx-btn-ghost" id="btnEnregistrer"><i class="fa fa-floppy-o"></i> Enregistrer</button>
+                        <a class="cx-btn cx-btn-ghost" id="btnAnnuler" href="cotations-liste.html">Annuler</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur · tarifs indicatifs</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/cotations-commun.js"></script>
+<script src="assets/pages/cotation-form.js"></script>
+</body>
+</html>

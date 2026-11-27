@@ -1,0 +1,32 @@
+/* =====================================================================
+   Commercial · Fiche client 360° (client-fiche.html)
+   Compléments locaux à la charte cx.css
+   ===================================================================== */
+
+/* En-tête : avatar + nom + méta */
+.cx-fiche-who { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.cx-avatar-xl { width: 60px; height: 60px; flex: 0 0 60px; border-radius: 16px; font-size: 21px; background: var(--cx-ink); color: #fff; }
+.cx-fiche-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; font-size: 12.5px; color: var(--cx-muted); }
+.cx-fiche-meta .cx-sep-dot:before { content: "·"; margin: 0 2px; }
+
+/* Panneaux d'onglets */
+.cx-tab-pane .cx-toolbar { border-bottom: 1px solid var(--cx-line-2); }
+.cx-dl { grid-template-columns: 170px 1fr; }
+.cx-dl dd { word-break: break-word; }
+.cx-dl dd.cx-muted { color: var(--cx-muted); font-weight: 400; }
+@media (max-width: 991px) { .cx-mt-sm { margin-top: 18px; } }
+
+/* Cartes contacts */
+.cx-contacts { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.cx-contact { border: 1px solid var(--cx-line); border-radius: 12px; padding: 16px; background: #fff; }
+.cx-contact.empty { background: var(--cx-soft); border-style: dashed; }
+.cx-contact-role { font-size: 10.5px; letter-spacing: .6px; text-transform: uppercase; color: var(--cx-navy-2); font-weight: 700; }
+.cx-contact .cx-who { margin: 10px 0; }
+.cx-contact .cx-who b { display: block; color: var(--cx-ink); }
+.cx-contact .cx-who small { color: var(--cx-muted); }
+.cx-contact ul { list-style: none; padding: 0; margin: 0; font-size: 13px; }
+.cx-contact li { padding: 3px 0; }
+.cx-contact li .fa { width: 18px; color: var(--cx-muted); }
+
+/* KPI : barre d'utilisation du plafond */
+.cx-kpi .cx-bar { margin-top: 6px; }
