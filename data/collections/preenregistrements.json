@@ -1,0 +1,432 @@
+[
+  {
+    "code": "PRE-0047",
+    "numero": "PRE-0047",
+    "dateExp": "2026-11-25",
+    "dateCreation": "2026-11-25",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "agence": "AKWA",
+    "statut": "VALIDE",
+    "clientId": null,
+    "livraison": "BUREAU",
+    "quartier": "",
+    "zone": "",
+    "repere": "",
+    "source": "WHATSAPP",
+    "service": "NATIONALE",
+    "villeDest": "YAOUNDE",
+    "bureauDest": "BASTOS",
+    "expeditionId": 422,
+    "nRt": "RT-2611-02422",
+    "dateValidation": "2026-11-26 09:40",
+    "validePar": "M. NJOYA",
+    "exp": {
+      "nom": "Nadège Fotso",
+      "tel": "699552211"
+    },
+    "dst": {
+      "nom": "Luc Atangana",
+      "tel": "677118899"
+    },
+    "colis": [
+      {
+        "nature": "Colis",
+        "poids": 6,
+        "nombre": 1,
+        "valeur": 40000,
+        "description": "Pagnes et sacs"
+      }
+    ],
+    "id": 1,
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "code": "PRE-0048",
+    "numero": "PRE-0048",
+    "dateExp": "2026-11-24",
+    "dateCreation": "2026-11-24",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "agence": "AKWA",
+    "statut": "ANNULE",
+    "clientId": null,
+    "livraison": "BUREAU",
+    "quartier": "",
+    "zone": "",
+    "repere": "",
+    "source": "WEB",
+    "service": "NATIONALE",
+    "villeDest": "LIMBE",
+    "bureauDest": "CENTRE",
+    "annulation": {
+      "date": "2026-11-25 15:10",
+      "user": "M. NJOYA",
+      "motif": "Doublon de saisie du client"
+    },
+    "exp": {
+      "nom": "Samuel Djoko",
+      "tel": "690778844"
+    },
+    "dst": {
+      "nom": "Rose Ewane",
+      "tel": "655440022"
+    },
+    "colis": [
+      {
+        "nature": "Document",
+        "poids": 0.5,
+        "nombre": 1,
+        "valeur": 0,
+        "description": "Dossier de candidature"
+      }
+    ],
+    "id": 2,
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "code": "PRE-0049",
+    "numero": "PRE-0049",
+    "dateExp": "2026-11-28",
+    "dateCreation": "2026-11-27",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "agence": "AKWA",
+    "statut": "EN_ATTENTE",
+    "clientId": 4,
+    "livraison": "BUREAU",
+    "quartier": "",
+    "zone": "",
+    "repere": "",
+    "source": "COMPTE",
+    "service": "NATIONALE",
+    "villeDest": "GAROUA",
+    "bureauDest": "CENTRE",
+    "exp": {
+      "nom": "LABORATOIRE CARINE MONGOUE",
+      "tel": "655010203"
+    },
+    "dst": {
+      "nom": "Clinique du Plateau",
+      "tel": "699301122"
+    },
+    "colis": [
+      {
+        "nature": "Médicament",
+        "poids": 12,
+        "nombre": 3,
+        "valeur": 300000,
+        "description": "Réactifs de laboratoire (dépôt annoncé)"
+      }
+    ],
+    "id": 3,
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "code": "PRE-0050",
+    "numero": "PRE-0050",
+    "dateExp": "2026-11-29",
+    "dateCreation": "2026-11-27",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "agence": "AKWA",
+    "statut": "EN_ATTENTE",
+    "clientId": null,
+    "livraison": "DOMICILE",
+    "quartier": "Makepe",
+    "zone": "Z2",
+    "repere": "Rue des écoles",
+    "source": "WEB",
+    "service": "URBAINE",
+    "villeDest": "DOUALA",
+    "bureauDest": "AKWA",
+    "exp": {
+      "nom": "Christian Talla",
+      "tel": "677901234"
+    },
+    "dst": {
+      "nom": "Sandrine Mbarga",
+      "tel": "690456789"
+    },
+    "colis": [
+      {
+        "nature": "Électronique",
+        "poids": 3,
+        "nombre": 1,
+        "valeur": 180000,
+        "description": "Ordinateur portable"
+      }
+    ],
+    "id": 4,
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "code": "PRE-0051",
+    "numero": "PRE-0051",
+    "dateExp": "2026-12-01",
+    "dateCreation": "2026-11-27",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "agence": "AKWA",
+    "statut": "EN_ATTENTE",
+    "clientId": null,
+    "livraison": "BUREAU",
+    "quartier": "",
+    "zone": "",
+    "repere": "",
+    "source": "WHATSAPP",
+    "service": "NATIONALE",
+    "villeDest": "BAFOUSSAM",
+    "bureauDest": "CENTRE",
+    "exp": {
+      "nom": "Joëlle Kamga",
+      "tel": "699887711"
+    },
+    "dst": {
+      "nom": "Hervé Nana",
+      "tel": "677665544"
+    },
+    "colis": [
+      {
+        "nature": "Alimentaire",
+        "poids": 15,
+        "nombre": 2,
+        "valeur": 30000,
+        "description": "Vivres (dépôt prévu)"
+      }
+    ],
+    "id": 5,
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "code": "PRE-0042",
+    "numero": "PRE-0042",
+    "dateExp": "2026-11-27",
+    "dateCreation": "2026-11-27",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "agence": "AKWA",
+    "statut": "EN_ATTENTE",
+    "clientId": null,
+    "livraison": "DOMICILE",
+    "quartier": "Bastos",
+    "zone": "Z1",
+    "repere": "Face à la boulangerie du carrefour",
+    "source": "WEB",
+    "service": "NATIONALE",
+    "villeDest": "YAOUNDE",
+    "bureauDest": "CENTRALE",
+    "exp": {
+      "nom": "Mireille Ngassa",
+      "tel": "699001122"
+    },
+    "dst": {
+      "nom": "Paul Etoundi",
+      "tel": "677003344"
+    },
+    "colis": [
+      {
+        "nature": "Colis",
+        "poids": 4,
+        "L": 40,
+        "l": 30,
+        "H": 25,
+        "nombre": 1,
+        "valeur": 25000,
+        "description": "Vêtements et chaussures"
+      }
+    ],
+    "id": 6,
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "code": "PRE-0043",
+    "numero": "PRE-0043",
+    "dateExp": "2026-11-27",
+    "dateCreation": "2026-11-27",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "agence": "AKWA",
+    "statut": "EN_ATTENTE",
+    "clientId": null,
+    "livraison": "DOMICILE",
+    "quartier": "Bonapriso",
+    "zone": "Z1",
+    "repere": "Devant la pharmacie du carrefour",
+    "source": "WHATSAPP",
+    "service": "URBAINE",
+    "villeDest": "DOUALA",
+    "bureauDest": "BONANJO",
+    "exp": {
+      "nom": "Aïcha Njoya",
+      "tel": "655123456"
+    },
+    "dst": {
+      "nom": "Serge Biyong",
+      "tel": "690112233"
+    },
+    "colis": [
+      {
+        "nature": "Pli fermé",
+        "poids": 0.5,
+        "nombre": 1,
+        "valeur": 0,
+        "description": "Documents"
+      }
+    ],
+    "id": 7,
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "code": "PRE-0044",
+    "numero": "PRE-0044",
+    "dateExp": "2026-11-26",
+    "dateCreation": "2026-11-26",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "agence": "AKWA",
+    "statut": "EN_ATTENTE",
+    "clientId": 1,
+    "livraison": "BUREAU",
+    "quartier": "",
+    "zone": "",
+    "repere": "",
+    "source": "COMPTE",
+    "service": "NATIONALE",
+    "villeDest": "BAFOUSSAM",
+    "bureauDest": "CENTRE",
+    "exp": {
+      "nom": "PHARMACIE PACIFIC",
+      "tel": "699123456"
+    },
+    "dst": {
+      "nom": "Pharmacie du Marché",
+      "tel": "699445566"
+    },
+    "colis": [
+      {
+        "nature": "Médicament",
+        "poids": 8,
+        "nombre": 2,
+        "valeur": 150000,
+        "description": "Cartons de médicaments"
+      }
+    ],
+    "id": 8,
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "code": "PRE-0045",
+    "numero": "PRE-0045",
+    "dateExp": "2026-11-25",
+    "dateCreation": "2026-11-25",
+    "ville": "DOUALA",
+    "agenceId": 2,
+    "agence": "BONANJO",
+    "statut": "EN_ATTENTE",
+    "clientId": null,
+    "livraison": "BUREAU",
+    "quartier": "",
+    "zone": "",
+    "repere": "",
+    "source": "WEB",
+    "service": "NATIONALE",
+    "villeDest": "GAROUA",
+    "bureauDest": "CENTRE",
+    "exp": {
+      "nom": "Clarisse Kamga",
+      "tel": "677221100"
+    },
+    "dst": {
+      "nom": "Ibrahim Oumarou",
+      "tel": "699887766"
+    },
+    "colis": [
+      {
+        "nature": "Colis",
+        "poids": 3,
+        "nombre": 1,
+        "valeur": 20000,
+        "description": "Livres scolaires"
+      }
+    ],
+    "id": 9,
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "code": "PRE-0046",
+    "numero": "PRE-0046",
+    "dateExp": "2026-11-26",
+    "dateCreation": "2026-11-26",
+    "ville": "YAOUNDE",
+    "agenceId": 4,
+    "agence": "CENTRALE",
+    "statut": "EN_ATTENTE",
+    "clientId": null,
+    "livraison": "BUREAU",
+    "quartier": "",
+    "zone": "",
+    "repere": "",
+    "source": "WHATSAPP",
+    "service": "NATIONALE",
+    "villeDest": "DOUALA",
+    "bureauDest": "AKWA",
+    "exp": {
+      "nom": "Boris Mbarga",
+      "tel": "690334455"
+    },
+    "dst": {
+      "nom": "Esther Nana",
+      "tel": "655778899"
+    },
+    "colis": [
+      {
+        "nature": "Fragile",
+        "poids": 2,
+        "nombre": 1,
+        "valeur": 60000,
+        "description": "Téléphone"
+      }
+    ],
+    "id": 10,
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "code": "PRE-0039",
+    "numero": "PRE-0039",
+    "dateExp": "2026-11-18",
+    "dateCreation": "2026-11-18",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "agence": "AKWA",
+    "statut": "EN_ATTENTE",
+    "clientId": null,
+    "livraison": "BUREAU",
+    "quartier": "",
+    "zone": "",
+    "repere": "",
+    "source": "WEB",
+    "service": "NATIONALE",
+    "villeDest": "KRIBI",
+    "bureauDest": "CENTRE",
+    "exp": {
+      "nom": "Hervé Tchoua",
+      "tel": "699010203"
+    },
+    "dst": {
+      "nom": "Joëlle Ewane",
+      "tel": "677040506"
+    },
+    "colis": [
+      {
+        "nature": "Colis",
+        "poids": 5,
+        "nombre": 1,
+        "valeur": 10000,
+        "description": "Vivres frais"
+      }
+    ],
+    "id": 11,
+    "creePar": "Support KuTiWa"
+  }
+]

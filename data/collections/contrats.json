@@ -1,0 +1,116 @@
+[
+  {
+    "id": 1,
+    "numero": "CTR-2026-0001",
+    "clientId": 1,
+    "objet": "Contrat cadre de messagerie 2026",
+    "dateSignature": "2025-12-27",
+    "du": "2026-01-01",
+    "au": "2026-12-17",
+    "tarifaireId": 3,
+    "fichier": "contrat-ppac-2026.pdf",
+    "fichierTaille": 245760,
+    "conditions": {
+      "delaiPaiement": 45,
+      "remisePct": 0,
+      "plafondCredit": 2000000,
+      "notes": "Révision tarifaire possible au renouvellement."
+    },
+    "statut": "ACTIF",
+    "dateCreation": "2025-12-27",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2025-12-27 10:30",
+        "user": "Support KuTiWa",
+        "action": "Contrat enregistré"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "numero": "CTR-2025-0007",
+    "clientId": 1,
+    "objet": "Contrat de messagerie 2025",
+    "dateSignature": "2024-12-27",
+    "du": "2025-01-01",
+    "au": "2025-12-31",
+    "tarifaireId": 2,
+    "fichier": "contrat-ppac-2025.pdf",
+    "fichierTaille": 245760,
+    "conditions": {
+      "delaiPaiement": 30,
+      "remisePct": 5,
+      "plafondCredit": 1500000,
+      "notes": ""
+    },
+    "statut": "ACTIF",
+    "dateCreation": "2024-12-27",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2024-12-27 10:30",
+        "user": "Support KuTiWa",
+        "action": "Contrat enregistré"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "numero": "CTR-2026-0002",
+    "clientId": 11,
+    "objet": "Convention courrier bancaire",
+    "dateSignature": "2026-07-30",
+    "du": "2026-08-19",
+    "au": "2027-08-19",
+    "tarifaireId": 4,
+    "fichier": "convention-afriland.pdf",
+    "fichierTaille": 245760,
+    "conditions": {
+      "delaiPaiement": 30,
+      "remisePct": 0,
+      "plafondCredit": 3000000,
+      "notes": "Ramassage quotidien à 16 h au siège."
+    },
+    "statut": "ACTIF",
+    "dateCreation": "2026-07-30",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-07-30 10:30",
+        "user": "Support KuTiWa",
+        "action": "Contrat enregistré"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "numero": "CTR-2026-0003",
+    "clientId": 6,
+    "objet": "Contrat de distribution régionale",
+    "dateSignature": "2026-05-11",
+    "du": "2026-05-21",
+    "au": "2027-05-21",
+    "tarifaireId": 1,
+    "fichier": null,
+    "fichierTaille": 0,
+    "conditions": {
+      "delaiPaiement": 60,
+      "remisePct": 8,
+      "plafondCredit": 0,
+      "notes": ""
+    },
+    "statut": "RESILIE",
+    "dateCreation": "2026-05-11",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-05-11 10:30",
+        "user": "Support KuTiWa",
+        "action": "Contrat enregistré"
+      }
+    ],
+    "dateResiliation": "2026-10-18",
+    "motifResiliation": "Fin de la campagne de distribution"
+  }
+]

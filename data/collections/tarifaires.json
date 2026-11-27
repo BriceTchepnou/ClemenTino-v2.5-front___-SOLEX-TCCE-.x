@@ -1,0 +1,784 @@
+[
+  {
+    "description": "Tarif public du réseau, appliqué à tout client sans contrat ni grille spécifique.",
+    "devise": "FCFA",
+    "baseId": null,
+    "remiseBasePct": 0,
+    "heriterSupplements": false,
+    "diviseurVol": 5000,
+    "minimum": 1500,
+    "arrondi": 100,
+    "arrondiMode": "PROCHE",
+    "tvaIncluse": false,
+    "regles": [
+      {
+        "id": "s1",
+        "libelle": "Urbain · plis et documents",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "URBAIN",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [
+            "DOCUMENT"
+          ],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": 2
+        },
+        "modele": "PIECE",
+        "params": {
+          "prix": 1000,
+          "degressif": [
+            {
+              "des": 10,
+              "prix": 800
+            },
+            {
+              "des": 50,
+              "prix": 600
+            }
+          ]
+        }
+      },
+      {
+        "id": "s2",
+        "libelle": "Urbain · colis",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "URBAIN",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "INCREMENTIEL",
+        "params": {
+          "prixBase": 1500,
+          "poidsBase": 1,
+          "increment": 150,
+          "pas": 1
+        }
+      },
+      {
+        "id": "s3",
+        "libelle": "National · plis et documents",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "NATIONAL",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [
+            "DOCUMENT"
+          ],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": 2
+        },
+        "modele": "TRANCHES",
+        "params": {
+          "tranches": [
+            {
+              "max": 0.5,
+              "prix": 2000
+            },
+            {
+              "max": 1,
+              "prix": 2500
+            },
+            {
+              "max": 2,
+              "prix": 3500
+            }
+          ],
+          "auDelaParKg": 0,
+          "auDelaPas": 1
+        }
+      },
+      {
+        "id": "s4",
+        "libelle": "National · colis",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "NATIONAL",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "INCREMENTIEL",
+        "params": {
+          "prixBase": 3000,
+          "poidsBase": 1,
+          "increment": 250,
+          "pas": 1
+        }
+      },
+      {
+        "id": "s5",
+        "libelle": "Grand Nord (Garoua, Ngaoundéré, Maroua)",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "NATIONAL",
+          "villesDep": [
+            "DOUALA",
+            "YAOUNDE"
+          ],
+          "villesDest": [
+            "GAROUA",
+            "NGAOUNDERE",
+            "MAROUA"
+          ],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [
+            "COLIS"
+          ],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "TRANCHES",
+        "params": {
+          "tranches": [
+            {
+              "max": 1,
+              "prix": 4500
+            },
+            {
+              "max": 5,
+              "prix": 7500
+            },
+            {
+              "max": 10,
+              "prix": 11000
+            },
+            {
+              "max": 20,
+              "prix": 17000
+            },
+            {
+              "max": 30,
+              "prix": 23000
+            }
+          ],
+          "auDelaParKg": 600,
+          "auDelaPas": 1
+        }
+      },
+      {
+        "id": "s6",
+        "libelle": "Fret national (messagerie lourde)",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "NATIONAL",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [
+            "FRET"
+          ],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "PALIERS",
+        "params": {
+          "paliers": [
+            {
+              "max": 50,
+              "prixKg": 300
+            },
+            {
+              "max": 200,
+              "prixKg": 250
+            },
+            {
+              "max": "",
+              "prixKg": 200
+            }
+          ],
+          "mode": "CUMULATIF",
+          "priseEnCharge": 5000,
+          "minimum": 15000
+        }
+      },
+      {
+        "id": "s7",
+        "libelle": "Régional · zone CEMAC",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "REGIONAL",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [
+            "CEMAC"
+          ],
+          "typesEnvoi": [],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "AU_KG",
+        "params": {
+          "prixKg": 4500,
+          "minimum": 15000,
+          "pasKg": 0.5
+        }
+      },
+      {
+        "id": "s8",
+        "libelle": "International",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "INTERNATIONAL",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "INCREMENTIEL",
+        "params": {
+          "prixBase": 25000,
+          "poidsBase": 0.5,
+          "increment": 6000,
+          "pas": 0.5
+        }
+      },
+      {
+        "id": "s9",
+        "libelle": "Assurance ad valorem",
+        "actif": true,
+        "cumulable": true,
+        "perimetre": {
+          "typeTrajet": "",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "AD_VALOREM",
+        "params": {
+          "taux": 1,
+          "minimum": 1000
+        }
+      }
+    ],
+    "supplements": {
+      "natures": [
+        {
+          "nature": "Fragile",
+          "mode": "PCT",
+          "valeur": 25
+        },
+        {
+          "nature": "Alimentaire",
+          "mode": "PCT",
+          "valeur": 15
+        },
+        {
+          "nature": "Électronique",
+          "mode": "PCT",
+          "valeur": 10
+        },
+        {
+          "nature": "Médicament",
+          "mode": "FIXE",
+          "valeur": 1000
+        }
+      ],
+      "livraison": [
+        {
+          "zone": "Z1",
+          "prix": 1500
+        },
+        {
+          "zone": "Z2",
+          "prix": 2500
+        },
+        {
+          "zone": "Z3",
+          "prix": 4000
+        }
+      ],
+      "express": {
+        "actif": true,
+        "mode": "PCT",
+        "valeur": 50
+      },
+      "emballage": {
+        "actif": true,
+        "mode": "PAR_COLIS",
+        "valeur": 500
+      }
+    },
+    "affectation": {
+      "clientIds": [],
+      "groupeIds": []
+    },
+    "creePar": "Support KuTiWa",
+    "dateCreation": "2025-12-22",
+    "historique": [
+      {
+        "date": "2025-12-22 09:00",
+        "user": "Support KuTiWa",
+        "action": "Grille créée"
+      }
+    ],
+    "id": 1,
+    "code": "TAR-0001",
+    "numero": "TAR-0001",
+    "nom": "Grille standard nationale 2026",
+    "type": "STANDARD",
+    "statut": "ACTIVE",
+    "du": "2026-01-01",
+    "au": ""
+  },
+  {
+    "description": "Médicaments au poids par pas de 0,5 kg ; le reste au tarif standard remisé de 10 %.",
+    "devise": "FCFA",
+    "baseId": 1,
+    "remiseBasePct": 10,
+    "heriterSupplements": true,
+    "diviseurVol": 5000,
+    "minimum": 0,
+    "arrondi": 100,
+    "arrondiMode": "SUP",
+    "tvaIncluse": false,
+    "regles": [
+      {
+        "id": "p1",
+        "libelle": "Médicaments · national",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "NATIONAL",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [],
+          "natures": [
+            "Médicament"
+          ],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "INCREMENTIEL",
+        "params": {
+          "prixBase": 2800,
+          "poidsBase": 1,
+          "increment": 200,
+          "pas": 0.5
+        }
+      },
+      {
+        "id": "p2",
+        "libelle": "Médicaments · urbain",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "URBAIN",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [],
+          "natures": [
+            "Médicament"
+          ],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "AU_KG",
+        "params": {
+          "prixKg": 300,
+          "minimum": 1200,
+          "pasKg": 1
+        }
+      }
+    ],
+    "supplements": {
+      "natures": [],
+      "livraison": [],
+      "express": {
+        "actif": false,
+        "mode": "PCT",
+        "valeur": 0
+      },
+      "emballage": {
+        "actif": false,
+        "mode": "PAR_COLIS",
+        "valeur": 0
+      }
+    },
+    "affectation": {
+      "clientIds": [],
+      "groupeIds": [
+        1
+      ]
+    },
+    "creePar": "Support KuTiWa",
+    "dateCreation": "2025-12-22",
+    "historique": [
+      {
+        "date": "2025-12-22 09:00",
+        "user": "Support KuTiWa",
+        "action": "Grille créée"
+      }
+    ],
+    "id": 2,
+    "code": "TAR-0002",
+    "numero": "TAR-0002",
+    "nom": "Pharmacies & santé",
+    "type": "GROUPE",
+    "statut": "ACTIVE",
+    "du": "2026-01-01",
+    "au": "2026-12-31"
+  },
+  {
+    "description": "Navette Douala ⇄ Yaoundé au palier atteint, plis urbains à la pièce ; le reste : grille Pharmacies & santé.",
+    "devise": "FCFA",
+    "baseId": 2,
+    "remiseBasePct": 0,
+    "heriterSupplements": true,
+    "diviseurVol": 5000,
+    "minimum": 0,
+    "arrondi": 100,
+    "arrondiMode": "SUP",
+    "tvaIncluse": false,
+    "regles": [
+      {
+        "id": "c1",
+        "libelle": "Navette Douala ⇄ Yaoundé",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "NATIONAL",
+          "villesDep": [
+            "DOUALA"
+          ],
+          "villesDest": [
+            "YAOUNDE"
+          ],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [
+            "COLIS"
+          ],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "PALIERS",
+        "params": {
+          "paliers": [
+            {
+              "max": 5,
+              "prixKg": 700
+            },
+            {
+              "max": 20,
+              "prixKg": 500
+            },
+            {
+              "max": "",
+              "prixKg": 400
+            }
+          ],
+          "mode": "ATTEINT",
+          "priseEnCharge": 0,
+          "minimum": 2500
+        }
+      },
+      {
+        "id": "c2",
+        "libelle": "Plis urbains Douala",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "URBAIN",
+          "villesDep": [
+            "DOUALA"
+          ],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [
+            "DOCUMENT"
+          ],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "PIECE",
+        "params": {
+          "prix": 700,
+          "degressif": []
+        }
+      }
+    ],
+    "supplements": {
+      "natures": [],
+      "livraison": [],
+      "express": {
+        "actif": false,
+        "mode": "PCT",
+        "valeur": 0
+      },
+      "emballage": {
+        "actif": false,
+        "mode": "PAR_COLIS",
+        "valeur": 0
+      }
+    },
+    "affectation": {
+      "clientIds": [
+        1
+      ],
+      "groupeIds": []
+    },
+    "creePar": "Support KuTiWa",
+    "dateCreation": "2025-12-22",
+    "historique": [
+      {
+        "date": "2025-12-22 09:00",
+        "user": "Support KuTiWa",
+        "action": "Grille créée"
+      }
+    ],
+    "id": 3,
+    "code": "TAR-0003",
+    "numero": "TAR-0003",
+    "nom": "PHARMACIE PACIFIC - contrat 2026",
+    "type": "CLIENT",
+    "statut": "ACTIVE",
+    "du": "2026-01-01",
+    "au": "2026-12-17"
+  },
+  {
+    "description": "Courrier bancaire : plis à la pièce (dégressif) en urbain, par tranches en national.",
+    "devise": "FCFA",
+    "baseId": 1,
+    "remiseBasePct": 0,
+    "heriterSupplements": true,
+    "diviseurVol": 5000,
+    "minimum": 500,
+    "arrondi": 100,
+    "arrondiMode": "SUP",
+    "tvaIncluse": false,
+    "regles": [
+      {
+        "id": "b1",
+        "libelle": "Plis urbains",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "URBAIN",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [
+            "DOCUMENT"
+          ],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "PIECE",
+        "params": {
+          "prix": 800,
+          "degressif": [
+            {
+              "des": 20,
+              "prix": 650
+            },
+            {
+              "des": 100,
+              "prix": 500
+            }
+          ]
+        }
+      },
+      {
+        "id": "b2",
+        "libelle": "Plis nationaux",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "NATIONAL",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [
+            "DOCUMENT"
+          ],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "TRANCHES",
+        "params": {
+          "tranches": [
+            {
+              "max": 0.5,
+              "prix": 1800
+            },
+            {
+              "max": 1,
+              "prix": 2200
+            },
+            {
+              "max": 2,
+              "prix": 3000
+            }
+          ],
+          "auDelaParKg": 400,
+          "auDelaPas": 1
+        }
+      }
+    ],
+    "supplements": {
+      "natures": [],
+      "livraison": [],
+      "express": {
+        "actif": false,
+        "mode": "PCT",
+        "valeur": 0
+      },
+      "emballage": {
+        "actif": false,
+        "mode": "PAR_COLIS",
+        "valeur": 0
+      }
+    },
+    "affectation": {
+      "clientIds": [],
+      "groupeIds": [
+        2
+      ]
+    },
+    "creePar": "Support KuTiWa",
+    "dateCreation": "2025-12-22",
+    "historique": [
+      {
+        "date": "2025-12-22 09:00",
+        "user": "Support KuTiWa",
+        "action": "Grille créée"
+      }
+    ],
+    "id": 4,
+    "code": "TAR-0004",
+    "numero": "TAR-0004",
+    "nom": "Banques · plis et documents",
+    "type": "GROUPE",
+    "statut": "ACTIVE",
+    "du": "2026-01-01",
+    "au": ""
+  },
+  {
+    "description": "Projet : tarif standard majoré de 5 %, international revu.",
+    "devise": "FCFA",
+    "baseId": 1,
+    "remiseBasePct": -5,
+    "heriterSupplements": true,
+    "diviseurVol": 5000,
+    "minimum": 1500,
+    "arrondi": 100,
+    "arrondiMode": "PROCHE",
+    "tvaIncluse": false,
+    "regles": [
+      {
+        "id": "n1",
+        "libelle": "International",
+        "actif": true,
+        "cumulable": false,
+        "perimetre": {
+          "typeTrajet": "INTERNATIONAL",
+          "villesDep": [],
+          "villesDest": [],
+          "bidirectionnel": true,
+          "zones": [],
+          "typesEnvoi": [],
+          "natures": [],
+          "poidsMin": "",
+          "poidsMax": ""
+        },
+        "modele": "INCREMENTIEL",
+        "params": {
+          "prixBase": 27000,
+          "poidsBase": 0.5,
+          "increment": 6500,
+          "pas": 0.5
+        }
+      }
+    ],
+    "supplements": {
+      "natures": [],
+      "livraison": [],
+      "express": {
+        "actif": false,
+        "mode": "PCT",
+        "valeur": 0
+      },
+      "emballage": {
+        "actif": false,
+        "mode": "PAR_COLIS",
+        "valeur": 0
+      }
+    },
+    "affectation": {
+      "clientIds": [],
+      "groupeIds": []
+    },
+    "creePar": "Support KuTiWa",
+    "dateCreation": "2026-11-17",
+    "historique": [
+      {
+        "date": "2026-11-17 15:20",
+        "user": "M. NJOYA",
+        "action": "Grille créée (brouillon)"
+      }
+    ],
+    "id": 5,
+    "code": "TAR-0005",
+    "numero": "TAR-0005",
+    "nom": "Grille standard 2027 (projet)",
+    "type": "STANDARD",
+    "statut": "BROUILLON",
+    "du": "2027-01-01",
+    "au": ""
+  }
+]

@@ -1,0 +1,837 @@
+[
+  {
+    "id": 1,
+    "code": "CLI-0001",
+    "numero": "CLI-0001",
+    "raisonSociale": "PHARMACIE PACIFIC",
+    "sigle": "PPAC",
+    "secteur": "Pharmacie / Santé",
+    "rccm": "RC/DLA/2011/B/1037",
+    "niu": "M010000007919Z",
+    "ville": "DOUALA",
+    "localisation": "Akwa, Rue 3 Joss",
+    "telStandard": "233 41 21 31",
+    "email": "achats@pharmaciepacific.cm",
+    "adresse": "BP 1011 DOUALA",
+    "activites": "Pharmacie / Santé",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "Mme Ngo Bassa Esther",
+        "tel1": "699 12 34 56",
+        "tel2": "",
+        "email": "achats@pharmaciepacific.cm",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": true,
+    "forfait": false,
+    "montantForfait": 0,
+    "tarifAuto": true,
+    "tarifToutesAgences": false,
+    "tarifAgences": [
+      1
+    ],
+    "remisePct": 5,
+    "delaiPaiement": 45,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 2000000,
+    "emailFacturation": "achats@pharmaciepacific.cm",
+    "agenceId": 1,
+    "commercial": "Support KuTiWa",
+    "ficheClient": "fiche-cli-0001.pdf",
+    "statut": "ACTIF",
+    "dateCreation": "2026-05-20",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-05-20 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100001",
+    "apporteurId": 2
+  },
+  {
+    "id": 2,
+    "code": "CLI-0002",
+    "numero": "CLI-0002",
+    "raisonSociale": "MESSA PRESSE (JOUR)",
+    "sigle": "MESSA",
+    "secteur": "Presse / Médias",
+    "rccm": "RC/DLA/2012/B/1074",
+    "niu": "M010000015838Z",
+    "ville": "DOUALA",
+    "localisation": "Akwa, Rue 6 Joss",
+    "telStandard": "233 42 22 32",
+    "email": "logistique@messapresse.cm",
+    "adresse": "BP 1022 DOUALA",
+    "activites": "Presse / Médias",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "M. Eyango Paul",
+        "tel1": "677 45 22 10",
+        "tel2": "",
+        "email": "logistique@messapresse.cm",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": true,
+    "forfait": true,
+    "montantForfait": 250000,
+    "tarifAuto": true,
+    "tarifToutesAgences": true,
+    "tarifAgences": [],
+    "remisePct": 10,
+    "delaiPaiement": 30,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 2000000,
+    "emailFacturation": "logistique@messapresse.cm",
+    "agenceId": 2,
+    "commercial": "Support KuTiWa",
+    "ficheClient": "fiche-cli-0002.pdf",
+    "statut": "ACTIF",
+    "dateCreation": "2026-05-29",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-05-29 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100002",
+    "apporteurId": 1
+  },
+  {
+    "id": 3,
+    "code": "CLI-0003",
+    "numero": "CLI-0003",
+    "raisonSociale": "SOCIETE PARTHENON",
+    "sigle": "PARTH",
+    "secteur": "Commerce / Distribution",
+    "rccm": "RC/YAO/2013/B/1111",
+    "niu": "M010000023757Z",
+    "ville": "YAOUNDE",
+    "localisation": "Centre-ville",
+    "telStandard": "233 43 23 33",
+    "email": "contact@parthenon.cm",
+    "adresse": "BP 1033 YAOUNDE",
+    "activites": "Commerce / Distribution",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "M. Abena Joseph",
+        "tel1": "690 33 11 02",
+        "tel2": "",
+        "email": "contact@parthenon.cm",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": true,
+    "forfait": false,
+    "montantForfait": 0,
+    "tarifAuto": true,
+    "tarifToutesAgences": false,
+    "tarifAgences": [
+      4
+    ],
+    "remisePct": 0,
+    "delaiPaiement": 30,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 2000000,
+    "emailFacturation": "contact@parthenon.cm",
+    "agenceId": 4,
+    "commercial": "Support KuTiWa",
+    "ficheClient": "fiche-cli-0003.pdf",
+    "statut": "ACTIF",
+    "dateCreation": "2026-06-07",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-06-07 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100003",
+    "apporteurId": 4
+  },
+  {
+    "id": 4,
+    "code": "CLI-0004",
+    "numero": "CLI-0004",
+    "raisonSociale": "LABORATOIRE CARINE MONGOUE",
+    "sigle": "LCM",
+    "secteur": "Pharmacie / Santé",
+    "rccm": "RC/DLA/2014/B/1148",
+    "niu": "M010000031676Z",
+    "ville": "DOUALA",
+    "localisation": "Akwa, Rue 12 Joss",
+    "telStandard": "233 44 24 34",
+    "email": "labo@carinemongoue.cm",
+    "adresse": "BP 1044 DOUALA",
+    "activites": "Pharmacie / Santé",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "Dr Carine Mongoue",
+        "tel1": "655 01 02 03",
+        "tel2": "",
+        "email": "labo@carinemongoue.cm",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": true,
+    "forfait": false,
+    "montantForfait": 0,
+    "tarifAuto": true,
+    "tarifToutesAgences": true,
+    "tarifAgences": [],
+    "remisePct": 5,
+    "delaiPaiement": 15,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 2000000,
+    "emailFacturation": "labo@carinemongoue.cm",
+    "agenceId": 1,
+    "commercial": "Support KuTiWa",
+    "ficheClient": "fiche-cli-0004.pdf",
+    "statut": "ACTIF",
+    "dateCreation": "2026-06-16",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-06-16 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100004",
+    "apporteurId": 3
+  },
+  {
+    "id": 5,
+    "code": "CLI-0005",
+    "numero": "CLI-0005",
+    "raisonSociale": "AZUR",
+    "sigle": "",
+    "secteur": "Industrie",
+    "rccm": "",
+    "niu": "",
+    "ville": "DOUALA",
+    "localisation": "Akwa, Rue 15 Joss",
+    "telStandard": "233 45 25 35",
+    "email": "azur@azur.cm",
+    "adresse": "BP 1055 DOUALA",
+    "activites": "Industrie",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "M. Tchoua André",
+        "tel1": "693 41 41 41",
+        "tel2": "",
+        "email": "azur@azur.cm",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": false,
+    "forfait": false,
+    "montantForfait": 0,
+    "tarifAuto": false,
+    "tarifToutesAgences": false,
+    "tarifAgences": [],
+    "remisePct": 0,
+    "delaiPaiement": 0,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 0,
+    "emailFacturation": "azur@azur.cm",
+    "agenceId": 1,
+    "commercial": "Support KuTiWa",
+    "ficheClient": null,
+    "statut": "ACTIF",
+    "dateCreation": "2026-06-25",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-06-25 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100005"
+  },
+  {
+    "id": 6,
+    "code": "CLI-0006",
+    "numero": "CLI-0006",
+    "raisonSociale": "TOTAL ENERGIES MARKETING CAMEROUN",
+    "sigle": "TEMC",
+    "secteur": "Énergie",
+    "rccm": "RC/DLA/2016/B/1222",
+    "niu": "M010000047514Z",
+    "ville": "DOUALA",
+    "localisation": "Akwa, Rue 18 Joss",
+    "telStandard": "233 46 26 36",
+    "email": "courrier.cm@totalenergies.com",
+    "adresse": "BP 1066 DOUALA",
+    "activites": "Énergie",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "Mme Fotso Clarisse",
+        "tel1": "699 80 70 60",
+        "tel2": "",
+        "email": "courrier.cm@totalenergies.com",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": true,
+    "forfait": false,
+    "montantForfait": 0,
+    "tarifAuto": true,
+    "tarifToutesAgences": true,
+    "tarifAgences": [],
+    "remisePct": 0,
+    "delaiPaiement": 60,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 2000000,
+    "emailFacturation": "courrier.cm@totalenergies.com",
+    "agenceId": 2,
+    "commercial": "Support KuTiWa",
+    "ficheClient": "fiche-cli-0006.pdf",
+    "statut": "ACTIF",
+    "dateCreation": "2026-07-04",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-07-04 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100006",
+    "apporteurId": 1,
+    "abonnementIs": true,
+    "tauxIs": 2.2,
+    "afficherPuMoyen": true,
+    "sousTotal": "DESTINATION"
+  },
+  {
+    "id": 7,
+    "code": "CLI-0007",
+    "numero": "CLI-0007",
+    "raisonSociale": "ORANGE CAMEROUN",
+    "sigle": "OCM",
+    "secteur": "Télécoms",
+    "rccm": "RC/DLA/2017/B/1259",
+    "niu": "M010000055433Z",
+    "ville": "DOUALA",
+    "localisation": "Akwa, Rue 21 Joss",
+    "telStandard": "233 47 27 37",
+    "email": "servicecourrier@orange.cm",
+    "adresse": "BP 1077 DOUALA",
+    "activites": "Télécoms",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "M. Biyong Serge",
+        "tel1": "699 00 00 07",
+        "tel2": "",
+        "email": "servicecourrier@orange.cm",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": true,
+    "forfait": true,
+    "montantForfait": 250000,
+    "tarifAuto": true,
+    "tarifToutesAgences": false,
+    "tarifAgences": [
+      2
+    ],
+    "remisePct": 5,
+    "delaiPaiement": 45,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 2000000,
+    "emailFacturation": "servicecourrier@orange.cm",
+    "agenceId": 2,
+    "commercial": "Support KuTiWa",
+    "ficheClient": "fiche-cli-0007.pdf",
+    "statut": "ACTIF",
+    "dateCreation": "2026-07-13",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-07-13 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100007",
+    "apporteurId": 1,
+    "abonnementIs": true,
+    "tauxIs": 2.2,
+    "assurance": 5000
+  },
+  {
+    "id": 8,
+    "code": "CLI-0008",
+    "numero": "CLI-0008",
+    "raisonSociale": "HOPITAL LAQUINTINIE",
+    "sigle": "HLD",
+    "secteur": "Pharmacie / Santé",
+    "rccm": "RC/DLA/2018/B/1296",
+    "niu": "M010000063352Z",
+    "ville": "DOUALA",
+    "localisation": "Akwa, Rue 24 Joss",
+    "telStandard": "233 48 28 38",
+    "email": "dg@laquintinie.cm",
+    "adresse": "BP 1088 DOUALA",
+    "activites": "Pharmacie / Santé",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "M. Ewane Samuel",
+        "tel1": "677 77 66 55",
+        "tel2": "",
+        "email": "dg@laquintinie.cm",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": true,
+    "forfait": false,
+    "montantForfait": 0,
+    "tarifAuto": true,
+    "tarifToutesAgences": true,
+    "tarifAgences": [],
+    "remisePct": 10,
+    "delaiPaiement": 30,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 2000000,
+    "emailFacturation": "dg@laquintinie.cm",
+    "agenceId": 1,
+    "commercial": "Support KuTiWa",
+    "ficheClient": "fiche-cli-0008.pdf",
+    "statut": "ACTIF",
+    "dateCreation": "2026-07-22",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-07-22 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100008",
+    "apporteurId": 3,
+    "avecTva": false
+  },
+  {
+    "id": 9,
+    "code": "CLI-0009",
+    "numero": "CLI-0009",
+    "raisonSociale": "CABINET MBARGA & ASSOCIES",
+    "sigle": "CMA",
+    "secteur": "Services",
+    "rccm": "",
+    "niu": "",
+    "ville": "YAOUNDE",
+    "localisation": "Centre-ville",
+    "telStandard": "233 49 29 39",
+    "email": "secretariat@cabinetmbarga.cm",
+    "adresse": "BP 1099 YAOUNDE",
+    "activites": "Services",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "Me Mbarga Hervé",
+        "tel1": "677 10 20 30",
+        "tel2": "",
+        "email": "secretariat@cabinetmbarga.cm",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": false,
+    "forfait": false,
+    "montantForfait": 0,
+    "tarifAuto": false,
+    "tarifToutesAgences": false,
+    "tarifAgences": [],
+    "remisePct": 0,
+    "delaiPaiement": 0,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 0,
+    "emailFacturation": "secretariat@cabinetmbarga.cm",
+    "agenceId": 5,
+    "commercial": "Support KuTiWa",
+    "ficheClient": null,
+    "statut": "SUSPENDU",
+    "dateCreation": "2026-07-31",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-07-31 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100009"
+  },
+  {
+    "id": 10,
+    "code": "CLI-0010",
+    "numero": "CLI-0010",
+    "raisonSociale": "BRASSERIES DU CAMEROUN",
+    "sigle": "SABC",
+    "secteur": "Industrie",
+    "rccm": "RC/DLA/2020/B/1370",
+    "niu": "M010000079190Z",
+    "ville": "DOUALA",
+    "localisation": "Akwa, Rue 30 Joss",
+    "telStandard": "233 50 30 40",
+    "email": "achats@sabc.cm",
+    "adresse": "BP 1110 DOUALA",
+    "activites": "Industrie",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "Mme Ekotto Rose",
+        "tel1": "690 55 44 33",
+        "tel2": "",
+        "email": "achats@sabc.cm",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": true,
+    "forfait": false,
+    "montantForfait": 0,
+    "tarifAuto": true,
+    "tarifToutesAgences": true,
+    "tarifAgences": [],
+    "remisePct": 5,
+    "delaiPaiement": 45,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 2000000,
+    "emailFacturation": "achats@sabc.cm",
+    "agenceId": 3,
+    "commercial": "Support KuTiWa",
+    "ficheClient": "fiche-cli-0010.pdf",
+    "statut": "ACTIF",
+    "dateCreation": "2026-08-09",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-08-09 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100010",
+    "apporteurId": 2,
+    "manutention": 5000,
+    "emballage": 2500,
+    "afficherPuMoyen": true
+  },
+  {
+    "id": 11,
+    "code": "CLI-0011",
+    "numero": "CLI-0011",
+    "raisonSociale": "AFRILAND FIRST BANK",
+    "sigle": "AFB",
+    "secteur": "Banque / Assurance",
+    "rccm": "RC/YAO/2021/B/1407",
+    "niu": "M010000087109Z",
+    "ville": "YAOUNDE",
+    "localisation": "Centre-ville",
+    "telStandard": "233 51 31 41",
+    "email": "moyensgeneraux@afriland.cm",
+    "adresse": "BP 1121 YAOUNDE",
+    "activites": "Banque / Assurance",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "M. Nkoulou Jean",
+        "tel1": "677 90 80 70",
+        "tel2": "",
+        "email": "moyensgeneraux@afriland.cm",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": true,
+    "forfait": false,
+    "montantForfait": 0,
+    "tarifAuto": true,
+    "tarifToutesAgences": false,
+    "tarifAgences": [
+      4
+    ],
+    "remisePct": 10,
+    "delaiPaiement": 30,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 2000000,
+    "emailFacturation": "moyensgeneraux@afriland.cm",
+    "agenceId": 4,
+    "commercial": "Support KuTiWa",
+    "ficheClient": "fiche-cli-0011.pdf",
+    "statut": "ACTIF",
+    "dateCreation": "2026-08-18",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-08-18 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100011",
+    "apporteurId": 4,
+    "abonnementIs": true,
+    "tauxIs": 2.2,
+    "sousTotal": "DEPART"
+  },
+  {
+    "id": 12,
+    "code": "CLI-0012",
+    "numero": "CLI-0012",
+    "raisonSociale": "ENTREPRISE TEST MAJ",
+    "sigle": "",
+    "secteur": "Autre",
+    "rccm": "",
+    "niu": "",
+    "ville": "DOUALA",
+    "localisation": "Akwa, Rue 36 Joss",
+    "telStandard": "233 52 32 42",
+    "email": "",
+    "adresse": "BP 1132 DOUALA",
+    "activites": "Autre",
+    "note": "",
+    "contacts": [
+      {
+        "role": "PRINCIPAL",
+        "nom": "",
+        "tel1": "+237 699 000 001",
+        "tel2": "",
+        "email": "",
+        "titre": "Responsable courrier"
+      },
+      {
+        "role": "SECOND",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": "",
+        "titre": ""
+      },
+      {
+        "role": "DG",
+        "nom": "",
+        "tel1": "",
+        "tel2": "",
+        "email": ""
+      }
+    ],
+    "enCompte": false,
+    "forfait": false,
+    "montantForfait": 0,
+    "tarifAuto": false,
+    "tarifToutesAgences": false,
+    "tarifAgences": [],
+    "remisePct": 0,
+    "delaiPaiement": 0,
+    "periodicite": "MENSUELLE",
+    "plafondCredit": 0,
+    "emailFacturation": "",
+    "agenceId": 1,
+    "commercial": "Support KuTiWa",
+    "ficheClient": null,
+    "statut": "INACTIF",
+    "dateCreation": "2026-08-27",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-08-27 10:00",
+        "user": "Support KuTiWa",
+        "action": "Création du compte client"
+      }
+    ],
+    "compte": "41100012"
+  }
+]

@@ -1,0 +1,552 @@
+[
+  {
+    "id": 1,
+    "numero": "COT-2026-0001",
+    "type": "EXPEDITION",
+    "nom": "Envoi mensuel échantillons",
+    "clientId": 4,
+    "description": "Envoi mensuel échantillons",
+    "statut": "ENREGISTREE",
+    "dateCreation": "2026-11-24",
+    "dateSoumission": null,
+    "dateValidite": "2026-12-26",
+    "creePar": "Support KuTiWa",
+    "montantHT": 18500,
+    "montantTTC": 22061,
+    "motifRejet": "",
+    "details": {
+      "villeDep": "DOUALA",
+      "bureauDep": "AKWA",
+      "villeDest": "YAOUNDE",
+      "bureauDest": "CENTRALE",
+      "livraison": "BUREAU",
+      "colis": [
+        {
+          "nature": "Colis",
+          "poids": 4,
+          "L": 40,
+          "l": 30,
+          "H": 25,
+          "nombre": 1,
+          "valeur": 25000,
+          "description": "Envoi mensuel échantillons"
+        }
+      ],
+      "transport": 18500,
+      "emballage": 0,
+      "livraisonMt": 0,
+      "autres": 0,
+      "expediteur": {
+        "nom": "LABORATOIRE CARINE MONGOUE",
+        "tel": "655 01 02 03"
+      },
+      "destinataire": {
+        "nom": "Agence LCM",
+        "tel": ""
+      }
+    },
+    "historique": [
+      {
+        "date": "2026-11-24 11:00",
+        "user": "Support KuTiWa",
+        "action": "Cotation enregistrée"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "numero": "COT-2026-0002",
+    "type": "FRET",
+    "nom": "Mise à dispo camion 10 t - inventaire",
+    "clientId": 10,
+    "description": "Mise à dispo camion 10 t - inventaire",
+    "statut": "SOUMISE",
+    "dateCreation": "2026-11-22",
+    "dateSoumission": "2026-11-24",
+    "dateValidite": "2026-12-24",
+    "creePar": "M. NJOYA",
+    "montantHT": 450000,
+    "montantTTC": 536625,
+    "motifRejet": "",
+    "details": {
+      "vehicule": "Camion 10 t",
+      "dateDebut": "2026-12-04",
+      "nbJours": 2,
+      "villeDep": "DOUALA",
+      "villeDest": "YAOUNDE",
+      "chauffeur": true,
+      "carburant": true,
+      "manutention": 2,
+      "prixJour": 225000
+    },
+    "historique": [
+      {
+        "date": "2026-11-22 11:00",
+        "user": "Support KuTiWa",
+        "action": "Cotation enregistrée"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "numero": "COT-2026-0003",
+    "type": "TARIFAIRE",
+    "nom": "Grille 2027 - réseau national",
+    "clientId": 11,
+    "description": "Grille 2027 - réseau national",
+    "statut": "VALIDEE",
+    "dateCreation": "2026-11-19",
+    "dateSoumission": "2026-11-21",
+    "dateValidite": "2026-12-21",
+    "creePar": "Support KuTiWa",
+    "montantHT": 0,
+    "montantTTC": 0,
+    "motifRejet": "",
+    "details": {
+      "lignes": [
+        {
+          "villeDep": "DOUALA",
+          "villeDest": "YAOUNDE",
+          "tranche": "0 - 1 kg",
+          "prix": 2500
+        },
+        {
+          "villeDep": "DOUALA",
+          "villeDest": "YAOUNDE",
+          "tranche": "1 - 5 kg",
+          "prix": 4500
+        },
+        {
+          "villeDep": "DOUALA",
+          "villeDest": "BAFOUSSAM",
+          "tranche": "0 - 1 kg",
+          "prix": 3000
+        },
+        {
+          "villeDep": "DOUALA",
+          "villeDest": "GAROUA",
+          "tranche": "0 - 1 kg",
+          "prix": 6000
+        }
+      ],
+      "dateEffet": "2026-12-27"
+    },
+    "historique": [
+      {
+        "date": "2026-11-19 11:00",
+        "user": "Support KuTiWa",
+        "action": "Cotation enregistrée"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "numero": "COT-2026-0004",
+    "type": "EXPEDITION",
+    "nom": "Plis confidentiels Yaoundé",
+    "clientId": 9,
+    "description": "Plis confidentiels Yaoundé",
+    "statut": "EN_ATTENTE",
+    "dateCreation": "2026-11-21",
+    "dateSoumission": "2026-11-23",
+    "dateValidite": "2026-12-23",
+    "creePar": "M. NJOYA",
+    "montantHT": 12000,
+    "montantTTC": 14310,
+    "motifRejet": "",
+    "details": {
+      "villeDep": "YAOUNDE",
+      "bureauDep": "AKWA",
+      "villeDest": "DOUALA",
+      "bureauDest": "CENTRALE",
+      "livraison": "BUREAU",
+      "colis": [
+        {
+          "nature": "Colis",
+          "poids": 4,
+          "L": 40,
+          "l": 30,
+          "H": 25,
+          "nombre": 1,
+          "valeur": 25000,
+          "description": "Plis confidentiels Yaoundé"
+        }
+      ],
+      "transport": 12000,
+      "emballage": 0,
+      "livraisonMt": 0,
+      "autres": 0,
+      "expediteur": {
+        "nom": "CABINET MBARGA & ASSOCIES",
+        "tel": "677 10 20 30"
+      },
+      "destinataire": {
+        "nom": "Agence CMA",
+        "tel": ""
+      }
+    },
+    "historique": [
+      {
+        "date": "2026-11-21 11:00",
+        "user": "Support KuTiWa",
+        "action": "Cotation enregistrée"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "numero": "COT-2026-0005",
+    "type": "EXPEDITION",
+    "nom": "Cartons promotionnels",
+    "clientId": 5,
+    "description": "Cartons promotionnels",
+    "statut": "REJETEE",
+    "dateCreation": "2026-11-13",
+    "dateSoumission": "2026-11-15",
+    "dateValidite": "2026-12-15",
+    "creePar": "Support KuTiWa",
+    "montantHT": 64000,
+    "montantTTC": 76320,
+    "motifRejet": "Tarif jugé trop élevé par le client",
+    "details": {
+      "villeDep": "DOUALA",
+      "bureauDep": "AKWA",
+      "villeDest": "YAOUNDE",
+      "bureauDest": "CENTRALE",
+      "livraison": "BUREAU",
+      "colis": [
+        {
+          "nature": "Colis",
+          "poids": 4,
+          "L": 40,
+          "l": 30,
+          "H": 25,
+          "nombre": 1,
+          "valeur": 25000,
+          "description": "Cartons promotionnels"
+        }
+      ],
+      "transport": 64000,
+      "emballage": 0,
+      "livraisonMt": 0,
+      "autres": 0,
+      "expediteur": {
+        "nom": "AZUR",
+        "tel": "693 41 41 41"
+      },
+      "destinataire": {
+        "nom": "Agence ",
+        "tel": ""
+      }
+    },
+    "historique": [
+      {
+        "date": "2026-11-13 11:00",
+        "user": "Support KuTiWa",
+        "action": "Cotation enregistrée"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "numero": "COT-2026-0006",
+    "type": "FRET",
+    "nom": "Fourgonnette journée Douala",
+    "clientId": 1,
+    "description": "Fourgonnette journée Douala",
+    "statut": "ACCEPTEE",
+    "dateCreation": "2026-11-10",
+    "dateSoumission": "2026-11-12",
+    "dateValidite": "2026-12-12",
+    "creePar": "M. NJOYA",
+    "montantHT": 85000,
+    "montantTTC": 101363,
+    "motifRejet": "",
+    "details": {
+      "vehicule": "Camion 10 t",
+      "dateDebut": "2026-12-04",
+      "nbJours": 2,
+      "villeDep": "DOUALA",
+      "villeDest": "YAOUNDE",
+      "chauffeur": true,
+      "carburant": true,
+      "manutention": 2,
+      "prixJour": 42500
+    },
+    "historique": [
+      {
+        "date": "2026-11-10 11:00",
+        "user": "Support KuTiWa",
+        "action": "Cotation enregistrée"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "numero": "COT-2026-0007",
+    "type": "EXPEDITION",
+    "nom": "Matériel informatique Garoua",
+    "clientId": 8,
+    "description": "Matériel informatique Garoua",
+    "statut": "ENREGISTREE",
+    "dateCreation": "2026-11-25",
+    "dateSoumission": null,
+    "dateValidite": "2026-12-27",
+    "creePar": "Support KuTiWa",
+    "montantHT": 42500,
+    "montantTTC": 50681,
+    "motifRejet": "",
+    "details": {
+      "villeDep": "DOUALA",
+      "bureauDep": "AKWA",
+      "villeDest": "YAOUNDE",
+      "bureauDest": "CENTRALE",
+      "livraison": "BUREAU",
+      "colis": [
+        {
+          "nature": "Colis",
+          "poids": 4,
+          "L": 40,
+          "l": 30,
+          "H": 25,
+          "nombre": 1,
+          "valeur": 25000,
+          "description": "Matériel informatique Garoua"
+        }
+      ],
+      "transport": 42500,
+      "emballage": 0,
+      "livraisonMt": 0,
+      "autres": 0,
+      "expediteur": {
+        "nom": "HOPITAL LAQUINTINIE",
+        "tel": "677 77 66 55"
+      },
+      "destinataire": {
+        "nom": "Agence HLD",
+        "tel": ""
+      }
+    },
+    "historique": [
+      {
+        "date": "2026-11-25 11:00",
+        "user": "Support KuTiWa",
+        "action": "Cotation enregistrée"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "numero": "COT-2026-0008",
+    "type": "TARIFAIRE",
+    "nom": "Tarifs spéciaux pharmacie",
+    "clientId": 1,
+    "description": "Tarifs spéciaux pharmacie",
+    "statut": "SOUMISE",
+    "dateCreation": "2026-11-23",
+    "dateSoumission": "2026-11-25",
+    "dateValidite": "2026-12-25",
+    "creePar": "M. NJOYA",
+    "montantHT": 0,
+    "montantTTC": 0,
+    "motifRejet": "",
+    "details": {
+      "lignes": [
+        {
+          "villeDep": "DOUALA",
+          "villeDest": "YAOUNDE",
+          "tranche": "0 - 1 kg",
+          "prix": 2500
+        },
+        {
+          "villeDep": "DOUALA",
+          "villeDest": "YAOUNDE",
+          "tranche": "1 - 5 kg",
+          "prix": 4500
+        },
+        {
+          "villeDep": "DOUALA",
+          "villeDest": "BAFOUSSAM",
+          "tranche": "0 - 1 kg",
+          "prix": 3000
+        },
+        {
+          "villeDep": "DOUALA",
+          "villeDest": "GAROUA",
+          "tranche": "0 - 1 kg",
+          "prix": 6000
+        }
+      ],
+      "dateEffet": "2026-12-27"
+    },
+    "historique": [
+      {
+        "date": "2026-11-23 11:00",
+        "user": "Support KuTiWa",
+        "action": "Cotation enregistrée"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "numero": "COT-2026-0009",
+    "type": "EXPEDITION",
+    "nom": "Retour matériel défectueux",
+    "clientId": 7,
+    "description": "Retour matériel défectueux",
+    "statut": "ANNULEE",
+    "dateCreation": "2026-11-05",
+    "dateSoumission": "2026-11-07",
+    "dateValidite": "2026-12-07",
+    "creePar": "Support KuTiWa",
+    "montantHT": 9500,
+    "montantTTC": 11329,
+    "motifRejet": "",
+    "details": {
+      "villeDep": "DOUALA",
+      "bureauDep": "AKWA",
+      "villeDest": "YAOUNDE",
+      "bureauDest": "CENTRALE",
+      "livraison": "BUREAU",
+      "colis": [
+        {
+          "nature": "Colis",
+          "poids": 4,
+          "L": 40,
+          "l": 30,
+          "H": 25,
+          "nombre": 1,
+          "valeur": 25000,
+          "description": "Retour matériel défectueux"
+        }
+      ],
+      "transport": 9500,
+      "emballage": 0,
+      "livraisonMt": 0,
+      "autres": 0,
+      "expediteur": {
+        "nom": "ORANGE CAMEROUN",
+        "tel": "699 00 00 07"
+      },
+      "destinataire": {
+        "nom": "Agence OCM",
+        "tel": ""
+      }
+    },
+    "historique": [
+      {
+        "date": "2026-11-05 11:00",
+        "user": "Support KuTiWa",
+        "action": "Cotation enregistrée"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "numero": "COT-2026-0010",
+    "type": "EXPEDITION",
+    "nom": "Livraison palettes Bafoussam",
+    "description": "Livraison palettes Bafoussam",
+    "clientId": 10,
+    "statut": "SOUMISE",
+    "dateCreation": "2026-11-25",
+    "dateSoumission": "2026-11-25",
+    "dateValidite": "2026-12-01",
+    "creePar": "M. NJOYA",
+    "montantHT": 185000,
+    "montantTTC": 220613,
+    "motifRejet": "",
+    "details": {
+      "villeDep": "DOUALA",
+      "bureauDep": "AKWA",
+      "villeDest": "BAFOUSSAM",
+      "bureauDest": "CENTRE",
+      "livraison": "BUREAU",
+      "colis": [
+        {
+          "nature": "Colis",
+          "poids": 120,
+          "L": 40,
+          "l": 30,
+          "H": 25,
+          "nombre": 4,
+          "valeur": 50000,
+          "description": "Livraison palettes Bafoussam"
+        }
+      ],
+      "transport": 185000,
+      "emballage": 0,
+      "livraisonMt": 0,
+      "autres": 0,
+      "expediteur": {
+        "nom": "BRASSERIES DU CAMEROUN",
+        "tel": "690 55 44 33"
+      },
+      "destinataire": {
+        "nom": "Agence SABC",
+        "tel": ""
+      }
+    },
+    "historique": [
+      {
+        "date": "2026-11-25 11:00",
+        "user": "M. NJOYA",
+        "action": "Cotation enregistrée"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "numero": "COT-2026-0011",
+    "type": "EXPEDITION",
+    "nom": "Plis urgents Yaoundé - décembre",
+    "description": "Plis urgents Yaoundé - décembre",
+    "clientId": 6,
+    "statut": "ENREGISTREE",
+    "dateCreation": "2026-11-27",
+    "dateSoumission": null,
+    "dateValidite": "2026-12-01",
+    "creePar": "M. NJOYA",
+    "montantHT": 36000,
+    "montantTTC": 42930,
+    "motifRejet": "",
+    "details": {
+      "villeDep": "DOUALA",
+      "bureauDep": "AKWA",
+      "villeDest": "YAOUNDE",
+      "bureauDest": "CENTRALE",
+      "livraison": "BUREAU",
+      "colis": [
+        {
+          "nature": "Colis",
+          "poids": 2,
+          "L": 40,
+          "l": 30,
+          "H": 25,
+          "nombre": 6,
+          "valeur": 50000,
+          "description": "Plis urgents Yaoundé - décembre"
+        }
+      ],
+      "transport": 36000,
+      "emballage": 0,
+      "livraisonMt": 0,
+      "autres": 0,
+      "expediteur": {
+        "nom": "TOTAL ENERGIES MARKETING CAMEROUN",
+        "tel": "699 80 70 60"
+      },
+      "destinataire": {
+        "nom": "Agence TEMC",
+        "tel": ""
+      }
+    },
+    "historique": [
+      {
+        "date": "2026-11-27 11:00",
+        "user": "M. NJOYA",
+        "action": "Cotation enregistrée"
+      }
+    ]
+  }
+]

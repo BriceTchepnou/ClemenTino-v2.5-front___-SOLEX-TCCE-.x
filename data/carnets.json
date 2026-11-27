@@ -1,0 +1,310 @@
+[
+  {
+    "id": 1,
+    "numero": "TOTAL-354935",
+    "prefixe": "",
+    "debut": 456000,
+    "fin": 456999,
+    "dernierUtilise": 456111,
+    "clientId": 1,
+    "agenceId": 1,
+    "dateCreation": "2026-11-02",
+    "dateAffectation": "2026-11-03",
+    "cloture": false,
+    "observation": "",
+    "anomalies": [
+      {
+        "numero": 456045,
+        "type": "PERDUE",
+        "motif": "Feuille perdue par le livreur",
+        "date": "2026-11-12",
+        "user": "M. NJOYA"
+      },
+      {
+        "numero": 456077,
+        "type": "ANNULEE",
+        "motif": "Erreur de saisie - feuille annulée",
+        "date": "2026-11-18",
+        "user": "M. NJOYA"
+      }
+    ],
+    "historique": [
+      {
+        "date": "2026-11-13 00:00",
+        "user": "Guichet",
+        "action": "Feuille 456111 utilisée (expédition RT-2611-01211)"
+      },
+      {
+        "date": "2026-11-19 00:00",
+        "user": "Guichet",
+        "action": "Feuille 456110 utilisée (expédition RT-2611-01210)"
+      },
+      {
+        "date": "2026-11-25 00:00",
+        "user": "Guichet",
+        "action": "Feuille 456109 utilisée (expédition RT-2611-01209)"
+      },
+      {
+        "date": "2026-10-04 00:00",
+        "user": "Guichet",
+        "action": "Feuille 456108 utilisée (expédition RT-2610-01208)"
+      },
+      {
+        "date": "2026-10-10 00:00",
+        "user": "Guichet",
+        "action": "Feuille 456107 utilisée (expédition RT-2610-01207)"
+      },
+      {
+        "date": "2026-10-16 00:00",
+        "user": "Guichet",
+        "action": "Feuille 456106 utilisée (expédition RT-2610-01206)"
+      },
+      {
+        "date": "2026-10-22 00:00",
+        "user": "Guichet",
+        "action": "Feuille 456105 utilisée (expédition RT-2610-01205)"
+      },
+      {
+        "date": "2026-10-28 00:00",
+        "user": "Guichet",
+        "action": "Feuille 456104 utilisée (expédition RT-2610-01204)"
+      },
+      {
+        "date": "2026-11-03 00:00",
+        "user": "Guichet",
+        "action": "Feuille 456103 utilisée (expédition RT-2611-01203)"
+      },
+      {
+        "date": "2026-11-09 00:00",
+        "user": "Guichet",
+        "action": "Feuille 456102 utilisée (expédition RT-2611-01202)"
+      },
+      {
+        "date": "2026-11-15 00:00",
+        "user": "Guichet",
+        "action": "Feuille 456101 utilisée (expédition RT-2611-01201)"
+      },
+      {
+        "date": "2026-11-18 10:12",
+        "user": "M. NJOYA",
+        "action": "Feuille 456077 annulée"
+      },
+      {
+        "date": "2026-11-12 16:40",
+        "user": "M. NJOYA",
+        "action": "Feuille 456045 déclarée perdue"
+      },
+      {
+        "date": "2026-11-03 09:05",
+        "user": "Support KuTiWa",
+        "action": "Carnet affecté à PHARMACIE PACIFIC (agence AKWA)"
+      },
+      {
+        "date": "2026-11-02 14:30",
+        "user": "Support KuTiWa",
+        "action": "Création du carnet (456000 - 456999)"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "numero": "CRN-2026-0012",
+    "prefixe": "LT",
+    "debut": 100001,
+    "fin": 100050,
+    "dernierUtilise": 100050,
+    "clientId": 6,
+    "agenceId": 2,
+    "dateCreation": "2026-10-01",
+    "dateAffectation": "2026-10-02",
+    "cloture": false,
+    "observation": "Carnet terminé, prévoir un nouveau carnet",
+    "anomalies": [
+      {
+        "numero": 100013,
+        "type": "PERDUE",
+        "motif": "Feuille perdue par le client",
+        "date": "2026-10-20",
+        "user": "M. NJOYA"
+      }
+    ],
+    "historique": [
+      {
+        "date": "2026-10-01 08:00",
+        "user": "Support KuTiWa",
+        "action": "Création du carnet (100001 - 100050)"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "numero": "CRN-2026-0013",
+    "prefixe": "LT",
+    "debut": 100051,
+    "fin": 100100,
+    "dernierUtilise": 100072,
+    "clientId": 6,
+    "agenceId": 2,
+    "dateCreation": "2026-11-20",
+    "dateAffectation": "2026-11-21",
+    "cloture": false,
+    "observation": "",
+    "anomalies": [],
+    "historique": [
+      {
+        "date": "2026-11-22 00:00",
+        "user": "Guichet",
+        "action": "Feuille 100072 utilisée (expédition RT-2611-01242)"
+      },
+      {
+        "date": "2026-10-01 00:00",
+        "user": "Guichet",
+        "action": "Feuille 100071 utilisée (expédition RT-2610-01241)"
+      },
+      {
+        "date": "2026-10-07 00:00",
+        "user": "Guichet",
+        "action": "Feuille 100070 utilisée (expédition RT-2610-01240)"
+      },
+      {
+        "date": "2026-10-13 00:00",
+        "user": "Guichet",
+        "action": "Feuille 100069 utilisée (expédition RT-2610-01239)"
+      },
+      {
+        "date": "2026-10-19 00:00",
+        "user": "Guichet",
+        "action": "Feuille 100068 utilisée (expédition RT-2610-01238)"
+      },
+      {
+        "date": "2026-10-25 00:00",
+        "user": "Guichet",
+        "action": "Feuille 100067 utilisée (expédition RT-2610-01237)"
+      },
+      {
+        "date": "2026-10-31 00:00",
+        "user": "Guichet",
+        "action": "Feuille 100066 utilisée (expédition RT-2610-01236)"
+      },
+      {
+        "date": "2026-11-06 00:00",
+        "user": "Guichet",
+        "action": "Feuille 100065 utilisée (expédition RT-2611-01235)"
+      },
+      {
+        "date": "2026-11-12 00:00",
+        "user": "Guichet",
+        "action": "Feuille 100064 utilisée (expédition RT-2611-01234)"
+      },
+      {
+        "date": "2026-11-18 00:00",
+        "user": "Guichet",
+        "action": "Feuille 100063 utilisée (expédition RT-2611-01233)"
+      },
+      {
+        "date": "2026-11-20 08:00",
+        "user": "Support KuTiWa",
+        "action": "Création du carnet (100051 - 100100)"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "numero": "CRN-2026-0014",
+    "prefixe": "LT",
+    "debut": 100101,
+    "fin": 100150,
+    "dernierUtilise": null,
+    "clientId": null,
+    "agenceId": 5,
+    "dateCreation": "2026-11-25",
+    "dateAffectation": null,
+    "cloture": false,
+    "observation": "En stock à Yaoundé",
+    "anomalies": [],
+    "historique": [
+      {
+        "date": "2026-11-25 11:20",
+        "user": "Support KuTiWa",
+        "action": "Création du carnet (100101 - 100150)"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "numero": "SABC-0007",
+    "prefixe": "",
+    "debut": 780001,
+    "fin": 780100,
+    "dernierUtilise": 780044,
+    "clientId": 10,
+    "agenceId": 1,
+    "dateCreation": "2026-09-15",
+    "dateAffectation": "2026-09-16",
+    "cloture": true,
+    "observation": "Contrat résilié - carnet récupéré",
+    "anomalies": [],
+    "historique": [
+      {
+        "date": "2026-10-03 00:00",
+        "user": "Guichet",
+        "action": "Feuille 780044 utilisée (expédition RT-2610-01267)"
+      },
+      {
+        "date": "2026-10-09 00:00",
+        "user": "Guichet",
+        "action": "Feuille 780043 utilisée (expédition RT-2610-01266)"
+      },
+      {
+        "date": "2026-10-15 00:00",
+        "user": "Guichet",
+        "action": "Feuille 780042 utilisée (expédition RT-2610-01265)"
+      },
+      {
+        "date": "2026-10-21 00:00",
+        "user": "Guichet",
+        "action": "Feuille 780041 utilisée (expédition RT-2610-01264)"
+      },
+      {
+        "date": "2026-10-27 00:00",
+        "user": "Guichet",
+        "action": "Feuille 780040 utilisée (expédition RT-2610-01263)"
+      },
+      {
+        "date": "2026-11-02 00:00",
+        "user": "Guichet",
+        "action": "Feuille 780039 utilisée (expédition RT-2611-01262)"
+      },
+      {
+        "date": "2026-11-08 00:00",
+        "user": "Guichet",
+        "action": "Feuille 780038 utilisée (expédition RT-2611-01261)"
+      },
+      {
+        "date": "2026-11-14 00:00",
+        "user": "Guichet",
+        "action": "Feuille 780037 utilisée (expédition RT-2611-01260)"
+      },
+      {
+        "date": "2026-11-20 00:00",
+        "user": "Guichet",
+        "action": "Feuille 780036 utilisée (expédition RT-2611-01259)"
+      },
+      {
+        "date": "2026-11-26 00:00",
+        "user": "Guichet",
+        "action": "Feuille 780035 utilisée (expédition RT-2611-01258)"
+      },
+      {
+        "date": "2026-10-05 00:00",
+        "user": "Guichet",
+        "action": "Feuille 780034 utilisée (expédition RT-2610-01257)"
+      },
+      {
+        "date": "2026-11-05 15:00",
+        "user": "Support KuTiWa",
+        "action": "Carnet clôturé"
+      }
+    ]
+  }
+]

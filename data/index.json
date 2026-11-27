@@ -1,0 +1,161 @@
+{
+  "application": "ClemenTino 2.0 - maquettes (Solex / Touristique Logistique)",
+  "genereLe": "2026-11-27",
+  "periode": {
+    "du": "2026-08-27",
+    "au": "2026-12-01"
+  },
+  "clesLocalStorage": {
+    "store": "cx_commercial_demo_v1",
+    "carnets": "ct_carnets_demo_cx_v1"
+  },
+  "referentiels": {
+    "villes": [
+      {
+        "code": "DLA",
+        "nom": "DOUALA"
+      },
+      {
+        "code": "YDE",
+        "nom": "YAOUNDE"
+      },
+      {
+        "code": "BFS",
+        "nom": "BAFOUSSAM"
+      },
+      {
+        "code": "GRA",
+        "nom": "GAROUA"
+      },
+      {
+        "code": "KRI",
+        "nom": "KRIBI"
+      },
+      {
+        "code": "LIM",
+        "nom": "LIMBE"
+      },
+      {
+        "code": "BUE",
+        "nom": "BUEA"
+      },
+      {
+        "code": "NGD",
+        "nom": "NGAOUNDERE"
+      },
+      {
+        "code": "BDA",
+        "nom": "BAMENDA"
+      },
+      {
+        "code": "EBO",
+        "nom": "EBOLOWA"
+      },
+      {
+        "code": "BRT",
+        "nom": "BERTOUA"
+      },
+      {
+        "code": "MRA",
+        "nom": "MAROUA"
+      }
+    ],
+    "agences": [
+      {
+        "id": 1,
+        "nom": "AKWA",
+        "ville": "DOUALA"
+      },
+      {
+        "id": 2,
+        "nom": "BONANJO",
+        "ville": "DOUALA"
+      },
+      {
+        "id": 3,
+        "nom": "BONABERI",
+        "ville": "DOUALA"
+      },
+      {
+        "id": 4,
+        "nom": "CENTRALE",
+        "ville": "YAOUNDE"
+      },
+      {
+        "id": 5,
+        "nom": "BASTOS",
+        "ville": "YAOUNDE"
+      },
+      {
+        "id": 6,
+        "nom": "MVAN",
+        "ville": "YAOUNDE"
+      },
+      {
+        "id": 7,
+        "nom": "CENTRE",
+        "ville": "BAFOUSSAM"
+      },
+      {
+        "id": 8,
+        "nom": "CENTRE",
+        "ville": "GAROUA"
+      },
+      {
+        "id": 9,
+        "nom": "CENTRE",
+        "ville": "KRIBI"
+      },
+      {
+        "id": 10,
+        "nom": "CENTRE",
+        "ville": "LIMBE"
+      },
+      {
+        "id": 11,
+        "nom": "MOLYKO",
+        "ville": "BUEA"
+      },
+      {
+        "id": 12,
+        "nom": "CENTRE",
+        "ville": "NGAOUNDERE"
+      }
+    ],
+    "zonesLivraison": [
+      {
+        "code": "Z1",
+        "nom": "Zone 1 · Centre-ville",
+        "prix": 1500
+      },
+      {
+        "code": "Z2",
+        "nom": "Zone 2 · Périphérie",
+        "prix": 2500
+      },
+      {
+        "code": "Z3",
+        "nom": "Zone 3 · Banlieue",
+        "prix": 4000
+      }
+    ]
+  },
+  "volumes": {
+    "apporteurs": 12,
+    "bordereaux": 70,
+    "clients": 12,
+    "commissions": 0,
+    "contrats": 4,
+    "cotations": 11,
+    "expeditions": 502,
+    "factures": 9,
+    "groupesClients": 2,
+    "livreurs": 7,
+    "meta": 6,
+    "plannings": 24,
+    "preenregistrements": 11,
+    "tarifaires": 5,
+    "tournees": 16,
+    "carnets": 5
+  }
+}

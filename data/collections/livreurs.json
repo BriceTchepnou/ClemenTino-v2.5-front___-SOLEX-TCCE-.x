@@ -1,0 +1,93 @@
+[
+  {
+    "id": 1,
+    "code": "LIV-DLA-01",
+    "nom": "TCHOUAMO Rodrigue",
+    "tel": "699 41 22 10",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "vehicule": "Moto",
+    "statut": "ACTIF",
+    "numero": "LIV-DLA-01",
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "id": 2,
+    "code": "LIV-DLA-02",
+    "nom": "EBOUÉ Patrick",
+    "tel": "677 18 30 44",
+    "ville": "DOUALA",
+    "agenceId": 2,
+    "vehicule": "Moto",
+    "statut": "ACTIF",
+    "numero": "LIV-DLA-02",
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "id": 3,
+    "code": "LIV-DLA-03",
+    "nom": "NDOUMBÉ Cyrille",
+    "tel": "690 55 71 02",
+    "ville": "DOUALA",
+    "agenceId": 3,
+    "vehicule": "Tricycle",
+    "statut": "ACTIF",
+    "numero": "LIV-DLA-03",
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "id": 4,
+    "code": "LIV-YDE-01",
+    "nom": "MVOGO Arsène",
+    "tel": "699 87 65 12",
+    "ville": "YAOUNDE",
+    "agenceId": 4,
+    "vehicule": "Moto",
+    "statut": "ACTIF",
+    "numero": "LIV-YDE-01",
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "id": 5,
+    "code": "LIV-YDE-02",
+    "nom": "ONANA Jules",
+    "tel": "677 23 98 50",
+    "ville": "YAOUNDE",
+    "agenceId": 5,
+    "vehicule": "Fourgonnette (1,5 t)",
+    "statut": "ACTIF",
+    "numero": "LIV-YDE-02",
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "id": 6,
+    "code": "LIV-BFS-01",
+    "nom": "FEUDJIO Hugues",
+    "tel": "655 12 44 90",
+    "ville": "BAFOUSSAM",
+    "agenceId": 7,
+    "vehicule": "Moto",
+    "statut": "ACTIF",
+    "numero": "LIV-BFS-01",
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "id": 7,
+    "code": "LIV-GRA-01",
+    "nom": "HAMADOU Bello",
+    "tel": "699 30 11 72",
+    "ville": "GAROUA",
+    "agenceId": 8,
+    "vehicule": "Moto",
+    "statut": "CONGE",
+    "numero": "LIV-GRA-01",
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  }
+]

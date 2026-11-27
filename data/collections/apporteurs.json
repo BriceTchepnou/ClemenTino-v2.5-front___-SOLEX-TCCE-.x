@@ -1,0 +1,367 @@
+[
+  {
+    "id": 1,
+    "code": "CRS502DLA",
+    "numero": "CRS502DLA",
+    "matricule": "MAT-2018-0142",
+    "type": "COMMERCIAL",
+    "nom": "NANA",
+    "prenoms": "Brice Arnaud",
+    "sexe": "M",
+    "dateNaissance": "1988-04-12",
+    "tel1": "699 45 12 78",
+    "tel2": "",
+    "email": "b.nana@solex.cm",
+    "adresse": "Bonapriso, rue Njo-Njo",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "tauxCommission": 3,
+    "baseCommission": "FACTURE",
+    "statut": "ACTIF",
+    "notes": "",
+    "dateCreation": "2025-10-03",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2025-10-03 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "code": "CRS503DLA",
+    "numero": "CRS503DLA",
+    "matricule": "AGT-0031",
+    "type": "AGENT",
+    "nom": "EKOTTO",
+    "prenoms": "Marie-Claire",
+    "sexe": "F",
+    "dateNaissance": "1991-09-03",
+    "tel1": "677 21 08 55",
+    "tel2": "655 10 20 30",
+    "email": "mc.ekotto@gmail.com",
+    "adresse": "Akwa Nord",
+    "ville": "DOUALA",
+    "agenceId": 2,
+    "tauxCommission": 5,
+    "baseCommission": "ENCAISSE",
+    "statut": "ACTIF",
+    "notes": "",
+    "dateCreation": "2025-11-12",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2025-11-12 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "code": "CRS504DLA",
+    "numero": "CRS504DLA",
+    "matricule": "PART-0007",
+    "type": "PARTENAIRE",
+    "nom": "MBARGA",
+    "prenoms": "Thierry",
+    "sexe": "M",
+    "dateNaissance": "1979-01-27",
+    "tel1": "690 87 44 12",
+    "tel2": "",
+    "email": "contact@medicaconseil.cm",
+    "adresse": "Bali, BP 3310 Douala",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "tauxCommission": 4,
+    "baseCommission": "FACTURE",
+    "statut": "ACTIF",
+    "notes": "",
+    "dateCreation": "2026-01-31",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-01-31 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "code": "CRS505YDE",
+    "numero": "CRS505YDE",
+    "matricule": "MAT-2020-0210",
+    "type": "COMMERCIAL",
+    "nom": "ABENA",
+    "prenoms": "Josiane",
+    "sexe": "F",
+    "dateNaissance": "1993-06-18",
+    "tel1": "699 30 41 52",
+    "tel2": "",
+    "email": "j.abena@solex.cm",
+    "adresse": "Bastos, Yaoundé",
+    "ville": "YAOUNDE",
+    "agenceId": 4,
+    "tauxCommission": 3,
+    "baseCommission": "FACTURE",
+    "statut": "ACTIF",
+    "notes": "",
+    "dateCreation": "2026-02-10",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-02-10 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "code": "CRS506YDE",
+    "numero": "CRS506YDE",
+    "matricule": "AGT-0044",
+    "type": "AGENT",
+    "nom": "ONANA",
+    "prenoms": "Serge Patrice",
+    "sexe": "M",
+    "dateNaissance": "1985-11-02",
+    "tel1": "677 55 66 77",
+    "tel2": "",
+    "email": "serge.onana@yahoo.fr",
+    "adresse": "Mvan, Yaoundé",
+    "ville": "YAOUNDE",
+    "agenceId": 6,
+    "tauxCommission": 5,
+    "baseCommission": "ENCAISSE",
+    "statut": "ACTIF",
+    "notes": "",
+    "dateCreation": "2026-04-01",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-04-01 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "code": "CRS507BFS",
+    "numero": "CRS507BFS",
+    "matricule": "AGT-0052",
+    "type": "AGENT",
+    "nom": "FOTSO",
+    "prenoms": "Gisèle",
+    "sexe": "F",
+    "dateNaissance": "1990-02-14",
+    "tel1": "696 12 13 14",
+    "tel2": "",
+    "email": "gisele.fotso@gmail.com",
+    "adresse": "Marché A, Bafoussam",
+    "ville": "BAFOUSSAM",
+    "agenceId": 7,
+    "tauxCommission": 4,
+    "baseCommission": "FACTURE",
+    "statut": "ACTIF",
+    "notes": "",
+    "dateCreation": "2026-05-01",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-05-01 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "code": "CRS508GRA",
+    "numero": "CRS508GRA",
+    "matricule": "MAT-2021-0305",
+    "type": "COMMERCIAL",
+    "nom": "BELLO",
+    "prenoms": "Ibrahim",
+    "sexe": "M",
+    "dateNaissance": "1987-07-30",
+    "tel1": "699 70 80 90",
+    "tel2": "",
+    "email": "i.bello@solex.cm",
+    "adresse": "Quartier Plateau, Garoua",
+    "ville": "GAROUA",
+    "agenceId": 8,
+    "tauxCommission": 3,
+    "baseCommission": "FACTURE",
+    "statut": "ACTIF",
+    "notes": "",
+    "dateCreation": "2026-05-21",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-05-21 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "code": "CRS509KRI",
+    "numero": "CRS509KRI",
+    "matricule": "AGT-0058",
+    "type": "AGENT",
+    "nom": "ESSOMBA",
+    "prenoms": "Rodrigue",
+    "sexe": "M",
+    "dateNaissance": "1994-12-09",
+    "tel1": "650 11 22 33",
+    "tel2": "",
+    "email": "r.essomba@gmail.com",
+    "adresse": "Kribi centre",
+    "ville": "KRIBI",
+    "agenceId": 9,
+    "tauxCommission": 5,
+    "baseCommission": "ENCAISSE",
+    "statut": "SUSPENDU",
+    "notes": "",
+    "dateCreation": "2026-06-20",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-06-20 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      },
+      {
+        "date": "2026-11-07 16:40",
+        "user": "Support KuTiWa",
+        "action": "Apporteur suspendu - contrat d'agent non renouvelé"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "code": "CRS510DLA",
+    "numero": "CRS510DLA",
+    "matricule": "PAR-0003",
+    "type": "PARRAIN",
+    "nom": "KAMGA",
+    "prenoms": "Odile",
+    "sexe": "F",
+    "dateNaissance": "1982-03-21",
+    "tel1": "677 77 66 55",
+    "tel2": "",
+    "email": "odile.kamga@pharmaciepacific.cm",
+    "adresse": "Akwa, Douala",
+    "ville": "DOUALA",
+    "agenceId": 1,
+    "tauxCommission": 2,
+    "baseCommission": "ENCAISSE",
+    "statut": "ACTIF",
+    "notes": "",
+    "dateCreation": "2026-07-30",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-07-30 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "code": "CRS511LIM",
+    "numero": "CRS511LIM",
+    "matricule": "AGT-0061",
+    "type": "AGENT",
+    "nom": "TABI",
+    "prenoms": "Emmanuel",
+    "sexe": "M",
+    "dateNaissance": "1989-08-05",
+    "tel1": "670 45 45 45",
+    "tel2": "",
+    "email": "emmanuel.tabi@gmail.com",
+    "adresse": "Down Beach, Limbé",
+    "ville": "LIMBE",
+    "agenceId": 10,
+    "tauxCommission": 4,
+    "baseCommission": "FACTURE",
+    "statut": "ACTIF",
+    "notes": "",
+    "dateCreation": "2026-08-29",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-08-29 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "code": "CRS512YDE",
+    "numero": "CRS512YDE",
+    "matricule": "PART-0011",
+    "type": "PARTENAIRE",
+    "nom": "NJOYA",
+    "prenoms": "Aïcha",
+    "sexe": "F",
+    "dateNaissance": "1986-05-16",
+    "tel1": "699 01 23 45",
+    "tel2": "",
+    "email": "a.njoya@transitplus.cm",
+    "adresse": "Elig-Essono, Yaoundé",
+    "ville": "YAOUNDE",
+    "agenceId": 5,
+    "tauxCommission": 3.5,
+    "baseCommission": "FACTURE",
+    "statut": "ACTIF",
+    "notes": "",
+    "dateCreation": "2026-09-28",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-09-28 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "code": "CRS513DLA",
+    "numero": "CRS513DLA",
+    "matricule": "MAT-2024-0412",
+    "type": "COMMERCIAL",
+    "nom": "ETOGA",
+    "prenoms": "Marie",
+    "sexe": "F",
+    "dateNaissance": "1996-10-11",
+    "tel1": "655 98 76 54",
+    "tel2": "",
+    "email": "m.etoga@solex.cm",
+    "adresse": "Bonabéri, Douala",
+    "ville": "DOUALA",
+    "agenceId": 3,
+    "tauxCommission": 3,
+    "baseCommission": "FACTURE",
+    "statut": "ACTIF",
+    "notes": "",
+    "dateCreation": "2026-10-28",
+    "creePar": "Support KuTiWa",
+    "historique": [
+      {
+        "date": "2026-10-28 09:15",
+        "user": "Support KuTiWa",
+        "action": "Apporteur d'affaires enregistré"
+      }
+    ]
+  }
+]

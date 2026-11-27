@@ -1,0 +1,762 @@
+[
+  {
+    "numero": "TOU-261121-01",
+    "date": "2026-11-21",
+    "heureDebut": "08:00",
+    "heureFin": "12:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z1",
+    "quartiers": [
+      "Akwa",
+      "Bonapriso"
+    ],
+    "livreurId": 1,
+    "livreurNom": "TCHOUAMO Rodrigue",
+    "vehicule": "Moto",
+    "capacite": 12,
+    "statut": "PLANIFIEE",
+    "ficheIds": [
+      1
+    ],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-18",
+    "historique": [
+      {
+        "date": "2026-11-18 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 1
+  },
+  {
+    "numero": "TOU-261123-01",
+    "date": "2026-11-23",
+    "heureDebut": "08:00",
+    "heureFin": "12:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z1",
+    "quartiers": [
+      "Akwa",
+      "Bonapriso"
+    ],
+    "livreurId": 1,
+    "livreurNom": "TCHOUAMO Rodrigue",
+    "vehicule": "Moto",
+    "capacite": 12,
+    "statut": "PLANIFIEE",
+    "ficheIds": [
+      2
+    ],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-20",
+    "historique": [
+      {
+        "date": "2026-11-20 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 2
+  },
+  {
+    "numero": "TOU-261123-02",
+    "date": "2026-11-23",
+    "heureDebut": "08:30",
+    "heureFin": "13:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z2",
+    "quartiers": [
+      "Makepe",
+      "Bonamoussadi"
+    ],
+    "livreurId": 2,
+    "livreurNom": "EBOUÉ Patrick",
+    "vehicule": "Moto",
+    "capacite": 10,
+    "statut": "PLANIFIEE",
+    "ficheIds": [
+      3
+    ],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-20",
+    "historique": [
+      {
+        "date": "2026-11-20 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 3
+  },
+  {
+    "numero": "TOU-261124-01",
+    "date": "2026-11-24",
+    "heureDebut": "14:00",
+    "heureFin": "18:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z3",
+    "quartiers": [
+      "Logbessou",
+      "PK 14"
+    ],
+    "livreurId": 3,
+    "livreurNom": "NDOUMBÉ Cyrille",
+    "vehicule": "Tricycle",
+    "capacite": 15,
+    "statut": "PLANIFIEE",
+    "ficheIds": [
+      4
+    ],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-21",
+    "historique": [
+      {
+        "date": "2026-11-21 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 4
+  },
+  {
+    "numero": "TOU-261125-01",
+    "date": "2026-11-25",
+    "heureDebut": "08:30",
+    "heureFin": "13:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z2",
+    "quartiers": [
+      "Makepe",
+      "Bonamoussadi"
+    ],
+    "livreurId": 2,
+    "livreurNom": "EBOUÉ Patrick",
+    "vehicule": "Moto",
+    "capacite": 10,
+    "statut": "PLANIFIEE",
+    "ficheIds": [
+      5
+    ],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-22",
+    "historique": [
+      {
+        "date": "2026-11-22 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 5
+  },
+  {
+    "numero": "TOU-261126-01",
+    "date": "2026-11-26",
+    "heureDebut": "08:00",
+    "heureFin": "12:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z1",
+    "quartiers": [
+      "Akwa",
+      "Bonapriso"
+    ],
+    "livreurId": 1,
+    "livreurNom": "TCHOUAMO Rodrigue",
+    "vehicule": "Moto",
+    "capacite": 12,
+    "statut": "PLANIFIEE",
+    "ficheIds": [
+      6
+    ],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-23",
+    "historique": [
+      {
+        "date": "2026-11-23 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 6
+  },
+  {
+    "numero": "TOU-261125-02",
+    "date": "2026-11-25",
+    "heureDebut": "14:00",
+    "heureFin": "18:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z3",
+    "quartiers": [
+      "Logbessou",
+      "PK 14"
+    ],
+    "livreurId": 3,
+    "livreurNom": "NDOUMBÉ Cyrille",
+    "vehicule": "Tricycle",
+    "capacite": 15,
+    "statut": "ANNULEE",
+    "ficheIds": [],
+    "observations": "Annulée : livreur indisponible (panne du tricycle)",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-22",
+    "historique": [
+      {
+        "date": "2026-11-22 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 7
+  },
+  {
+    "numero": "TOU-261127-01",
+    "date": "2026-11-27",
+    "heureDebut": "08:00",
+    "heureFin": "12:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z1",
+    "quartiers": [
+      "Akwa",
+      "Bonapriso"
+    ],
+    "livreurId": 1,
+    "livreurNom": "TCHOUAMO Rodrigue",
+    "vehicule": "Moto",
+    "capacite": 12,
+    "statut": "PLANIFIEE",
+    "ficheIds": [
+      7
+    ],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-24",
+    "historique": [
+      {
+        "date": "2026-11-24 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 8
+  },
+  {
+    "numero": "TOU-261127-02",
+    "date": "2026-11-27",
+    "heureDebut": "08:30",
+    "heureFin": "13:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z2",
+    "quartiers": [
+      "Makepe",
+      "Bonamoussadi"
+    ],
+    "livreurId": 2,
+    "livreurNom": "EBOUÉ Patrick",
+    "vehicule": "Moto",
+    "capacite": 10,
+    "statut": "PLANIFIEE",
+    "ficheIds": [
+      8
+    ],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-24",
+    "historique": [
+      {
+        "date": "2026-11-24 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 9
+  },
+  {
+    "numero": "TOU-261127-03",
+    "date": "2026-11-27",
+    "heureDebut": "14:00",
+    "heureFin": "18:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z3",
+    "quartiers": [
+      "Logbessou",
+      "PK 14"
+    ],
+    "livreurId": 3,
+    "livreurNom": "NDOUMBÉ Cyrille",
+    "vehicule": "Tricycle",
+    "capacite": 15,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-24",
+    "historique": [
+      {
+        "date": "2026-11-24 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 10
+  },
+  {
+    "numero": "TOU-261127-04",
+    "date": "2026-11-27",
+    "heureDebut": "14:30",
+    "heureFin": "17:30",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z1",
+    "quartiers": [
+      "Akwa",
+      "Bonapriso"
+    ],
+    "livreurId": 1,
+    "livreurNom": "TCHOUAMO Rodrigue",
+    "vehicule": "Moto",
+    "capacite": 10,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-24",
+    "historique": [
+      {
+        "date": "2026-11-24 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 11
+  },
+  {
+    "numero": "TOU-261128-01",
+    "date": "2026-11-28",
+    "heureDebut": "08:00",
+    "heureFin": "12:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z1",
+    "quartiers": [
+      "Akwa",
+      "Bonapriso"
+    ],
+    "livreurId": 1,
+    "livreurNom": "TCHOUAMO Rodrigue",
+    "vehicule": "Moto",
+    "capacite": 12,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-25",
+    "historique": [
+      {
+        "date": "2026-11-25 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 12
+  },
+  {
+    "numero": "TOU-261128-02",
+    "date": "2026-11-28",
+    "heureDebut": "08:30",
+    "heureFin": "13:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z2",
+    "quartiers": [
+      "Makepe",
+      "Bonamoussadi"
+    ],
+    "livreurId": 2,
+    "livreurNom": "EBOUÉ Patrick",
+    "vehicule": "Moto",
+    "capacite": 10,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-25",
+    "historique": [
+      {
+        "date": "2026-11-25 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 13
+  },
+  {
+    "numero": "TOU-261130-01",
+    "date": "2026-11-30",
+    "heureDebut": "08:00",
+    "heureFin": "12:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z1",
+    "quartiers": [
+      "Akwa",
+      "Bonapriso"
+    ],
+    "livreurId": 1,
+    "livreurNom": "TCHOUAMO Rodrigue",
+    "vehicule": "Moto",
+    "capacite": 12,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 14
+  },
+  {
+    "numero": "TOU-261130-02",
+    "date": "2026-11-30",
+    "heureDebut": "08:30",
+    "heureFin": "13:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z2",
+    "quartiers": [
+      "Makepe",
+      "Bonamoussadi"
+    ],
+    "livreurId": 2,
+    "livreurNom": "EBOUÉ Patrick",
+    "vehicule": "Moto",
+    "capacite": 10,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 15
+  },
+  {
+    "numero": "TOU-261130-03",
+    "date": "2026-11-30",
+    "heureDebut": "14:00",
+    "heureFin": "18:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z3",
+    "quartiers": [
+      "Logbessou",
+      "PK 14"
+    ],
+    "livreurId": 3,
+    "livreurNom": "NDOUMBÉ Cyrille",
+    "vehicule": "Tricycle",
+    "capacite": 15,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 16
+  },
+  {
+    "numero": "TOU-261201-01",
+    "date": "2026-12-01",
+    "heureDebut": "08:00",
+    "heureFin": "12:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z1",
+    "quartiers": [
+      "Akwa",
+      "Bonapriso"
+    ],
+    "livreurId": 1,
+    "livreurNom": "TCHOUAMO Rodrigue",
+    "vehicule": "Moto",
+    "capacite": 12,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-28",
+    "historique": [
+      {
+        "date": "2026-11-28 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 17
+  },
+  {
+    "numero": "TOU-261201-02",
+    "date": "2026-12-01",
+    "heureDebut": "08:30",
+    "heureFin": "13:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z2",
+    "quartiers": [
+      "Makepe",
+      "Bonamoussadi"
+    ],
+    "livreurId": 2,
+    "livreurNom": "EBOUÉ Patrick",
+    "vehicule": "Moto",
+    "capacite": 10,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-28",
+    "historique": [
+      {
+        "date": "2026-11-28 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 18
+  },
+  {
+    "numero": "TOU-261201-03",
+    "date": "2026-12-01",
+    "heureDebut": "14:00",
+    "heureFin": "18:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "zone": "Z3",
+    "quartiers": [
+      "Logbessou",
+      "PK 14"
+    ],
+    "livreurId": 3,
+    "livreurNom": "NDOUMBÉ Cyrille",
+    "vehicule": "Tricycle",
+    "capacite": 15,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-28",
+    "historique": [
+      {
+        "date": "2026-11-28 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 19
+  },
+  {
+    "numero": "TOU-261127-05",
+    "date": "2026-11-27",
+    "heureDebut": "08:00",
+    "heureFin": "12:30",
+    "agenceId": 4,
+    "ville": "YAOUNDE",
+    "agence": "CENTRALE",
+    "zone": "Z1",
+    "quartiers": [
+      "Bastos",
+      "Nlongkak"
+    ],
+    "livreurId": 4,
+    "livreurNom": "MVOGO Arsène",
+    "vehicule": "Moto",
+    "capacite": 12,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-24",
+    "historique": [
+      {
+        "date": "2026-11-24 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 20
+  },
+  {
+    "numero": "TOU-261127-06",
+    "date": "2026-11-27",
+    "heureDebut": "13:30",
+    "heureFin": "17:30",
+    "agenceId": 4,
+    "ville": "YAOUNDE",
+    "agence": "CENTRALE",
+    "zone": "Z2",
+    "quartiers": [
+      "Essos",
+      "Mvan"
+    ],
+    "livreurId": 5,
+    "livreurNom": "ONANA Jules",
+    "vehicule": "Fourgonnette (1,5 t)",
+    "capacite": 20,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-24",
+    "historique": [
+      {
+        "date": "2026-11-24 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 21
+  },
+  {
+    "numero": "TOU-261128-03",
+    "date": "2026-11-28",
+    "heureDebut": "08:00",
+    "heureFin": "12:30",
+    "agenceId": 4,
+    "ville": "YAOUNDE",
+    "agence": "CENTRALE",
+    "zone": "Z1",
+    "quartiers": [
+      "Bastos",
+      "Nlongkak"
+    ],
+    "livreurId": 4,
+    "livreurNom": "MVOGO Arsène",
+    "vehicule": "Moto",
+    "capacite": 12,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-25",
+    "historique": [
+      {
+        "date": "2026-11-25 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 22
+  },
+  {
+    "numero": "TOU-261130-04",
+    "date": "2026-11-30",
+    "heureDebut": "08:00",
+    "heureFin": "12:30",
+    "agenceId": 4,
+    "ville": "YAOUNDE",
+    "agence": "CENTRALE",
+    "zone": "Z1",
+    "quartiers": [
+      "Bastos",
+      "Nlongkak"
+    ],
+    "livreurId": 4,
+    "livreurNom": "MVOGO Arsène",
+    "vehicule": "Moto",
+    "capacite": 12,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 23
+  },
+  {
+    "numero": "TOU-261130-05",
+    "date": "2026-11-30",
+    "heureDebut": "13:30",
+    "heureFin": "17:30",
+    "agenceId": 4,
+    "ville": "YAOUNDE",
+    "agence": "CENTRALE",
+    "zone": "Z2",
+    "quartiers": [
+      "Essos",
+      "Mvan"
+    ],
+    "livreurId": 5,
+    "livreurNom": "ONANA Jules",
+    "vehicule": "Fourgonnette (1,5 t)",
+    "capacite": 20,
+    "statut": "PLANIFIEE",
+    "ficheIds": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:00",
+        "user": "Chef d'agence",
+        "action": "Tournée planifiée"
+      }
+    ],
+    "id": 24
+  }
+]

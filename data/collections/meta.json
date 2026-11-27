@@ -1,0 +1,56 @@
+[
+  {
+    "cle": "demoExploitation",
+    "version": 1,
+    "date": "2026-11-27 13:48",
+    "numero": "META-1",
+    "id": 1,
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "cle": "demoSemaine",
+    "version": 1,
+    "date": "2026-11-27 13:48",
+    "numero": "META-SEM-1",
+    "id": 2,
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "cle": "demoInternational",
+    "version": 1,
+    "date": "2026-11-27 13:48",
+    "numero": "META-OPS-INT",
+    "id": 3,
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "cle": "demoOperations",
+    "version": 1,
+    "date": "2026-11-27 13:48",
+    "numero": "META-OPS-1",
+    "id": 4,
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "cle": "demoPreenregistrements2",
+    "version": 1,
+    "date": "2026-11-27 13:48",
+    "numero": "META-PRE-2",
+    "id": 5,
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  },
+  {
+    "cle": "demoPreenregistrements",
+    "version": 1,
+    "date": "2026-11-27 13:48",
+    "numero": "META-PRE-1",
+    "id": 6,
+    "dateCreation": "2026-11-27",
+    "creePar": "Support KuTiWa"
+  }
+]

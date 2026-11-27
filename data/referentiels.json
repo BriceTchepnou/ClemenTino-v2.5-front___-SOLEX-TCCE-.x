@@ -1,0 +1,220 @@
+{
+  "villes": [
+    {
+      "code": "DLA",
+      "nom": "DOUALA"
+    },
+    {
+      "code": "YDE",
+      "nom": "YAOUNDE"
+    },
+    {
+      "code": "BFS",
+      "nom": "BAFOUSSAM"
+    },
+    {
+      "code": "GRA",
+      "nom": "GAROUA"
+    },
+    {
+      "code": "KRI",
+      "nom": "KRIBI"
+    },
+    {
+      "code": "LIM",
+      "nom": "LIMBE"
+    },
+    {
+      "code": "BUE",
+      "nom": "BUEA"
+    },
+    {
+      "code": "NGD",
+      "nom": "NGAOUNDERE"
+    },
+    {
+      "code": "BDA",
+      "nom": "BAMENDA"
+    },
+    {
+      "code": "EBO",
+      "nom": "EBOLOWA"
+    },
+    {
+      "code": "BRT",
+      "nom": "BERTOUA"
+    },
+    {
+      "code": "MRA",
+      "nom": "MAROUA"
+    }
+  ],
+  "agences": [
+    {
+      "id": 1,
+      "nom": "AKWA",
+      "ville": "DOUALA"
+    },
+    {
+      "id": 2,
+      "nom": "BONANJO",
+      "ville": "DOUALA"
+    },
+    {
+      "id": 3,
+      "nom": "BONABERI",
+      "ville": "DOUALA"
+    },
+    {
+      "id": 4,
+      "nom": "CENTRALE",
+      "ville": "YAOUNDE"
+    },
+    {
+      "id": 5,
+      "nom": "BASTOS",
+      "ville": "YAOUNDE"
+    },
+    {
+      "id": 6,
+      "nom": "MVAN",
+      "ville": "YAOUNDE"
+    },
+    {
+      "id": 7,
+      "nom": "CENTRE",
+      "ville": "BAFOUSSAM"
+    },
+    {
+      "id": 8,
+      "nom": "CENTRE",
+      "ville": "GAROUA"
+    },
+    {
+      "id": 9,
+      "nom": "CENTRE",
+      "ville": "KRIBI"
+    },
+    {
+      "id": 10,
+      "nom": "CENTRE",
+      "ville": "LIMBE"
+    },
+    {
+      "id": 11,
+      "nom": "MOLYKO",
+      "ville": "BUEA"
+    },
+    {
+      "id": 12,
+      "nom": "CENTRE",
+      "ville": "NGAOUNDERE"
+    }
+  ],
+  "zonesLivraison": [
+    {
+      "code": "Z1",
+      "nom": "Zone 1 · Centre-ville",
+      "prix": 1500
+    },
+    {
+      "code": "Z2",
+      "nom": "Zone 2 · Périphérie",
+      "prix": 2500
+    },
+    {
+      "code": "Z3",
+      "nom": "Zone 3 · Banlieue",
+      "prix": 4000
+    }
+  ],
+  "naturesColis": [
+    "Colis",
+    "Pli fermé",
+    "Document",
+    "Fragile",
+    "Alimentaire",
+    "Électronique",
+    "Médicament"
+  ],
+  "secteurs": [
+    "Banque / Assurance",
+    "Pharmacie / Santé",
+    "Industrie",
+    "Commerce / Distribution",
+    "Presse / Médias",
+    "Télécoms",
+    "Énergie",
+    "Administration",
+    "ONG / International",
+    "Services",
+    "Autre"
+  ],
+  "modesPaiement": [
+    "Virement",
+    "Chèque",
+    "Espèces",
+    "Orange Money",
+    "MTN MoMo"
+  ],
+  "typesVehicule": [
+    "Moto",
+    "Tricycle",
+    "Fourgonnette (1,5 t)",
+    "Camionnette (3,5 t)",
+    "Camion 10 t",
+    "Semi-remorque"
+  ],
+  "societes": {
+    "SOLEX": {
+      "code": "SOLEX",
+      "nom": "SOLEX EXPRESS",
+      "nomCourt": "Solex",
+      "alias": "Solex Messagerie Express",
+      "slogan": "Messagerie express · Le TGV de l'expédition",
+      "logo": "assets/img/societes/solex-banniere.png",
+      "icone": "assets/img/societes/solex-logo.png",
+      "adresse": "Akwa - Douala, Cameroun",
+      "tel": "+237 677 087 901 / +237 677 087 903",
+      "email": "info@solextgv.com",
+      "site": "www.solextgv.com",
+      "rccm": "RC/DLA/2015/B/0000",
+      "niu": "M000000000000X",
+      "banque": "Afriland First Bank - CM10005 00001 00000000000 00",
+      "theme": {
+        "navy": "#13306b",
+        "navyTop": "#163877",
+        "navy2": "#1d4fa3",
+        "navy3": "#2a63c4",
+        "soft": "#e8f0fd",
+        "accent": "#ffd400",
+        "footerText": "#c9d6f0"
+      }
+    },
+    "TL": {
+      "code": "TL",
+      "nom": "TOURISTIQUE LOGISTIQUE",
+      "nomCourt": "Touristique",
+      "alias": "TL · TCCE · Touristique",
+      "slogan": "Nous le faisons express",
+      "logo": "assets/img/societes/touristique-logo.png",
+      "icone": "assets/img/societes/touristique-logo.png",
+      "adresse": "Immeuble Jaco - BP 4473 Yaoundé, Cameroun",
+      "tel": "+237 222 211 098",
+      "email": "contact@tcce-sa.com",
+      "site": "www.tcce-sa.com",
+      "rccm": "RC/YAO/0000/B/0000",
+      "niu": "M000000000000Y",
+      "banque": "Banque - RIB à renseigner",
+      "theme": {
+        "navy": "#1d4f17",
+        "navyTop": "#24611c",
+        "navy2": "#3b8f27",
+        "navy3": "#56ad3c",
+        "soft": "#e8f4e2",
+        "accent": "#111111",
+        "footerText": "#d3e8cb"
+      }
+    }
+  }
+}
