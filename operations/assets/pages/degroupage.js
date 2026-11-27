@@ -1,5 +1,5 @@
 /* =====================================================================
-   Opérations · Réception des lots et colis (operations/degroupage.html)
+   Opérations · Réception des colis (operations/degroupage.html)
    Paramètres : ?bordereau=ID (ouvre le pointage), #agence | #transit | #livraison
    ---------------------------------------------------------------------
    1. Bordereaux attendus à l'agence -> pointage expédition par
@@ -150,7 +150,7 @@ $(function () {
        Listes : à mettre en agence / en transit / en livraison
        ================================================================= */
     var AIDES = {
-        agence: "Expéditions arrivées pour un retrait au comptoir : « Mettre en agence » les rend disponibles au retrait (Livraison des lots et colis) ; « Livré en agence » enregistre directement la remise.",
+        agence: "Expéditions arrivées pour un retrait au comptoir : « Mettre en agence » les rend disponibles au retrait (Livraison de colis) ; « Livré en agence » enregistre directement la remise.",
         transit: "Expéditions présentes dans l'agence dont la destination finale est une autre agence : « Mettre en transit » les place dans un bordereau d'expédition vers cette direction. Réorientez-les si la destination est erronée.",
         livraison: "Livraisons urbaines demandées au départ : « Remettre au coursier » crée la fiche de livraison ; « Mettre en agence » bascule l'expédition en retrait au comptoir."
     };
@@ -271,7 +271,7 @@ $(function () {
             var ids = $.map($.grep(s, function (e) { return (e.etape === "ARRIVEE" || e.etape === "ECHEC") && O.estMoi(e.agDestId); }), function (e) { return e.id; });
             if (!ids.length) { U.toast("Seules les expéditions arrivées à destination de l'agence peuvent être mises en agence.", "warning"); return; }
             O.mettreEnAgence(ids).done(function (ok, ko) {
-                U.toast(O.pl(ok.length, "expédition mise en agence", "expéditions mises en agence") + ". Pensez à l'avis d'arrivée (Livraison des lots et colis).", "success");
+                U.toast(O.pl(ok.length, "expédition mise en agence", "expéditions mises en agence") + ". Pensez à l'avis d'arrivée (Livraison de colis).", "success");
                 if (ko.length) U.toast(U.esc(ko.join(" · ")), "warning");
                 charger();
             });

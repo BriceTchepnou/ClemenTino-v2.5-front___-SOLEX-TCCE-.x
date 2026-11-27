@@ -3,7 +3,7 @@
    Onglets : En cours (défaut) | #cloturees | #livreurs
    ---------------------------------------------------------------------
    Fiches remises aux coursiers (collection « tournees », créées par
-   « Remettre au coursier » dans Réception / Livraison des lots et colis) :
+   « Remettre au coursier » dans Réception / Livraison de colis) :
    feuille de route imprimable / PDF, clôture au retour du coursier :
    livré (receveur, décharge = preuve), échec (motif -> nouvelle tentative
    ou en agence) ou rebascule en agence. Gestion simple des livreurs.
@@ -46,7 +46,7 @@ $(function () {
                 (vieille ? "<div class='cx-note cx-note-warn' style='margin:0'><i class='fa fa-clock-o'></i><div>Fiche du " + U.toFr(t.date) + " non clôturée : coursier pas encore revenu ?</div></div>" : "") +
                 "<div class='ox-bcard-actions'><button type='button' class='cx-btn cx-btn-ghost cx-btn-xs' data-feuille><i class='fa fa-print'></i> Feuille de route</button>" +
                 "<button type='button' class='cx-btn cx-btn-primary cx-btn-xs' data-cloturer><i class='fa fa-flag-checkered'></i> Clôturer</button></div></div>";
-        }).join("") : "<div class='cx-empty'><i class='fa fa-motorcycle'></i><b>Aucune fiche de livraison en cours</b>Remettez des expéditions au coursier depuis <a href='instance.html#coursier'>Livraison des lots et colis</a>.</div>");
+        }).join("") : "<div class='cx-empty'><i class='fa fa-motorcycle'></i><b>Aucune fiche de livraison en cours</b>Remettez des expéditions au coursier depuis <a href='instance.html#coursier'>Livraison de colis</a>.</div>");
         dtClot.setRows($.grep(tournees, function (t) { return t.statut === "CLOTUREE"; }));
     }
     var dtClot = new CX.DataTable("#dt-cloturees", {

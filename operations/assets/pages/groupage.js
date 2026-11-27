@@ -1,5 +1,5 @@
 /* =====================================================================
-   Opérations · Envoi des lots et colis (operations/groupage.html)
+   Opérations · Envoi des colis (operations/groupage.html)
    ---------------------------------------------------------------------
    Une fois l'expédition vendue au guichet, l'agence de départ GROUPE les
    expéditions et génère le manifeste de voyage (bordereau d'expédition).

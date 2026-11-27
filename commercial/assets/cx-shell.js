@@ -83,12 +83,12 @@ CX.MENU_GUICHET = [
 /* Module OPÉRATIONS (dossier ../operations/) */
 CX.MENU_OPERATIONS = [
     {
-        id: "o-flux", titre: "Lots et colis", icon: "fa-exchange", home: "../operations/index.html",
+        id: "o-flux", titre: "Colis", icon: "fa-exchange", home: "../operations/index.html",
         items: [
             { page: "o-dashboard", href: "../operations/index.html", label: "Tableau de bord", desc: "Colis à traiter par étape, retards" },
-            { page: "o-groupage", href: "../operations/groupage.html", label: "Envoi des lots et colis", desc: "Grouper les expéditions, manifeste de voyage" },
-            { page: "o-degroupage", href: "../operations/degroupage.html", label: "Réception des lots et colis", desc: "Mettre en agence, en transit ou en livraison" },
-            { page: "o-instance", href: "../operations/instance.html", label: "Livraison des lots et colis", desc: "En agence, chez le coursier, livrées" },
+            { page: "o-groupage", href: "../operations/groupage.html", label: "Envoi des colis", desc: "Grouper les expéditions, manifeste de voyage" },
+            { page: "o-degroupage", href: "../operations/degroupage.html", label: "Réception des colis", desc: "Mettre en agence, en transit ou en livraison" },
+            { page: "o-instance", href: "../operations/instance.html", label: "Livraison de colis", desc: "En agence, chez le coursier, livrées" },
             { page: "o-livraisons", href: "../operations/livraisons.html", label: "Fiches de livraison", desc: "Coursiers, tournées, retours de tournée" }
         ]
     },
@@ -151,7 +151,7 @@ CX.MODULES = [
 
 CX.PAGE_GROUP = {
     "o-dashboard": "o-dashboard", "o-groupage": "o-groupage", "o-degroupage": "o-degroupage", "o-instance": "o-instance",
-    "o-livraisons": "o-livraisons", "o-lettres": "o-lettres", "o-preenregistrees": "o-preenregistrees", "o-provisoires": "o-bordereaux", "o-international": "o-international", "o-inter-groupage": "o-international", "o-inter-degroupage": "o-international", "o-bordereaux": "o-bordereaux", "o-bordereau": "o-bordereaux", "o-tracking": "o-tracking",
+    "o-livraisons": "o-livraisons", "o-lettres": "o-lettres", "o-preenregistrees": "o-preenregistrees", "o-provisoires": "o-provisoires", "o-international": "o-international", "o-inter-groupage": "o-international", "o-inter-degroupage": "o-international", "o-bordereaux": "o-bordereaux", "o-bordereau": "o-bordereaux", "o-tracking": "o-tracking",
     "e-index": "e-index", "e-ca": "e-ca", "e-journal": "e-journal", "e-production": "e-production", "e-volumique": "e-volumique",
     "e-livraisons": "e-livraisons", "e-tresorerie": "e-tresorerie", "e-statistiques": "e-statistiques",
     "journal-vente": "facturation", "apporteurs-liste": "apporteurs", "apporteur-form": "apporteurs", "commissions": "apporteurs",
@@ -233,8 +233,18 @@ CX.shell = {
             return "<nav class='cx-subnav'>" + lien("g-saisie", "Nouvelle expédition", "fa-plus-circle", "../guichet/expedition-form.html") +
                 lien("g-historique", "Historique des saisies", "fa-history", "../guichet/expeditions-liste.html") + "</nav>";
         }
-        if (actif === "operations" || actif === "tracking" || actif === "etats") {
-            var menu = actif === "etats" ? CX.MENU_ETATS : CX.MENU_OPERATIONS;
+        if (actif === "operations" || actif === "tracking") {
+            /* Sous-navigation réduite aux écrans quotidiens ; les autres restent dans le menu Opérations */
+            return "<nav class='cx-subnav'>" +
+                lien("o-dashboard", "Tableau de bord", "fa-tachometer", "../operations/index.html") +
+                lien("o-groupage", "Envoi des colis", "fa-sign-out", "../operations/groupage.html") +
+                lien("o-degroupage", "Réception des colis", "fa-sign-in", "../operations/degroupage.html") +
+                lien("o-instance", "Livraison de colis", "fa-motorcycle", "../operations/instance.html") +
+                lien("o-provisoires", "Bordereaux provisoires", "fa-file-text-o", "../operations/bordereaux-provisoires.html") +
+                "</nav>";
+        }
+        if (actif === "etats") {
+            var menu = CX.MENU_ETATS;
             return "<nav class='cx-subnav'>" + $.map(menu, function (g) {
                 return $.map($.grep(g.items, function (it) { return it.href.indexOf("#") < 0; }), function (it) { return lien(it.page, it.label.replace(/ \((départs|arrivées)\)/, ""), g.icon, it.href); }).join("");
             }).join("") + "</nav>";

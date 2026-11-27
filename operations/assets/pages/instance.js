@@ -1,5 +1,5 @@
 /* =====================================================================
-   Opérations · Livraison des lots et colis (operations/instance.html)
+   Opérations · Livraison de colis (operations/instance.html)
    Onglets : #agence (défaut) | #coursier | #livreur | #livrees
    Paramètres : ?anciennete=3|7|15  ?avis=0
    ---------------------------------------------------------------------
