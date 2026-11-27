@@ -610,6 +610,7 @@ $(function () {
         lib.then(function () { return CX.api.save("expeditions", e); }).done(function (saved) {
             G.carnets.synchroniser();     // la feuille passe « Utilisée » dans le carnet
             U.toast((state.orig ? "Correction enregistrée : " : "Expédition enregistrée : ") + "<b>" + U.esc(saved.nRt) + "</b>.");
+            if (state.prereg && !state.orig && G.preenreg) { G.preenreg.valider(state.prereg, saved); U.toast("Pré-enregistrement <b>" + U.esc(state.prereg) + "</b> validé.", "info"); state.prereg = null; }
             state.orig = saved; state.id = saved.id;
             afficherRecu(saved);
         }).fail(function () { U.toast("L'enregistrement a échoué.", "error"); })
@@ -709,9 +710,15 @@ $(function () {
         if (!v) { $("#prereg").focus(); return; }
         var code = /^\d+$/.test(v) ? "PRE-" + ("0000" + v).slice(-4) : v.replace(/^.*(PRE-\d{4}).*$/, "$1");
         // TODO API : GET /guichet/pre-enregistrements/{code}  (QR du formulaire en ligne « Clients web »)
-        var p = PREENREGISTREMENTS[code];
+        var pr = G.preenreg ? G.preenreg.trouver(code) : null;
+        if (pr && G.preenreg.statut(pr) !== "EN_ATTENTE") {
+            $i.removeClass("cx-hidden cx-note-info cx-note-warn cx-note-ok").addClass("cx-note-warn").find("div").html("Pré-enregistrement <b>" + U.esc(code) + "</b> : " + U.esc(G.preenreg.STATUTS[G.preenreg.statut(pr)].label.toLowerCase()) + (pr.nRt ? " (" + U.esc(pr.nRt) + ")" : "") + ".");
+            return;
+        }
+        var p = pr ? G.preenreg.versFormulaire(pr) : PREENREGISTREMENTS[code];
+        state.prereg = p ? code : null;
         $i.removeClass("cx-hidden cx-note-info cx-note-warn cx-note-ok");
-        if (!p) { $i.addClass("cx-note-warn").find("div").html("Aucun pré-enregistrement <b>" + U.esc(code) + "</b>. (Démo : PRE-0042 ou PRE-0043)"); return; }
+        if (!p) { $i.addClass("cx-note-warn").find("div").html("Aucun pré-enregistrement <b>" + U.esc(code) + "</b>. (Voir Opérations · Expéditions pré-enregistrées)"); return; }
         appliquerDonnees(p);
         $i.addClass("cx-note-ok").find("div").html("Pré-enregistrement <b>" + U.esc(code) + "</b> repris : vérifiez les informations avec le client, pesez et mesurez les colis.");
     }
@@ -948,5 +955,7 @@ $(function () {
         majTypeClient();
         majDestination();
         recalc();
+        /* Validation d’un pré-enregistrement depuis Opérations : ?prereg=PRE-NNNN */
+        if (U.queryParam("prereg")) { $("#prereg").val(U.queryParam("prereg")); rechercherPrereg(); }
     }
 });

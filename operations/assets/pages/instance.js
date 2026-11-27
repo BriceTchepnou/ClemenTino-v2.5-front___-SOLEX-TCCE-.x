@@ -1,141 +1,196 @@
 /* =====================================================================
-   Opérations · Colis en agence - en instance (operations/instance.html)
-   Paramètres : ?anciennete=3|7|15  ?avis=0|1
+   Opérations · Livraison des lots et colis (operations/instance.html)
+   Onglets : #agence (défaut) | #coursier | #livreur | #livrees
+   Paramètres : ?anciennete=3|7|15  ?avis=0
    ---------------------------------------------------------------------
-   Colis EN_INSTANCE dans l'agence : ancienneté, avis envoyés (WhatsApp /
-   SMS via wa.me / sms:), relance, remise au destinataire (pièce, nom,
-   téléphone, signature, photo) -> LIVREE + preuve, retour à
-   l'expéditeur au-delà de CX.ops.INSTANCE_RETOUR_J jours.
+   - Expéditions en agence (EN_INSTANCE) : ancienneté, avis WhatsApp / SMS,
+     « Livré en agence » (Mise à jour des informations de livraison :
+     livré par, date et heure, retiré par, pièce CNI / Passeport / Permis,
+     n° de pièce, signature) -> LIVREE + preuve ; « Valider pour
+     livraison » (bascule en livraison urbaine) ; envoi à un partenaire ;
+     remise au coursier ; suspension ; réimpression du reçu.
+   - À remettre au coursier : livraisons urbaines en attente (ou échecs).
+   - Chez le livreur (EN_LIVRAISON) : rebascule rapide en agence.
+   - Livrées : livré le, retiré par, correction des infos de livraison.
    ===================================================================== */
 $(function () {
-    var U = CX.util, O = CX.ops, G = CX.guichet, A = O.agenceCourante();
-    var tous = [], f = null;
+    var U = CX.util, O = CX.ops, G = CX.guichet, L = CX.ol, A = O.agenceCourante();
+    var tous = [], bords = [], f = null, onglet = "agence";
 
     O.selecteurAgence("#ox-agence-slot");
     if (U.queryParam("anciennete")) $("#f-age").val(U.queryParam("anciennete"));
-    if (U.queryParam("avis")) $("#f-avis").val(U.queryParam("avis"));
+    var filtreAvis = U.queryParam("avis");
 
+    function parId(id) { return $.grep(tous, function (e) { return String(e.id) === String(id); })[0]; }
     function age(e) { return O.ageInstance(e); }
-    function ageHtml(e) {
-        var a = age(e);
-        return "<span class='ox-age" + (a > 7 ? " err" : a > O.INSTANCE_ALERTE_J ? " warn" : "") + "'>" + (a ? a + " j" : "auj.") + "</span>";
-    }
-    function avisHtml(e) {
+
+    /* Colonnes propres à l'onglet « en agence » */
+    var colAge = { key: "age", title: "En agence depuis", className: "center", sortValue: age, render: function (e) {
+        var a = age(e), s = O.dernierEvenement(e, "EN_INSTANCE");
+        return "<span class='ox-age" + (a > 7 ? " err" : a > O.INSTANCE_ALERTE_J ? " warn" : "") + "'>" + (a ? a + " j" : "auj.") + "</span>" + (s ? "<div class='cx-cell-sub cx-nowrap'>" + U.esc(U.toFr(s.date)) + "</div>" : "");
+    }, searchValue: function () { return ""; } };
+    var colAvis = { key: "avis", title: "Avis", sortValue: function (e) { return (e.avis || []).length; }, render: function (e) {
         var av = e.avis || [];
         if (!av.length) return "<span class='cx-badge cx-badge-orange cx-no-dot'><i class='fa fa-bell-slash-o'></i> Aucun</span>";
         var d = av[av.length - 1];
-        return "<span class='cx-badge cx-badge-green cx-no-dot'><i class='fa " + (d.canal === "WHATSAPP" ? "fa-whatsapp" : "fa-commenting-o") + "'></i> " + av.length + "</span>" +
-            "<div class='cx-cell-sub'>" + (d.type === "RELANCE" ? "relance " : "") + U.esc(U.toFr(d.date)) + "</div>";
-    }
-    function actions(e) {
-        var retour = age(e) >= O.INSTANCE_RETOUR_J;
-        return "<div class='ox-flex' style='flex-wrap:nowrap'>" +
-            "<button type='button' class='cx-btn cx-btn-success cx-btn-xs' data-act='remettre'><i class='fa fa-handshake-o'></i> Remettre</button>" +
-            "<div class='dropdown cx-actions'><button type='button' class='cx-btn cx-btn-ghost cx-btn-icon' data-toggle='dropdown' aria-haspopup='true' aria-label='Actions' title='Actions'><i class='fa fa-ellipsis-v'></i></button>" +
-            "<ul class='dropdown-menu dropdown-menu-right'>" +
-            "<li><a href='#' data-act='wa'><i class='fa fa-whatsapp'></i> " + ((e.avis || []).length ? "Relancer par WhatsApp" : "Avis WhatsApp") + "</a></li>" +
-            "<li><a href='#' data-act='sms'><i class='fa fa-commenting-o'></i> " + ((e.avis || []).length ? "Relancer par SMS" : "Avis SMS") + "</a></li>" +
-            "<li><a href='#' data-act='fiche'><i class='fa fa-file-text-o'></i> Fiche de la LT</a></li>" +
-            "<li><a href='#' data-act='reorienter'><i class='fa fa-random'></i> Réorienter</a></li>" +
-            "<li class='divider'></li>" +
-            "<li><a href='#' data-act='retour' class='text-danger'><i class='fa fa-undo'></i> Retour à l'expéditeur" + (retour ? "" : "<small>avant " + O.INSTANCE_RETOUR_J + " j : à justifier</small>") + "</a></li>" +
-            "</ul></div></div>";
-    }
-    var dt = new CX.DataTable("#dt-instance", {
-        pageSize: 25, sortKey: "age", sortDir: -1, searchInput: "#q", selectable: true,
-        emptyText: "Aucun colis en instance", emptyIcon: "fa-building-o",
-        rowClass: function (e) { return age(e) >= O.INSTANCE_RETOUR_J ? "ox-retard" : ""; },
-        columns: [
-            { key: "nRt", title: "N° LT", render: function (e) {
-                return "<a href='#' class='cx-mono cx-strong' data-act='fiche'>" + U.esc(e.nRt) + "</a>" + (e.nRtMan ? "<div class='cx-cell-sub'>Man. " + U.esc(e.nRtMan) + "</div>" : "") +
-                    (e.retour ? "<div><span class='cx-badge cx-badge-purple cx-no-dot'>Retour exp.</span></div>" : "");
-            }, searchValue: function (e) { return e.nRt + " " + (e.nRtMan || ""); } },
-            { key: "dest", title: "Destinataire", sortValue: function (e) { return e.destinataireInfo.nom; }, render: function (e) {
-                return "<div class='cx-cell-main'>" + U.esc(e.retour ? e.expediteurInfo.nom : e.destinataireInfo.nom) + "</div><div class='cx-cell-sub cx-nowrap'>" + U.esc(G.telAff(e.retour ? e.expediteurInfo.tel : e.destinataireInfo.tel)) + "</div>";
-            }, searchValue: function (e) { return e.destinataireInfo.nom + " " + e.destinataireInfo.tel + " " + G.telFmt(e.destinataireInfo.tel); } },
-            { key: "exp", title: "Expéditeur", sortValue: function (e) { return e.expediteurInfo.nom; }, render: function (e) {
-                return U.esc(e.expediteurInfo.nom) + "<div class='cx-cell-sub'>" + U.esc(G.villeNom(e.villeDep)) + " · " + U.esc(G.titre(e.bureauDep)) + "</div>";
-            }, searchValue: function (e) { return e.expediteurInfo.nom + " " + e.villeDep; } },
-            { key: "contenu", title: "Colis", render: function (e) { return U.esc(e.contenu || "") + "<div class='cx-cell-sub'>" + (e.nbColis || 1) + " colis · " + U.esc(G.kg(e.poids)) + "</div>"; } },
-            { key: "arrivee", title: "Arrivé le", sortValue: function (e) { var s = O.dernierEvenement(e, "EN_INSTANCE"); return s ? s.date : ""; }, render: function (e) {
-                var s = O.dernierEvenement(e, "EN_INSTANCE"); return "<span class='cx-nowrap'>" + (s ? U.esc(U.toFr(s.date)) : "—") + "</span>";
-            } },
-            { key: "age", title: "Ancienneté", className: "center", sortValue: age, render: ageHtml },
-            { key: "avis", title: "Avis", sortValue: function (e) { return (e.avis || []).length; }, render: avisHtml, searchValue: function () { return ""; } },
-            { key: "port", title: "Paiement", render: function (e) {
-                return e.typeClient === "COMPTE" ? "<span class='cx-badge cx-badge-purple cx-no-dot'>En compte</span>" : e.paiement.statut === "PAYE" ? "<span class='cx-badge cx-badge-green cx-no-dot'>Payé</span>" : "<span class='cx-badge cx-badge-orange cx-no-dot'>Port dû</span>";
-            } },
-            { key: "act", title: "", sortable: false, render: actions, searchValue: function () { return ""; } }
-        ],
-        onSelect: function (rows) { $("#selbar").toggleClass("cx-hidden", !rows.length); $("#sel-n").text(O.pl(rows.length, "colis sélectionné", "colis sélectionnés")); }
-    });
-    O.menusFixes("#dt-instance");
+        return "<span class='cx-badge cx-badge-green cx-no-dot'><i class='fa " + (d.canal === "WHATSAPP" ? "fa-whatsapp" : "fa-commenting-o") + "'></i> " + av.length + "</span><div class='cx-cell-sub'>" + U.esc(U.toFr(d.date)) + "</div>";
+    }, searchValue: function () { return ""; } };
 
+    function menuLigne(e) {
+        var n = (e.avis || []).length;
+        return L.menu([
+            ["fiche", "fa-file-text-o", "Détail de l'expédition"], ["notes", "fa-sticky-note-o", "Notes"],
+            ["livraison", "fa-map-marker", "Modifier la livraison", e.etape !== "LIVREE"],
+            ["modifier", "fa-pencil-square-o", "Modifier (infos de livraison)", e.etape === "LIVREE"],
+            ["wa", "fa-whatsapp", n ? "Relancer par WhatsApp" : "Avis WhatsApp", e.etape === "EN_INSTANCE"],
+            ["sms", "fa-commenting-o", n ? "Relancer par SMS" : "Avis SMS", e.etape === "EN_INSTANCE"],
+            ["rebascule", "fa-undo", "Rebasculer en agence", e.etape === "EN_LIVRAISON"],
+            ["lever", "fa-play-circle", "Lever la suspension", !!e.suspendu],
+            ["recu", "fa-print", "Imprimer le reçu transport"],
+            "-",
+            ["retour", "fa-undo", "Retour à l'expéditeur", e.etape === "EN_INSTANCE", "text-danger"]
+        ]);
+    }
+    function table(sel, cols, vide, icone) {
+        return new CX.DataTable(sel, {
+            pageSize: 25, sortKey: "dateExp", sortDir: -1, selectable: true, searchInput: "#q",
+            emptyText: vide, emptyIcon: icone,
+            rowClass: function (e) { return (e.suspendu ? "ox-suspendu " : "") + (e.etape === "EN_INSTANCE" && age(e) >= O.INSTANCE_RETOUR_J ? "ox-retard" : ""); },
+            columns: cols(), onSelect: majSelbar
+        });
+    }
+    var T = {
+        agence: { cols: function () { return L.colonnes(["rt", "rtMan", "ref", "bureauDep", "client", "contenu", "destinataire", "dateExp"], bords).concat([colAge, colAvis]).concat(L.colonnes(["notes", "statut", "actions"], bords, menuLigne)); } },
+        coursier: { cols: function () { return L.colonnes(["rt", "ref", "bureauDep", "destinataire", "quartier", "contenu", "dateExp", "notes", "statut", "actions"], bords, menuLigne); } },
+        livreur: { cols: function () { return L.colonnes(["rt", "ref", "destinataire", "quartier", "coursier", "contenu", "dateExp", "notes", "statut", "actions"], bords, menuLigne); } },
+        livrees: { cols: function () { return L.colonnes(["rt", "rtMan", "ref", "destinataire", "contenu", "livreLe", "retirePar", "statut", "notes", "actions"], bords, menuLigne); } }
+    };
+    T.agence.dt = table("#dt-agence", T.agence.cols, "Aucune expédition en agence", "fa-building-o");
+    T.coursier.dt = table("#dt-coursier", T.coursier.cols, "Aucune livraison urbaine en attente", "fa-map-marker");
+    T.livreur.dt = table("#dt-livreur", T.livreur.cols, "Aucune expédition chez un livreur", "fa-motorcycle");
+    T.livrees.dt = table("#dt-livrees", T.livrees.cols, "Aucune expédition livrée sur 30 jours", "fa-check-circle");
+    $.each(T, function (k) { O.menusFixes("#dt-" + k); });
+    function dtCourant() { return T[onglet].dt; }
+
+    function majSelbar() {
+        var s = dtCourant().getSelected();
+        $("#selbar").toggleClass("cx-hidden", !s.length);
+        $("#sel-n").text(O.pl(s.length, "RT sélectionnée", "RT sélectionnées"));
+        $("#selbar [data-tabs]").each(function () { $(this).toggleClass("cx-hidden", $.inArray(onglet, String($(this).data("tabs")).split(" ")) < 0); });
+        $("#selbar [data-act=livre]").prop("disabled", s.length !== 1);
+    }
     function appliquer() {
-        var fa = $("#f-age").val(), fv = $("#f-avis").val(), fp = $("#f-prov").val();
-        dt.setRows($.grep(f.enInstance, function (e) {
-            var a = age(e);
-            if (fa === "0" && a !== 0) return false;
-            if (fa && fa !== "0" && a <= Number(fa) - (fa === "15" ? 1 : 0)) return false;
-            if (fv === "0" && (e.avis || []).length) return false;
-            if (fv === "1" && !(e.avis || []).length) return false;
-            if (fp && e.villeDep !== fp) return false;
+        var flt = L.lireFiltres(), fa = $("#f-age").val();
+        function ok(e) {
+            if (!L.passe(e, flt, "dep")) return false;
+            if (fa && onglet === "agence" && age(e) <= Number(fa) - (fa === "15" ? 1 : 0)) return false;
+            if (filtreAvis === "0" && onglet === "agence" && (e.avis || []).length) return false;
             return true;
-        }));
+        }
+        var sources = { agence: f.enInstance, coursier: f.aMettreEnLivraison, livreur: f.chezLivreur, livrees: f.livrees };
+        $.each(T, function (k, t) {
+            var rows = $.grep(sources[k], ok);
+            $("#n-" + k).text(rows.length);
+            t.dt.o.columns = t.cols();
+            if (k === onglet) { t.dt.clearSelection(); t.dt.setRows(rows); } else t.dt.rows = rows;
+        });
+        $("#onglets a").removeClass("active").filter("[data-tab='" + onglet + "']").addClass("active");
+        $.each(T, function (k) { $("#dt-" + k).toggleClass("cx-hidden", k !== onglet); });
+        majSelbar();
     }
     function charger() {
-        return O.charger().done(function (exps, bords) {
-            tous = exps; f = O.files(exps, bords);
-            var l = f.enInstance, sans = 0, a3 = 0, a7 = 0, ret = 0, prov = {};
-            $.each(l, function (_, e) { var a = age(e); if (!(e.avis || []).length) sans++; if (a > 3) a3++; if (a > 7) a7++; if (a >= O.INSTANCE_RETOUR_J) ret++; prov[e.villeDep] = true; });
-            var remisJour = $.grep(exps, function (e) { return e.etape === "LIVREE" && e.remise && e.remise.mode === "AGENCE" && O.estMoi(e.remise.agenceId) && String(e.remise.date).substr(0, 10) === U.today(); }).length;
+        return O.charger().done(function (exps, b) {
+            tous = exps; bords = b; f = O.files(exps, bords);
+            L.remplirFiltres(tous);
+            var sans = $.grep(f.enInstance, function (e) { return !(e.avis || []).length; }).length, a3 = $.grep(f.enInstance, function (e) { return age(e) > 3; }).length;
+            var jour = $.grep(f.livrees, function (e) { return (e.dateLivraison || "") === U.today(); }).length;
             $("#kpis").html([
-                O.kpi("En instance", l.length, "colis disponibles au retrait", "fa-building-o", "blue"),
-                O.kpi("Plus de " + O.INSTANCE_ALERTE_J + " jours", a3, a7 + " depuis plus de 7 jours", "fa-hourglass-half", a3 ? "orange" : "green"),
+                O.kpi("En agence", f.enInstance.length, a3 + " depuis plus de 3 jours", "fa-building-o", "blue"),
                 O.kpi("Sans avis", sans, "destinataires non prévenus", "fa-bell-slash-o", sans ? "red" : "green"),
-                O.kpi("À retourner", ret, "en instance depuis " + O.INSTANCE_RETOUR_J + " j et plus", "fa-undo", ret ? "purple" : ""),
-                O.kpi("Remis aujourd'hui", remisJour, "retraits au comptoir", "fa-handshake-o", "green")
+                O.kpi("À remettre au coursier", f.aMettreEnLivraison.length, O.pl(f.echecs.length, "échec à relivrer", "échecs à relivrer"), "fa-map-marker", "orange"),
+                O.kpi("Chez le livreur", f.chezLivreur.length, "en livraison urbaine", "fa-motorcycle", "purple"),
+                O.kpi("Livrées aujourd'hui", jour, O.pl(f.livrees.length, "livrée", "livrées") + " sur 30 jours", "fa-check-circle", "green")
             ].join(""));
-            var cur = $("#f-prov").val();
-            $("#f-prov").html("<option value=''>Toutes</option>" + $.map(prov, function (_, v) { return "<option value='" + v + "'>" + U.esc(G.villeNom(v)) + "</option>"; }).join("")).val(cur || "");
             appliquer();
         });
     }
-    function parId(id) { return $.grep(tous, function (e) { return String(e.id) === String(id); })[0]; }
-    function remettre(e) {
-        O.modaleRemise(e).done(function (maj) {
-            U.toast("Colis <b>" + U.esc(maj.nRt) + "</b> remis à " + U.esc(maj.remise.nom) + "." + (maj.clientId ? " L'expédition devient facturable." : ""), "success");
-            charger();
-        });
-    }
 
-    $("#dt-instance").on("click", "[data-act]", function (ev) {
-        ev.preventDefault();
-        var e = parId($(this).closest("tr").data("id")), act = $(this).data("act");
-        if (!e) return;
-        if (act === "remettre") remettre(e);
-        if (act === "fiche") O.fiche(e.id, { onChange: charger });
-        if (act === "wa" || act === "sms") O.avis(e, act === "wa" ? "WHATSAPP" : "SMS", (e.avis || []).length ? "RELANCE" : "AVIS").done(function () { U.toast((act === "wa" ? "WhatsApp" : "SMS") + " préparé pour " + U.esc(e.destinataireInfo.nom) + " (envoi tracé).", "info"); charger(); });
-        if (act === "reorienter") O.modaleReorienter([e]).done(function () { U.toast("LT réorientée : le colis repart via le groupage.", "success"); charger(); });
-        if (act === "retour") {
-            var ag = O.agDep(e);
-            O.modaleReorienter([e], { agenceId: ag, motif: "Retour à l'expéditeur" }).done(function () { U.toast("Retour à l'expéditeur engagé : le colis est à regrouper vers " + U.esc(O.agenceLib(ag)) + ".", "success"); charger(); });
+    /* =================================================================
+       Actions
+       ================================================================= */
+    function apres(msg) { if (msg) U.toast(msg, "success"); charger(); }
+    function livrer(e) { O.modaleRemise(e).done(function (maj) { apres("RT <b>" + U.esc(maj.nRt) + "</b> livrée à " + U.esc(maj.remise.nom) + "." + (maj.clientId ? " L'expédition devient facturable." : "")); }); }
+    function validerPourLivraison(s) {
+        var cibles = $.grep(s, function (e) { return e.etape === "EN_INSTANCE" && !e.suspendu; });
+        if (!cibles.length) { U.toast("Sélectionnez des expéditions en agence (non suspendues).", "warning"); return; }
+        function basculer(ids) {
+            // TODO API : POST /exploitation/expeditions/valider-livraison  { ids[] }
+            return O.avancerLot(ids, "ARRIVEE", function (x) {
+                return { note: "Validée pour livraison urbaine" + (x.livraison && x.livraison.quartier ? " · " + x.livraison.quartier : ""), position: A.id, patch: { livraison: $.extend({}, x.livraison || {}, { mode: "DOMICILE" }) } };
+            });
+        }
+        if (cibles.length === 1) {
+            O.modaleLivraison($.extend(true, {}, cibles[0], { livraison: $.extend({}, cibles[0].livraison, { mode: "DOMICILE" }) })).done(function () {
+                basculer([cibles[0].id]).done(function () { onglet = "coursier"; apres("Expédition validée pour livraison : à remettre au coursier."); });
+            });
+            return;
+        }
+        var avecAdr = $.grep(cibles, function (e) { return e.livraison.quartier; });
+        if (avecAdr.length < cibles.length) U.toast(O.pl(cibles.length - avecAdr.length, "expédition sans quartier ignorée", "expéditions sans quartier ignorées") + " (Modifier la livraison).", "warning");
+        basculer($.map(avecAdr, function (e) { return e.id; })).done(function (ok) { apres(O.pl(ok.length, "expédition validée", "expéditions validées") + " pour livraison."); });
+    }
+    $("#selbar").on("click", "[data-act]", function () {
+        var act = $(this).data("act"), s = dtCourant().getSelected(), i = 0;
+        if (!s.length) return;
+        if (act === "reorienter") O.modaleReorienter(s).done(function (r) { apres(O.pl(r.ok.length, "RT réorientée", "RT réorientées") + "."); });
+        if (act === "valider") validerPourLivraison(s);
+        if (act === "livre") livrer(s[0]);
+        if (act === "partenaire") O.modalePartenaire(s).done(function (ok) { apres(O.pl(ok.length, "expédition remise", "expéditions remises") + " au partenaire."); });
+        if (act === "coursier") O.modaleCoursier(s).done(function (r) {
+            apres("Fiche de livraison <b>" + U.esc(r.tournee.numero) + "</b> : " + O.pl(r.ok.length, "expédition remise", "expéditions remises") + " à " + U.esc(r.tournee.livreurNom) + ".");
+            if (r.ko.length) U.toast(U.esc(r.ko.join(" · ")), "warning");
+        });
+        if (act === "rebascule") {
+            var liv = $.grep(s, function (e) { return e.etape === "EN_LIVRAISON"; }), aut = $.grep(s, function (e) { return e.etape === "ARRIVEE" || e.etape === "ECHEC"; });
+            $.when(O.rebasculerEnAgence($.map(liv, function (e) { return e.id; }), "Reprise au livreur"), O.mettreEnAgence($.map(aut, function (e) { return e.id; }), "Basculée en agence (retrait)"))
+                .done(function () { apres(O.pl(liv.length + aut.length, "expédition rebasculée", "expéditions rebasculées") + " en agence."); });
+        }
+        if (act === "suspendre") O.modaleSuspendre(s).done(function (r) { apres(O.pl(r.length, "expédition suspendue", "expéditions suspendues") + "."); });
+        if (act === "recu") L.imprimerRecu(s[0]);
+        if (act === "avis") {
+            // TODO API : POST /exploitation/expeditions/avis  { ids[], canal: "WHATSAPP" }
+            (function suivant() {
+                if (i >= s.length) { apres(O.pl(s.length, "avis préparé", "avis préparés") + "."); return; }
+                var e = s[i++];
+                O.avis(e, "WHATSAPP", (e.avis || []).length ? "RELANCE" : "AVIS").always(suivant);
+            })();
         }
     });
-    $("#btn-avis-lot").on("click", function () {
-        var s = dt.getSelected(), i = 0;
-        // TODO API : POST /exploitation/expeditions/avis  { ids[], canal: "WHATSAPP" }  (envoi groupé par l'API WhatsApp Business)
-        (function suivant() {
-            if (i >= s.length) { U.toast(O.pl(s.length, "avis préparé", "avis préparés") + ".", "info"); charger(); return; }
-            var e = s[i++];
-            O.avis(e, "WHATSAPP", (e.avis || []).length ? "RELANCE" : "AVIS").always(suivant);
-        })();
+    $.each(T, function (k) {
+        $("#dt-" + k).on("click", "[data-fiche]", function (ev) { ev.preventDefault(); O.fiche($(this).closest("tr").data("id"), { onChange: charger }); });
+        $("#dt-" + k).on("click", "[data-act]", function (ev) {
+            ev.preventDefault();
+            var e = parId($(this).closest("tr").data("id")), act = $(this).data("act");
+            if (!e) return;
+            if (act === "fiche") O.fiche(e.id, { onChange: charger });
+            if (act === "notes") O.modaleNote(e).done(function () { apres("Note ajoutée."); });
+            if (act === "livraison") O.modaleLivraison(e).done(function () { apres("Livraison modifiée."); });
+            if (act === "modifier") O.modaleRemise(e, { modifier: true }).done(function () { apres("Informations de livraison corrigées."); });
+            if (act === "wa" || act === "sms") O.avis(e, act === "wa" ? "WHATSAPP" : "SMS", (e.avis || []).length ? "RELANCE" : "AVIS").done(function () { apres((act === "wa" ? "WhatsApp" : "SMS") + " préparé (envoi tracé)."); });
+            if (act === "rebascule") O.rebasculerEnAgence([e.id], "Reprise au livreur").done(function () { apres("Expédition rebasculée en agence."); });
+            if (act === "lever") O.leverSuspension(e.id).done(function () { apres("Suspension levée."); });
+            if (act === "recu") L.imprimerRecu(e);
+            if (act === "retour") {
+                var ag = O.agDep(e);
+                O.modaleReorienter([e], { agenceId: ag, motif: "Retour à l'expéditeur" }).done(function () { apres("Retour à l'expéditeur engagé : l'expédition est à mettre en transit vers " + U.esc(O.agenceLib(ag)) + "."); });
+            }
+        });
     });
-    $("#btn-reo-lot").on("click", function () { O.modaleReorienter(dt.getSelected()).done(function (r) { U.toast(O.pl(r.ok.length, "LT réorientée", "LT réorientées") + ".", "success"); charger(); }); });
-    $("#f-age, #f-avis, #f-prov").on("change", appliquer);
+    $("#onglets").on("click", "a", function () { onglet = $(this).data("tab"); if (window.history.replaceState) window.history.replaceState(null, "", onglet === "agence" ? window.location.pathname + window.location.search : "#" + onglet); appliquer(); });
+    $("#f-ville, #f-bureau, #f-du, #f-au, #f-par, #f-age").on("change", function () { setTimeout(appliquer, 0); });
     $("#btn-refresh").on("click", function () { charger(); });
 
-    /* Retrait au comptoir : n° de LT (douchette) ou téléphone du destinataire */
+    /* Retrait au comptoir : N° RT (douchette) ou téléphone du destinataire */
     O.scanner("#scan", function (code) {
         var $r = $("#scan-res"), brut = O.chercherLt(code), e = brut ? parId(brut.id) : null;
         if (!e) {
@@ -143,19 +198,21 @@ $(function () {
             if (t.length === 9) {
                 var l = $.grep(f.enInstance, function (x) { return G.tel(x.destinataireInfo.tel) === t; });
                 if (l.length === 1) e = l[0];
-                else if (l.length > 1) { $("#q").val(G.telFmt(t)); dt.setSearch(G.telFmt(t)); $r.removeClass("ko").addClass("ok").html("<i class='fa fa-filter'></i> " + l.length + " colis pour ce numéro"); return; }
+                else if (l.length > 1) { onglet = "agence"; appliquer(); $("#q").val(G.telFmt(t)); T.agence.dt.setSearch(G.telFmt(t)); $r.removeClass("ko").addClass("ok").html("<i class='fa fa-filter'></i> " + l.length + " expéditions pour ce numéro"); return; }
             }
         }
         if (!e) { O.bip(false); $r.removeClass("ok").addClass("ko").html("<i class='fa fa-times'></i> « " + U.esc(code) + " » introuvable."); return; }
-        if (e.etape !== "EN_INSTANCE" || !O.estMoi(e.positionId)) {
+        if ($.inArray(e.etape, ["EN_INSTANCE", "ARRIVEE", "ECHEC"]) < 0 || !O.estMoi(e.positionId) || !O.estMoi(e.agDestId)) {
             O.bip(false);
             $r.removeClass("ok").addClass("ko").html("<i class='fa fa-times'></i> " + U.esc(e.nRt) + " : " + U.esc(O.ETAPES[e.etape].label) + (e.positionId && !O.estMoi(e.positionId) ? " (" + U.esc(O.agenceLib(e.positionId)) + ")" : "") + ".");
             return;
         }
         O.bip(true);
         $r.removeClass("ko").addClass("ok").html("<i class='fa fa-check'></i> " + U.esc(e.nRt) + " · " + U.esc(e.destinataireInfo.nom));
-        remettre(e);
+        livrer(e);
     });
 
+    var h = (window.location.hash || "").replace("#", "");
+    if (T[h]) onglet = h;
     charger();
 });

@@ -83,21 +83,31 @@ CX.MENU_GUICHET = [
 /* Module OPÉRATIONS (dossier ../operations/) */
 CX.MENU_OPERATIONS = [
     {
-        id: "o-flux", titre: "Flux des colis", icon: "fa-exchange", home: "../operations/index.html",
+        id: "o-flux", titre: "Lots et colis", icon: "fa-exchange", home: "../operations/index.html",
         items: [
-            { page: "o-dashboard", href: "../operations/index.html", label: "Tableau de bord exploitation", desc: "Colis à traiter par étape, retards" },
-            { page: "o-groupage", href: "../operations/groupage.html", label: "Groupage (départs)", desc: "Constituer les bordereaux de départ" },
-            { page: "o-degroupage", href: "../operations/degroupage.html", label: "Dégroupage (arrivées)", desc: "Réceptionner et pointer les colis entrants" },
-            { page: "o-instance", href: "../operations/instance.html", label: "En agence (en instance)", desc: "Retraits, avis, remise au destinataire" },
-            { page: "o-livraisons", href: "../operations/livraisons.html", label: "Livraisons à domicile", desc: "Tournées, livreurs, preuves de livraison" }
+            { page: "o-dashboard", href: "../operations/index.html", label: "Tableau de bord", desc: "Colis à traiter par étape, retards" },
+            { page: "o-groupage", href: "../operations/groupage.html", label: "Envoi des lots et colis", desc: "Grouper les expéditions, manifeste de voyage" },
+            { page: "o-degroupage", href: "../operations/degroupage.html", label: "Réception des lots et colis", desc: "Mettre en agence, en transit ou en livraison" },
+            { page: "o-instance", href: "../operations/instance.html", label: "Livraison des lots et colis", desc: "En agence, chez le coursier, livrées" },
+            { page: "o-livraisons", href: "../operations/livraisons.html", label: "Fiches de livraison", desc: "Coursiers, tournées, retours de tournée" }
         ]
     },
     {
-        id: "o-lt", titre: "Lettres de transport", icon: "fa-file-o", home: "../operations/lettres-voiture.html",
+        id: "o-lt", titre: "Expéditions & bordereaux", icon: "fa-file-o", home: "../operations/bordereaux.html",
         items: [
-            { page: "o-lettres", href: "../operations/lettres-voiture.html", label: "Gestion des lettres de voiture", desc: "Rechercher, réorienter, corriger une LT" },
-            { page: "o-bordereaux", href: "../operations/bordereaux.html", label: "Bordereaux", desc: "Tous les bordereaux et manifestes" },
+            { page: "o-preenregistrees", href: "../operations/preenregistrees.html", label: "Expéditions pré-enregistrées", desc: "Saisies par le client (web, WhatsApp), à valider au guichet" },
+            { page: "o-bordereaux", href: "../operations/bordereaux.html", label: "Bordereaux d'expédition", desc: "Envoyés et entrants, bordereaux de la journée" },
+            { page: "o-provisoires", href: "../operations/bordereaux-provisoires.html", label: "Bordereaux provisoires", desc: "Générer les bordereaux provisoires du jour" },
+            { page: "o-lettres", href: "../operations/lettres-voiture.html", label: "Gestion des lettres de voiture", desc: "Rechercher, réorienter, corriger" },
             { page: "o-tracking", href: "../operations/tracking.html", label: "Tracking", desc: "Suivre un colis étape par étape" }
+        ]
+    },
+    {
+        id: "o-inter", titre: "International", icon: "fa-globe", home: "../operations/international.html",
+        items: [
+            { page: "o-inter-groupage", href: "../operations/international.html#groupage", label: "Groupage international", desc: "Préparer les envois vers le partenaire" },
+            { page: "o-inter-degroupage", href: "../operations/international.html#degroupage", label: "Dégroupage international", desc: "Colis reçus de l'étranger" },
+            { page: "o-international", href: "../operations/international.html", label: "Expéditions internationales", desc: "Suivi AWB, partenaire, statut" }
         ]
     }
 ];
@@ -141,7 +151,7 @@ CX.MODULES = [
 
 CX.PAGE_GROUP = {
     "o-dashboard": "o-dashboard", "o-groupage": "o-groupage", "o-degroupage": "o-degroupage", "o-instance": "o-instance",
-    "o-livraisons": "o-livraisons", "o-lettres": "o-lettres", "o-bordereaux": "o-bordereaux", "o-bordereau": "o-bordereaux", "o-tracking": "o-tracking",
+    "o-livraisons": "o-livraisons", "o-lettres": "o-lettres", "o-preenregistrees": "o-preenregistrees", "o-provisoires": "o-bordereaux", "o-international": "o-international", "o-inter-groupage": "o-international", "o-inter-degroupage": "o-international", "o-bordereaux": "o-bordereaux", "o-bordereau": "o-bordereaux", "o-tracking": "o-tracking",
     "e-index": "e-index", "e-ca": "e-ca", "e-journal": "e-journal", "e-production": "e-production", "e-volumique": "e-volumique",
     "e-livraisons": "e-livraisons", "e-tresorerie": "e-tresorerie", "e-statistiques": "e-statistiques",
     "journal-vente": "facturation", "apporteurs-liste": "apporteurs", "apporteur-form": "apporteurs", "commissions": "apporteurs",
@@ -182,6 +192,13 @@ CX.shell = {
             }).join("") + "</div></div>";
     },
 
+    /* « YAOUNDE » -> « Yaoundé » pour l'affichage */
+    nomVille: function (v) {
+        var acc = { YAOUNDE: "Yaoundé", NGAOUNDERE: "Ngaoundéré", EBOLOWA: "Ebolowa" };
+        v = String(v || "");
+        return acc[v] || (v.charAt(0) + v.substr(1).toLowerCase());
+    },
+
     moduleActif: function () { return $("body").data("module") || "commercial"; },
 
     headerHtml: function (current) {
@@ -202,7 +219,7 @@ CX.shell = {
             "<a class='cx-brand' href='index.html'>ClemenTino<small>2.0</small></a>" +
             "<ul class='cx-nav'>" + nav + "</ul>" +
             "<div class='cx-header-right'><span class='cx-loc-chip'><i class='fa fa-map-marker'></i> " +
-            CX.util.esc(u.ville.charAt(0) + u.ville.substr(1).toLowerCase()) + " · bureau " + CX.util.esc(u.agence.charAt(0) + u.agence.substr(1).toLowerCase()) + "</span>" +
+            CX.util.esc(CX.shell.nomVille(u.ville)) + " · bureau " + CX.util.esc(u.agence.charAt(0) + u.agence.substr(1).toLowerCase()) + "</span>" +
             "<span class='cx-user'><i class='fa fa-user-circle-o'></i> " + CX.util.esc(u.nom) + "</span></div>" +
             "</div></header>";
     },
@@ -219,7 +236,7 @@ CX.shell = {
         if (actif === "operations" || actif === "tracking" || actif === "etats") {
             var menu = actif === "etats" ? CX.MENU_ETATS : CX.MENU_OPERATIONS;
             return "<nav class='cx-subnav'>" + $.map(menu, function (g) {
-                return $.map(g.items, function (it) { return lien(it.page, it.label.replace(/ \((départs|arrivées)\)/, ""), g.icon, it.href); }).join("");
+                return $.map($.grep(g.items, function (it) { return it.href.indexOf("#") < 0; }), function (it) { return lien(it.page, it.label.replace(/ \((départs|arrivées)\)/, ""), g.icon, it.href); }).join("");
             }).join("") + "</nav>";
         }
         var links = [{ id: "dashboard", titre: "Tableau de bord", icon: "fa-tachometer", home: "index.html" }].concat(CX.MENU_COMMERCIAL);

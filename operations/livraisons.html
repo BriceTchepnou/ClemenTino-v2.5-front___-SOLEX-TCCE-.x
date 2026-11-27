@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:,">
-    <title>Opérations · Livraisons à domicile - ClemenTino</title>
+    <title>Opérations · Fiches de livraison - ClemenTino</title>
 
     <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
@@ -23,11 +23,12 @@
 <main class="cx-main">
     <div class="cx-page-head">
         <div>
-            <div class="cx-crumb">Opérations · Flux des colis</div>
-            <h1 class="cx-title">Livraisons à domicile</h1>
+            <div class="cx-crumb">Opérations · Lots et colis</div>
+            <h1 class="cx-title">Fiches de livraison <small>coursiers et retours de tournée</small></h1>
         </div>
         <div class="cx-page-actions">
             <div id="ox-agence-slot"></div>
+            <a class="cx-btn cx-btn-new" href="instance.html#coursier"><i class="fa fa-plus"></i> Remettre au coursier</a>
             <button type="button" class="cx-btn cx-btn-ghost" id="btn-refresh"><i class="fa fa-refresh"></i> Rafraîchir</button>
         </div>
     </div>
@@ -36,49 +37,13 @@
 
     <div class="cx-card">
         <div class="cx-tabs" id="onglets" role="tablist">
-            <a data-tab="alivrer" class="active" role="tab"><i class="fa fa-map-marker"></i> À livrer <span class="cx-count" id="n-alivrer">0</span></a>
-            <a data-tab="tournees" role="tab"><i class="fa fa-motorcycle"></i> Tournées en cours <span class="cx-count" id="n-tournees">0</span></a>
-            <a data-tab="cloturees" role="tab">Tournées clôturées <span class="cx-count" id="n-cloturees">0</span></a>
+            <a data-tab="tournees" class="active" role="tab"><i class="fa fa-motorcycle"></i> Fiches en cours <span class="cx-count" id="n-tournees">0</span></a>
+            <a data-tab="cloturees" role="tab">Fiches clôturées <span class="cx-count" id="n-cloturees">0</span></a>
             <a data-tab="livreurs" role="tab"><i class="fa fa-users"></i> Livreurs <span class="cx-count" id="n-livreurs">0</span></a>
         </div>
 
-        <!-- À livrer : constitution des tournées -->
-        <div class="cx-card-body" id="vue-alivrer">
-            <div class="cx-layout">
-                <div>
-                    <div class="cx-toolbar" style="padding:0 0 12px">
-                        <div class="cx-field">
-                            <label class="cx-label" for="f-zone">Zone</label>
-                            <select class="form-control" id="f-zone"><option value="">Toutes</option></select>
-                        </div>
-                        <div class="cx-field cx-grow">
-                            <label class="cx-label" for="q">Recherche</label>
-                            <div class="cx-search"><i class="fa fa-search"></i><input type="search" class="form-control" id="q" placeholder="N° LT, destinataire, quartier, téléphone…"></div>
-                        </div>
-                    </div>
-                    <div class="ox-groupes" id="zones"></div>
-                </div>
-                <aside class="cx-aside">
-                    <div class="cx-block">
-                        <div class="cx-block-title">Nouvelle tournée</div>
-                        <p class="cx-muted" id="t-sel" style="margin-top:0">Aucun colis sélectionné</p>
-                        <div class="cx-field">
-                            <label class="cx-label req" for="t-livreur">Livreur</label>
-                            <select class="form-control" id="t-livreur"></select>
-                        </div>
-                        <div class="cx-field">
-                            <label class="cx-label" for="t-heure">Départ de la tournée</label>
-                            <input type="time" class="form-control" id="t-heure" value="09:00">
-                        </div>
-                        <button type="button" class="cx-btn cx-btn-primary cx-btn-block" id="btn-tournee" disabled><i class="fa fa-motorcycle"></i> Constituer la tournée</button>
-                        <button type="button" class="cx-btn cx-btn-link cx-btn-sm" id="btn-vider"><i class="fa fa-times"></i> Vider la sélection</button>
-                    </div>
-                </aside>
-            </div>
-        </div>
-
         <!-- Tournées -->
-        <div class="cx-card-body cx-hidden" id="vue-tournees"><div class="ox-cards" id="tournees"></div></div>
+        <div class="cx-card-body" id="vue-tournees"><div class="ox-cards" id="tournees"></div></div>
         <div class="cx-hidden" id="vue-cloturees"><div id="dt-cloturees"></div></div>
 
         <!-- Livreurs -->
@@ -90,7 +55,7 @@
         </div>
     </div>
 
-    <!-- Zone d'impression (feuille de route) -->
+    <!-- Zone d'impression (fiche de livraison) -->
     <div id="ox-print"></div>
 
     <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>

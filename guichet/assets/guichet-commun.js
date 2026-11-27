@@ -290,6 +290,75 @@ CX.guichet = (function () {
         return dfd.promise();
     }
 
+    /* ------------------------------------------------------------------
+       Pré-enregistrements (collection « preenregistrements ») : expéditions
+       saisies par le client (formulaire web, WhatsApp, client en compte),
+       validées au guichet (expedition-form.html?prereg=CODE) puis suivies
+       dans Opérations > Expéditions pré-enregistrées.
+       { code PRE-NNNN, dateExp, ville, agenceId, agence, service, villeDest, bureauDest,
+         livraison, quartier, zone, repere, exp { nom, tel }, dst { nom, tel }, colis[],
+         source WEB | WHATSAPP | COMPTE, clientId, statut EN_ATTENTE | VALIDE | EXPIRE | ANNULE,
+         expeditionId, nRt, dateValidation, validePar, annulation }
+       TODO API : GET /guichet/pre-enregistrements?du=&au=&ville=&agence=  ·  GET /guichet/pre-enregistrements/{code}
+       ------------------------------------------------------------------ */
+    var PREENREG_VALIDITE_J = 7;   // au-delà : expiré
+    var SOURCES_PREENREG = { WEB: { label: "Formulaire web", color: "blue" }, WHATSAPP: { label: "WhatsApp", color: "green" }, COMPTE: { label: "Client en compte", color: "purple" } };
+    var STATUTS_PREENREG = { EN_ATTENTE: { label: "En attente", color: "orange" }, VALIDE: { label: "Validé au guichet", color: "green" }, EXPIRE: { label: "Expiré", color: "grey" }, ANNULE: { label: "Annulé", color: "red" } };
+    var preenreg = {
+        SOURCES: SOURCES_PREENREG, STATUTS: STATUTS_PREENREG, VALIDITE_J: PREENREG_VALIDITE_J,
+        /* Jeu de démonstration (une seule fois, sans effacer les saisies du navigateur) */
+        assurer: function () {
+            var deja = $.grep(CX.api.listSync("meta"), function (x) { return x.cle === "demoPreenregistrements"; }).length > 0;
+            if (deja) return;
+            var t = U.today();
+            function p(code, age, ag, o) {
+                var a = CX.REF.agence(ag);
+                CX.api.save("preenregistrements", $.extend({ code: code, numero: code, dateExp: U.addDays(t, -age), dateCreation: U.addDays(t, -age),
+                    ville: a.ville, agenceId: a.id, agence: a.nom, statut: "EN_ATTENTE", clientId: null, livraison: "BUREAU", quartier: "", zone: "", repere: "" }, o));
+            }
+            p("PRE-0042", 0, 1, { source: "WEB", service: "NATIONALE", villeDest: "YAOUNDE", bureauDest: "CENTRALE", livraison: "DOMICILE", quartier: "Bastos", zone: "Z1", repere: "Face à la boulangerie du carrefour",
+                exp: { nom: "Mireille Ngassa", tel: "699001122" }, dst: { nom: "Paul Etoundi", tel: "677003344" },
+                colis: [{ nature: "Colis", poids: 4, L: 40, l: 30, H: 25, nombre: 1, valeur: 25000, description: "Vêtements et chaussures" }] });
+            p("PRE-0043", 0, 1, { source: "WHATSAPP", service: "URBAINE", villeDest: "DOUALA", bureauDest: "BONANJO", livraison: "DOMICILE", quartier: "Bonapriso", zone: "Z1", repere: "Devant la pharmacie du carrefour",
+                exp: { nom: "Aïcha Njoya", tel: "655123456" }, dst: { nom: "Serge Biyong", tel: "690112233" },
+                colis: [{ nature: "Pli fermé", poids: 0.5, nombre: 1, valeur: 0, description: "Documents" }] });
+            p("PRE-0044", 1, 1, { source: "COMPTE", clientId: 1, service: "NATIONALE", villeDest: "BAFOUSSAM", bureauDest: "CENTRE",
+                exp: { nom: "PHARMACIE PACIFIC", tel: "699123456" }, dst: { nom: "Pharmacie du Marché", tel: "699445566" },
+                colis: [{ nature: "Médicament", poids: 8, nombre: 2, valeur: 150000, description: "Cartons de médicaments" }] });
+            p("PRE-0045", 2, 2, { source: "WEB", service: "NATIONALE", villeDest: "GAROUA", bureauDest: "CENTRE",
+                exp: { nom: "Clarisse Kamga", tel: "677221100" }, dst: { nom: "Ibrahim Oumarou", tel: "699887766" },
+                colis: [{ nature: "Colis", poids: 3, nombre: 1, valeur: 20000, description: "Livres scolaires" }] });
+            p("PRE-0046", 1, 4, { source: "WHATSAPP", service: "NATIONALE", villeDest: "DOUALA", bureauDest: "AKWA",
+                exp: { nom: "Boris Mbarga", tel: "690334455" }, dst: { nom: "Esther Nana", tel: "655778899" },
+                colis: [{ nature: "Fragile", poids: 2, nombre: 1, valeur: 60000, description: "Téléphone" }] });
+            p("PRE-0039", 9, 1, { source: "WEB", service: "NATIONALE", villeDest: "KRIBI", bureauDest: "CENTRE",
+                exp: { nom: "Hervé Tchoua", tel: "699010203" }, dst: { nom: "Joëlle Ewane", tel: "677040506" },
+                colis: [{ nature: "Colis", poids: 5, nombre: 1, valeur: 10000, description: "Vivres frais" }] });
+            CX.api.save("meta", { cle: "demoPreenregistrements", version: 1, date: U.now(), numero: "META-PRE-1" });
+        },
+        /* Statut affiché : « expiré » au-delà de la validité */
+        statut: function (p) {
+            if (p.statut === "EN_ATTENTE" && U.daysBetween(p.dateExp, U.today()) > PREENREG_VALIDITE_J) return "EXPIRE";
+            return p.statut;
+        },
+        trouver: function (code) {
+            preenreg.assurer();
+            var c = String(code || "").toUpperCase();
+            return $.grep(CX.api.listSync("preenregistrements"), function (p) { return p.code === c; })[0] || null;
+        },
+        /* Conversion vers le format repris par le formulaire du guichet */
+        versFormulaire: function (p) {
+            return { service: p.service, villeDest: p.villeDest, livraison: p.livraison, quartier: p.quartier, zone: p.zone, repere: p.repere,
+                exp: p.exp, dst: p.dst, colis: p.colis, clientId: p.clientId };
+        },
+        /* TODO API : POST /guichet/pre-enregistrements/{code}/valider  { expeditionId } */
+        valider: function (code, exp) {
+            var p = preenreg.trouver(code);
+            if (!p) return $.Deferred().resolve(null).promise();
+            return CX.api.save("preenregistrements", $.extend(p, { statut: "VALIDE", expeditionId: exp.id, nRt: exp.nRt, dateValidation: U.now(), validePar: CX.CONFIG.USER.nom }));
+        }
+    };
+
     /* Liens vers les pages du module Commercial (pages hors commercial/) */
     function lienCommercial(page) { return (window.CX_BASE || "") + page; }
 
@@ -299,6 +368,6 @@ CX.guichet = (function () {
         statutBadge: statutBadge, deduireService: deduireService, normaliser: normaliser,
         estModifiable: estModifiable, motifNonModifiable: motifNonModifiable,
         prochainNumero: prochainNumero, whatsapp: whatsapp, messageWhatsapp: messageWhatsapp, numeroWhatsapp: numeroWhatsapp,
-        carnets: carnets, annuler: annuler, modaleAnnulation: modaleAnnulation, lienCommercial: lienCommercial
+        carnets: carnets, annuler: annuler, modaleAnnulation: modaleAnnulation, lienCommercial: lienCommercial, preenreg: preenreg
     };
 })();

@@ -25,16 +25,16 @@ $(function () {
     function texte(e) {
         return [e.nRt, e.nRtMan, e.nRtManLibere, e.bordereau, e.expediteurInfo.nom, e.expediteurInfo.tel, G.telFmt(e.expediteurInfo.tel), e.destinataireInfo.nom,
             e.destinataireInfo.tel, G.telFmt(e.destinataireInfo.tel), e.telDestinataire, e.client ? e.client.raisonSociale + " " + e.client.code : "", e.contenu,
-            e.partenaire ? e.partenaire.awb : ""].join(" ");
+            e.partenaire ? e.partenaire.awb : "", e.refLot, e.bordereauManuel].join(" ");
     }
     var dt = new CX.DataTable("#dt-lt", {
         pageSize: 25, sortKey: "dateExp", sortDir: -1, selectable: true, searchInput: "#q",
         emptyText: "Aucune lettre de transport", emptyIcon: "fa-file-o",
         rowClass: function (e) { return e.sla.retard ? "ox-retard" : e.etape === "ANNULEE" ? "cx-row-muted" : ""; },
         columns: [
-            { key: "nRt", title: "N° LT", render: function (e) {
+            { key: "nRt", title: "N° RT / réf.", render: function (e) {
                 return "<a href='#' class='cx-mono cx-strong' data-fiche>" + U.esc(e.nRt) + "</a>" + (e.nRtMan ? "<div><span class='cx-tag cx-mono'>Man. " + U.esc(e.nRtMan) + "</span></div>" : "") +
-                    (e.bordereau ? "<div class='cx-cell-sub'>" + U.esc(e.bordereau) + "</div>" : "");
+                    "<div class='ox-ref'>" + U.esc(e.refLot) + "</div>" + (e.bordereau ? "<div class='cx-cell-sub'>" + U.esc(e.bordereau) + "</div>" : "") + (e.suspendu ? "<div><span class='cx-badge cx-badge-red cx-no-dot'>Suspendue</span></div>" : "");
             }, searchValue: texte },
             { key: "dep", title: "Départ", sortValue: function (e) { return e.villeDep + e.bureauDep; }, render: function (e) { return U.esc(G.villeNom(e.villeDep)) + "<div class='cx-cell-sub'>" + U.esc(G.titre(e.bureauDep)) + "</div>"; }, searchValue: function () { return ""; } },
             { key: "dest", title: "Destination", sortValue: function (e) { return O.destinationLib(e); }, render: function (e) {
@@ -52,7 +52,7 @@ $(function () {
             }, searchValue: function () { return ""; } }
         ],
         onSelect: function (rows) { $("#selbar").toggleClass("cx-hidden", !rows.length); $("#sel-n").text(O.pl(rows.length, "LT sélectionnée", "LT sélectionnées")); },
-        onRender: function (rows) { $("#l-count").text(O.pl(rows.length, "LT")); }
+        onRender: function (rows) { $("#l-count").text(O.pl(rows.length, "RT", "RT")); }
     });
 
     function appliquer() {

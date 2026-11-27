@@ -29,29 +29,30 @@ $(function () {
         var recus = {}; $.each(b.recus || [], function (_, x) { recus[x] = true; });
         var cloture = b.statut === "CLOTURE";
         var html = "<div class='ox-sheet' id='sheet'>" +
-            (b.statut === "PREPARE" ? "<div class='ox-sh-wm'>PROVISOIRE</div>" : "") +
+            (b.annule ? "<div class='ox-sh-wm' style='color:rgba(220,38,38,.12)'>ANNULÉ</div>" : b.statut === "PREPARE" ? "<div class='ox-sh-wm'>EN PRÉPARATION</div>" : "") +
             "<div class='ox-sh-head'><div class='ox-sh-logo'>" + (logoSrc() ? "<img src='" + U.esc(logoSrc()) + "' alt=''>" : "") +
             "<div class='ox-sh-soc'><b>" + U.esc(S.nom) + "</b><span>" + U.esc(S.slogan || "") + "</span><br><span>" + U.esc(S.adresse || "") + " · " + U.esc(S.tel || "") + "</span></div></div>" +
-            "<div class='ox-flex' style='align-items:flex-start;gap:12px'><div class='ox-sh-titre'><h1>BORDEREAU DE CHARGEMENT</h1><div class='cx-muted' style='font-size:10px'>Manifeste de transport inter-agences</div>" +
+            "<div class='ox-flex' style='align-items:flex-start;gap:12px'><div class='ox-sh-titre'><h1>BORDEREAU D'EXPÉDITION</h1><div class='cx-muted' style='font-size:10px'>Manifeste de voyage inter-agences</div>" +
             "<div class='ox-sh-num'>" + U.esc(b.numero) + "</div><div style='font-size:10px'>Statut : <b>" + U.esc(O.STATUT_BORDEREAU[b.statut].label) + "</b></div></div>" +
             "<div class='ox-sh-qr'>" + qrSvg(b.numero) + "</div></div></div>" +
             "<div class='ox-sh-infos'>" +
             info("Agence de départ", U.esc(O.agenceLib(b.agenceDepId))) + info("Agence d'arrivée", U.esc(O.agenceLib(b.agenceDestId))) +
             info("Date", U.esc(U.toFr(b.date)) + (b.heure ? " · " + U.esc(b.heure) : "")) + info("Départ effectif", b.dateDepart ? U.esc(U.toFr(b.dateDepart)) : "") +
-            info("Véhicule", U.esc(((b.vehicule || {}).type || "") + " " + ((b.vehicule || {}).immatriculation || ""))) + info("Chauffeur", U.esc(((b.chauffeur || {}).nom || "") + ((b.chauffeur || {}).tel ? " · " + b.chauffeur.tel : ""))) +
-            info("N° de scellé", "<span class='cx-mono'>" + U.esc(b.scelle || "") + "</span>") + info("Arrivée", b.dateArrivee ? U.esc(U.toFr(b.dateArrivee)) : "") +
+            info("N° BE manuel", "<span class='cx-mono'>" + U.esc(b.numeroManuel || "—") + "</span>") + info("Moyen de transport", U.esc((O.MOYENS_TRANSPORT[b.moyen || "ROUTE"] || "").toUpperCase() + " " + (b.numeroTransport || (b.vehicule || {}).immatriculation || ""))) +
+            info("Transporteur", U.esc(b.transporteur || "—")) + info("Départ / arrivée prévus", U.esc(U.toFr(b.departPrevu || b.date)) + (b.arriveePrevue ? "<br>" + U.esc(U.toFr(b.arriveePrevue)) : "")) + info("Personne à contacter", U.esc(b.contact || "—")) + info("Chauffeur", U.esc(((b.chauffeur || {}).nom || "") + ((b.chauffeur || {}).tel ? " · " + b.chauffeur.tel : ""))) +
+            info("Plan de voyage", U.esc(b.planVoyage || "")) + info("N° de scellé", "<span class='cx-mono'>" + U.esc(b.scelle || "") + "</span>") + info("Arrivée", b.dateArrivee ? U.esc(U.toFr(b.dateArrivee)) : "") +
             "</div>" +
-            "<table class='ox-sh-table'><thead><tr><th>#</th><th>N° LT</th><th>Expéditeur</th><th>Destinataire</th><th>Destination finale</th><th>Contenu</th><th class='num'>Colis</th><th class='num'>Poids</th><th>Remise</th><th>Pointage</th></tr></thead><tbody>" +
+            "<table class='ox-sh-table'><thead><tr><th>#</th><th>N° reçu transport / réf.</th><th>Expéditeur</th><th>Destinataire</th><th>Destination finale</th><th>Contenu</th><th class='num'>Colis</th><th class='num'>Poids</th><th>Remise</th><th>Pointage</th></tr></thead><tbody>" +
             $.map(lignes, function (e, i) {
                 var pt = recus[e.id] ? "✔ reçu" : cloture ? "✘ manquant" : "<span class='ox-sh-box'></span>";
-                return "<tr><td>" + (i + 1) + "</td><td class='cx-mono'><b>" + U.esc(e.nRt) + "</b>" + (e.nRtMan ? "<br><small>Man. " + U.esc(e.nRtMan) + "</small>" : "") + "</td>" +
+                return "<tr><td>" + (i + 1) + "</td><td class='cx-mono'><b>" + U.esc(e.nRt) + "</b>" + (e.rtMan ? "<br><small>Man. " + U.esc(e.rtMan) + "</small>" : "") + "<br><small>" + U.esc(e.refLot) + (e.refs.length > 1 ? " (" + e.refs.length + " lots)" : "") + "</small></td>" +
                     "<td>" + U.esc(e.expediteurInfo.nom) + "</td><td>" + U.esc(e.destinataireInfo.nom) + "<br><small>" + U.esc(G.telAff(e.destinataireInfo.tel)) + "</small></td>" +
                     "<td>" + U.esc(O.destinationLib(e)) + (String(e.agDestId) !== String(b.agenceDestId) ? " <b>(transit)</b>" : "") + "</td><td>" + U.esc(e.contenu || "") + "</td>" +
                     "<td class='num'>" + (e.nbColis || 1) + "</td><td class='num'>" + U.esc(G.kg(e.poids)) + "</td>" +
                     "<td>" + (e.livraison.mode === "DOMICILE" ? "Domicile" : "Agence") + "</td><td>" + pt + "</td></tr>";
             }).join("") +
             (!lignes.length ? "<tr><td colspan='10' style='text-align:center;padding:20px'>Bordereau vide</td></tr>" : "") +
-            "</tbody><tfoot><tr><td colspan='6'>Total : " + O.pl(lignes.length, "lettre de transport", "lettres de transport") + (valeur ? " · valeur déclarée " + U.money(valeur) : "") + "</td>" +
+            "</tbody><tfoot><tr><td colspan='6'>Total : " + O.pl(lignes.length, "expédition") + (valeur ? " · valeur déclarée " + U.money(valeur) : "") + "</td>" +
             "<td class='num'>" + nb + "</td><td class='num'>" + U.esc(G.kg(poids)) + "</td><td colspan='2'></td></tr></tfoot></table>" +
             ((b.ecarts || []).length ? "<div class='ox-sh-ecarts'><b>Écarts constatés à l'arrivée :</b><ul style='margin:4px 0 0;padding-left:16px'>" + $.map(b.ecarts, function (x) {
                 return "<li>" + U.esc(x.type === "MANQUANT" ? "Manquant" : x.type === "EN_TROP" ? "En trop" : x.type) + " · <b class='cx-mono'>" + U.esc(x.nRt) + "</b>" + (x.note ? " · " + U.esc(x.note) : "") + " (" + U.esc(U.toFr(x.date)) + ", " + U.esc(x.user) + ")</li>";
@@ -59,7 +60,7 @@ $(function () {
             (b.observations ? "<p style='margin:8px 0 0'><b>Observations :</b> " + U.esc(b.observations) + "</p>" : "") +
             "<div class='ox-sh-sign'>" +
             "<div><b>Chef d'agence de départ</b>" + U.esc(O.agenceLib(b.agenceDepId)) + "<span>Nom, date et signature</span></div>" +
-            "<div><b>Chauffeur</b>" + U.esc((b.chauffeur || {}).nom || "") + "<span>Reconnaît avoir pris en charge " + O.pl(nb, "colis") + " · signature</span></div>" +
+            "<div><b>Chauffeur</b>" + U.esc((b.chauffeur || {}).nom || "") + "<span>Reconnaît avoir pris en charge " + O.pl(nb, "colis", "colis") + " · signature</span></div>" +
             "<div><b>Chef d'agence d'arrivée</b>" + U.esc(O.agenceLib(b.agenceDestId)) + "<span>Reçu le … à … · signature et cachet</span></div></div>" +
             "<div class='ox-sh-foot'>" + U.esc(S.nom) + " · RCCM " + U.esc(S.rccm || "") + " · NIU " + U.esc(S.niu || "") + " · Édité le " + U.esc(U.toFr(U.now())) + " par " + U.esc(CX.CONFIG.USER.nom) + "</div>" +
             "</div>";

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:,">
-    <title>Opérations · Groupage (départs) - ClemenTino</title>
+    <title>Opérations · Envoi des lots et colis - ClemenTino</title>
 
     <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
@@ -23,49 +23,66 @@
 <main class="cx-main">
     <div class="cx-page-head">
         <div>
-            <div class="cx-crumb">Opérations · Flux des colis</div>
-            <h1 class="cx-title">Groupage <small>départs de l'agence</small></h1>
+            <div class="cx-crumb">Opérations · Lots et colis</div>
+            <h1 class="cx-title">Envoi des lots et colis <small id="l-count"></small></h1>
         </div>
         <div class="cx-page-actions">
             <div id="ox-agence-slot"></div>
-            <a class="cx-btn cx-btn-ghost" href="bordereaux.html"><i class="fa fa-list-alt"></i> Bordereaux</a>
+            <a class="cx-btn cx-btn-ghost" href="bordereaux-provisoires.html"><i class="fa fa-magic"></i> Bordereaux provisoires</a>
+            <a class="cx-btn cx-btn-ghost" href="bordereaux.html"><i class="fa fa-list-alt"></i> Bordereaux d'expédition</a>
         </div>
     </div>
 
     <!-- Saisie rapide (douchette) -->
     <div class="ox-scan">
         <i class="fa fa-barcode"></i>
-        <div><b>Scanner ou saisir un n° de LT</b><small>Douchette ou clavier puis Entrée : le colis est ajouté à la sélection</small></div>
-        <input type="text" class="form-control" id="scan" placeholder="RT-2611-00001" autocomplete="off" aria-label="N° de LT à ajouter à la sélection">
+        <div><b>Scanner ou saisir un N° RT</b><small>Douchette ou clavier puis Entrée : l'expédition est ajoutée à la sélection</small></div>
+        <input type="text" class="form-control" id="scan" placeholder="RT-2611-00001" autocomplete="off" aria-label="N° RT à ajouter à la sélection">
         <span class="ox-scan-res" id="scan-res" aria-live="polite"></span>
     </div>
 
     <div class="cx-layout">
         <div>
             <div class="cx-card">
-                <div class="cx-tabs" id="onglets" role="tablist">
-                    <a data-tab="grouper" class="active" role="tab">À grouper <span class="cx-count" id="n-grouper">0</span></a>
-                    <a data-tab="locaux" role="tab">Locaux, même agence <span class="cx-count" id="n-locaux">0</span></a>
-                </div>
                 <div class="cx-toolbar">
                     <div class="cx-field">
-                        <label class="cx-label" for="f-dest">Destination</label>
+                        <label class="cx-label" for="f-prov">Bureau de provenance</label>
+                        <select class="form-control" id="f-prov"></select>
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="f-dest">Bureau de destination</label>
                         <select class="form-control" id="f-dest"></select>
                     </div>
                     <div class="cx-field">
-                        <label class="cx-label" for="f-mode">Remise</label>
-                        <select class="form-control" id="f-mode">
-                            <option value="">Toutes</option><option value="BUREAU">Retrait en agence</option><option value="DOMICILE">Domicile</option>
-                        </select>
+                        <label class="cx-label" for="f-du">Saisie du</label>
+                        <input type="date" class="form-control" id="f-du">
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="f-au">au</label>
+                        <input type="date" class="form-control" id="f-au">
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="f-par">Saisie par</label>
+                        <select class="form-control" id="f-par"></select>
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="f-dir">Directions</label>
+                        <select class="form-control" id="f-dir"></select>
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="f-nature">Nature du colis</label>
+                        <select class="form-control" id="f-nature"></select>
                     </div>
                     <div class="cx-field cx-grow">
-                        <label class="cx-label" for="q">Recherche</label>
-                        <div class="cx-search"><i class="fa fa-search"></i><input type="search" class="form-control" id="q" placeholder="N° LT, nom, téléphone, contenu…"></div>
+                        <label class="cx-label" for="q">Recherche N° RT</label>
+                        <div class="cx-search"><i class="fa fa-search"></i><input type="search" class="form-control" id="q" placeholder="N° RT, n° manuel, réf., nom, téléphone…"></div>
                     </div>
                 </div>
-                <div class="cx-card-body">
-                    <div class="ox-groupes" id="groupes"></div>
+                <div class="cx-tabs" id="onglets" role="tablist">
+                    <a data-tab="grouper" class="active" role="tab">Expéditions à envoyer <span class="cx-count" id="n-grouper">0</span></a>
+                    <a data-tab="locaux" role="tab">Livraisons urbaines (même agence) <span class="cx-count" id="n-locaux">0</span></a>
                 </div>
+                <div id="dt-envoi"></div>
             </div>
         </div>
 
@@ -73,12 +90,12 @@
             <div class="cx-card">
                 <div class="cx-card-head">
                     <span class="cx-step"><i class="fa fa-check-square-o"></i></span>
-                    <div><h3 class="cx-card-title">Sélection</h3><p class="cx-card-sub" id="sel-sub">Aucun colis sélectionné</p></div>
+                    <div><h3 class="cx-card-title">Sélection</h3><p class="cx-card-sub" id="sel-sub">Aucune expédition sélectionnée</p></div>
                 </div>
                 <div class="cx-card-body">
                     <div id="sel-resume"></div>
                     <div id="sel-grouper">
-                        <button type="button" class="cx-btn cx-btn-primary cx-btn-block" id="btn-creer" disabled><i class="fa fa-plus"></i> Créer le bordereau</button>
+                        <button type="button" class="cx-btn cx-btn-primary cx-btn-block" id="btn-be" disabled><i class="fa fa-file-text-o"></i> Bordereau d'expédition</button>
                         <div class="cx-field ox-mt" id="bloc-ajouter">
                             <label class="cx-label" for="sel-bordereau">ou ajouter à un bordereau en préparation</label>
                             <div class="ox-flex"><select class="form-control ox-grow" id="sel-bordereau"></select>
@@ -86,8 +103,8 @@
                         </div>
                     </div>
                     <div id="sel-locaux" class="cx-hidden">
-                        <button type="button" class="cx-btn cx-btn-primary cx-btn-block" id="btn-orienter" disabled><i class="fa fa-inbox"></i> Mettre en agence / à livrer</button>
-                        <p class="cx-help">Colis à destination de l'agence elle-même : retrait → « En agence », domicile → file « À livrer ».</p>
+                        <button type="button" class="cx-btn cx-btn-primary cx-btn-block" id="btn-orienter" disabled><i class="fa fa-inbox"></i> Mettre en agence / en livraison</button>
+                        <p class="cx-help">Expéditions destinées à l'agence elle-même : retrait → en agence, livraison urbaine → à mettre en livraison.</p>
                     </div>
                     <button type="button" class="cx-btn cx-btn-link cx-btn-sm" id="btn-vider"><i class="fa fa-times"></i> Vider la sélection</button>
                 </div>
@@ -95,7 +112,7 @@
             <div class="cx-card">
                 <div class="cx-card-head">
                     <span class="cx-step"><i class="fa fa-truck"></i></span>
-                    <div><h3 class="cx-card-title">Bordereaux en préparation</h3><p class="cx-card-sub">Au départ de l'agence</p></div>
+                    <div><h3 class="cx-card-title">Bordereaux en préparation</h3><p class="cx-card-sub">Manifestes de voyage au départ de l'agence</p></div>
                 </div>
                 <div class="cx-card-body"><div id="prepa"></div></div>
             </div>
@@ -118,6 +135,7 @@
 <script src="assets/ops-commun.js"></script>
 <script>window.CX_BASE = "../commercial/";</script>
 <script src="../commercial/assets/cx-shell.js"></script>
+<script src="assets/ops-listes.js"></script>
 <script src="assets/pages/groupage.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:,">
-    <title>Opérations · Tableau de bord exploitation - ClemenTino</title>
+    <title>Opérations · Tableau de bord - ClemenTino</title>
 
     <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
@@ -23,13 +23,13 @@
 <main class="cx-main">
     <div class="cx-page-head">
         <div>
-            <div class="cx-crumb">Opérations · Flux des colis</div>
-            <h1 class="cx-title">Tableau de bord exploitation <small id="l-agence"></small></h1>
+            <div class="cx-crumb">Opérations · Lots et colis</div>
+            <h1 class="cx-title">Tableau de bord des opérations <small id="l-agence"></small></h1>
         </div>
         <div class="cx-page-actions">
             <div id="ox-agence-slot"></div>
             <button type="button" class="cx-btn cx-btn-ghost" id="btn-refresh"><i class="fa fa-refresh"></i> Rafraîchir</button>
-            <a class="cx-btn cx-btn-new" href="groupage.html"><i class="fa fa-cubes"></i> Groupage</a>
+            <a class="cx-btn cx-btn-new" href="groupage.html"><i class="fa fa-cubes"></i> Envoi des lots et colis</a>
         </div>
     </div>
 
@@ -79,14 +79,16 @@
                 </div>
                 <div class="cx-card-body">
                     <div class="ox-shortcuts">
-                        <a href="groupage.html"><i class="fa fa-cubes"></i> Constituer un bordereau</a>
-                        <a href="degroupage.html"><i class="fa fa-sign-in"></i> Réceptionner</a>
-                        <a href="instance.html"><i class="fa fa-handshake-o"></i> Remettre un colis</a>
-                        <a href="livraisons.html"><i class="fa fa-motorcycle"></i> Préparer une tournée</a>
-                        <a href="lettres-voiture.html"><i class="fa fa-search"></i> Rechercher une LT</a>
+                        <a href="groupage.html"><i class="fa fa-cubes"></i> Envoi des lots et colis</a>
+                        <a href="degroupage.html"><i class="fa fa-sign-in"></i> Réception des lots et colis</a>
+                        <a href="instance.html"><i class="fa fa-handshake-o"></i> Livraison des lots et colis</a>
+                        <a href="livraisons.html"><i class="fa fa-motorcycle"></i> Fiches de livraison</a>
+                        <a href="lettres-voiture.html"><i class="fa fa-search"></i> Lettres de voiture</a>
                         <a href="tracking.html"><i class="fa fa-crosshairs"></i> Tracking</a>
                         <a href="../guichet/expedition-form.html"><i class="fa fa-plus"></i> Nouvelle expédition</a>
-                        <a href="bordereaux.html"><i class="fa fa-list-alt"></i> Bordereaux</a>
+                        <a href="bordereaux.html"><i class="fa fa-list-alt"></i> Bordereaux d&#39;expédition</a>
+                        <a href="preenregistrees.html"><i class="fa fa-mobile"></i> Pré-enregistrées</a>
+                        <a href="international.html"><i class="fa fa-globe"></i> International</a>
                     </div>
                 </div>
             </div>

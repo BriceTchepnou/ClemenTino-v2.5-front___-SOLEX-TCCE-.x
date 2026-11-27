@@ -1,5 +1,5 @@
 /* =====================================================================
-   Opérations · Tableau de bord exploitation (operations/index.html)
+   Opérations · Tableau de bord (operations/index.html)
    ---------------------------------------------------------------------
    Agence de l'utilisateur (sélecteur d'agence) : colis par étape, retards
    (SLA), bordereaux du jour, flux du jour, raccourcis, taux de livraison
@@ -15,7 +15,7 @@ $(function () {
         pageSize: 10, pageSizes: [10, 25, 50], sortKey: "retard", sortDir: -1,
         emptyText: "Aucun colis en retard", emptyIcon: "fa-smile-o",
         columns: [
-            { key: "nRt", title: "N° LT", render: function (e) { return "<a href='#' class='cx-mono cx-strong' data-fiche='" + e.id + "'>" + U.esc(e.nRt) + "</a>"; } },
+            { key: "nRt", title: "N° RT", render: function (e) { return "<a href='#' class='cx-mono cx-strong' data-fiche='" + e.id + "'>" + U.esc(e.nRt) + "</a>"; } },
             { key: "trajet", title: "Trajet", sortValue: function (e) { return e.villeDep + e.villeDest; }, render: function (e) {
                 return "<span class='cx-nowrap'>" + U.esc(G.villeNom(e.villeDep)) + " <i class='fa fa-long-arrow-right cx-muted'></i> " + U.esc(O.destinationLib(e)) + "</span>";
             } },
@@ -34,9 +34,9 @@ $(function () {
     function carteBordereau(b, sens) {
         return "<div class='ox-bcard'><div class='ox-bcard-top'><a class='ox-bcard-num' href='bordereau.html?id=" + b.id + "'>" + U.esc(b.numero) + "</a>" + O.badge(O.STATUT_BORDEREAU, b.statut) + "</div>" +
             "<div class='ox-bcard-route'>" + (sens === "dep" ? "<i class='fa fa-arrow-up cx-muted'></i> vers " + U.esc(O.agenceLib(b.agenceDestId)) : "<i class='fa fa-arrow-down cx-muted'></i> de " + U.esc(O.agenceLib(b.agenceDepId))) + "</div>" +
-            "<div class='ox-bcard-meta'><span><i class='fa fa-cube'></i> " + O.pl(b.expeditionIds.length, "colis") + "</span><span><i class='fa fa-truck'></i> " + U.esc(b.vehicule.immatriculation || "—") + "</span>" +
+            "<div class='ox-bcard-meta'><span><i class='fa fa-cube'></i> " + O.pl(b.expeditionIds.length, "colis", "colis") + "</span><span><i class='fa fa-truck'></i> " + U.esc(b.vehicule.immatriculation || "—") + "</span>" +
             "<span><i class='fa fa-calendar'></i> " + U.toFr(b.date) + "</span></div>" +
-            "<div class='ox-bcard-actions'>" + (sens === "dep" ? "<a class='cx-btn cx-btn-ghost cx-btn-xs' href='groupage.html'>Préparer / faire partir</a>" : "<a class='cx-btn cx-btn-primary cx-btn-xs' href='degroupage.html?bordereau=" + b.id + "'><i class='fa fa-check-square-o'></i> Réceptionner</a>") + "</div></div>";
+            "<div class='ox-bcard-actions'>" + (sens === "dep" ? "<a class='cx-btn cx-btn-ghost cx-btn-xs' href='groupage.html'>Envoi : faire partir</a>" : "<a class='cx-btn cx-btn-primary cx-btn-xs' href='degroupage.html?bordereau=" + b.id + "'><i class='fa fa-check-square-o'></i> Réceptionner</a>") + "</div></div>";
     }
 
     function charger() {
@@ -44,15 +44,17 @@ $(function () {
             var f = O.files(exps, bords);
             var nAttendus = 0; $.each(f.bordereauxAttendus, function (_, b) { nAttendus += b.expeditionIds.length; });
             $("#pipeline").html([
-                pipe("groupage.html", "fa-cubes", f.aGrouper.length + f.locaux.length, "À grouper"),
+                pipe("groupage.html", "fa-cubes", f.aGrouper.length + f.locaux.length, "À envoyer"),
                 pipe("degroupage.html", "fa-truck", f.enTransitVersNous.length, "En transit vers nous"),
                 pipe("degroupage.html", "fa-sign-in", nAttendus, "À réceptionner (" + O.pl(f.bordereauxAttendus.length, "bordereau", "bordereaux") + ")"),
-                pipe("degroupage.html#agence", "fa-inbox", f.aMettreEnAgence.length + f.transitIci.length, "À orienter"),
-                pipe("instance.html", "fa-building-o", f.enInstance.length, "En instance"),
-                pipe("instance.html?anciennete=3", "fa-hourglass-half", f.instanceAncien.length, "En instance > " + O.INSTANCE_ALERTE_J + " j", true),
-                pipe("livraisons.html", "fa-map-marker", f.aLivrer.length, "À livrer"),
-                pipe("livraisons.html#tournees", "fa-motorcycle", f.enLivraison.length, "En livraison"),
-                pipe("livraisons.html", "fa-exclamation-triangle", f.echecs.length, "Échecs", true)
+                pipe("degroupage.html#agence", "fa-inbox", f.aMettreEnAgence.length, "À mettre en agence"),
+                pipe("degroupage.html#transit", "fa-random", f.transitIci.length, "À mettre en transit"),
+                pipe("instance.html", "fa-building-o", f.enInstance.length, "En agence"),
+                pipe("instance.html?anciennete=3", "fa-hourglass-half", f.instanceAncien.length, "En agence > " + O.INSTANCE_ALERTE_J + " j", true),
+                pipe("instance.html#coursier", "fa-map-marker", f.aLivrer.length, "À mettre en livraison"),
+                pipe("instance.html#livreur", "fa-motorcycle", f.enLivraison.length, "Chez le livreur"),
+                pipe("livraisons.html", "fa-exclamation-triangle", f.echecs.length, "Échecs", true),
+                pipe("international.html#groupage", "fa-globe", f.international.length + f.importsAttendus.length, "International")
             ].join(""));
 
             /* Retards : colis au départ ou à destination de l'agence */

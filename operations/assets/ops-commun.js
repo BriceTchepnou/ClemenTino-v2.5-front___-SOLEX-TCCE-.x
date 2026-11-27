@@ -68,7 +68,7 @@ CX.ops = (function () {
         EN_TRANSIT: ["ARRIVEE", "LIVREE"],
         ARRIVEE: ["EN_INSTANCE", "EN_LIVRAISON", "GROUPEE", "LIVREE", "EN_TRANSIT", "ARRIVEE"],
         EN_INSTANCE: ["LIVREE", "EN_LIVRAISON", "ARRIVEE"],
-        EN_LIVRAISON: ["LIVREE", "ECHEC"],
+        EN_LIVRAISON: ["LIVREE", "ECHEC", "EN_INSTANCE"],
         ECHEC: ["EN_LIVRAISON", "EN_INSTANCE", "ARRIVEE", "LIVREE"],
         LIVREE: [],
         ANNULEE: []
@@ -92,8 +92,10 @@ CX.ops = (function () {
         RETARD: { label: "Retard anormal", color: "orange" },
         AUTRE: { label: "Autre incident", color: "grey" }
     };
-    var PIECES = ["Carte nationale d'identité", "Passeport", "Permis de conduire", "Carte de séjour", "Récépissé de CNI", "Carte professionnelle"];
-    var PARTENAIRES = ["TNT", "DHL Express", "FedEx", "UPS", "Chronopost", "EMS Campost"];
+    var PIECES = ["CNI", "Passeport", "Permis de conduire"];
+    var MOYENS_TRANSPORT = { ROUTE: "Route", AIR: "Air", MER: "Mer", RAIL: "Rail", COURSIER: "Coursier" };
+    var MOTIFS_SUSPENSION = ["Litige client", "Colis non conforme / à contrôler", "Réclamation en cours", "Attente de paiement (port dû)", "Demande de l'expéditeur", "Autre"];
+    var PARTENAIRES = ["DHL Express", "TNT", "Aramex", "FedEx", "UPS", "Chronopost", "EMS Campost"];
     var CHAUFFEURS = [
         { nom: "MBIDA Joseph", tel: "699 11 45 78" }, { nom: "TCHATCHOUA Eric", tel: "677 52 08 31" },
         { nom: "ABOUBAKAR Moussa", tel: "655 90 12 64" }, { nom: "NGUEMA Fabrice", tel: "690 23 77 15" }
@@ -113,7 +115,7 @@ CX.ops = (function () {
         return "<span class='cx-badge cx-badge-" + s.color + "'>" + U.esc(court ? s.court : s.label) + "</span>";
     }
     function badge(map, code) { return CX.REF.badge(map, code); }
-    function pl(n, mot, motPl) { return n + " " + (n > 1 ? (motPl || mot + "s") : mot); }
+    function pl(n, mot, motPl) { return n + " " + (n > 1 ? (motPl || (/[sx]$/.test(mot) ? mot : mot + "s")) : mot); }
 
     /* =================================================================
        Agences
@@ -169,21 +171,22 @@ CX.ops = (function () {
        Expédition : normalisation et positions
        ================================================================= */
     function agDest(e) {
-        if (e.service === "REGIONALE" || e.service === "INTERNATIONALE") {
-            if (!e.villeDest || e.paysDest) return null;
-        }
+        if (e.paysDest || ((e.service === "REGIONALE" || e.service === "INTERNATIONALE") && !e.paysDep && !e.villeDest)) return null;
         return agenceId(e.villeDest, e.bureauDest);
     }
-    function agDep(e) { return agenceId(e.villeDep, e.bureauDep) || (e.bureau ? e.bureau.agenceId : null); }
+    function agDep(e) { if (e.paysDep) return null; return agenceId(e.villeDep, e.bureauDep) || (e.bureau ? e.bureau.agenceId : null); }
     /* Agence où se trouve physiquement le colis (null = dans un véhicule / chez un partenaire) */
     function position(e) {
         var et = e.etape || "ENREGISTREE";
         if (et === "EN_TRANSIT") return null;
         if (e.positionAgenceId != null) return e.positionAgenceId;
         if (et === "ENREGISTREE" || et === "GROUPEE") return agDep(e);
+        if (et === "LIVREE" && e.remise && e.remise.agenceId) return e.remise.agenceId;
         return agDest(e);
     }
-    function international(e) { return e.service === "REGIONALE" || e.service === "INTERNATIONALE" || !!e.paysDest; }
+    /* Export (vers l'étranger, via un partenaire) ; un import (paysDep) se traite comme une arrivée nationale */
+    function international(e) { return !!e.paysDest || ((e.service === "REGIONALE" || e.service === "INTERNATIONALE") && !e.paysDep); }
+    function importe(e) { return !!e.paysDep; }
     /* Colis présent dans l'agence mais dont la destination finale est ailleurs */
     function enTransitIci(e) {
         var p = position(e);
@@ -203,12 +206,19 @@ CX.ops = (function () {
         e.agDepId = agDep(e);
         e.positionId = position(e);
         e.sla = sla(e);
+        e.refLot = refBase(e);
+        e.refs = refsLots(e);
+        e.rtMan = e.nRtMan || e.recuManuel || "";
         return e;
     }
     function dernierEvenement(e, etape) {
         var s = e.suivi || [], r = null;
         for (var i = 0; i < s.length; i++) if (!etape || s[i].etape === etape) r = s[i];
         return r;
+    }
+    function origineLib(e) {
+        if (e.paysDep) return (e.villeOrigine ? e.villeOrigine + ", " : "") + e.paysDep;
+        return G.villeNom(e.villeDep) + (e.bureauDep ? " · " + G.titre(e.bureauDep) : "");
     }
     function destinationLib(e) {
         if (international(e)) return (e.villeEtranger ? e.villeEtranger + ", " : "") + (e.paysDest || "Étranger");
@@ -261,6 +271,7 @@ CX.ops = (function () {
     function appliquerEtape(e, etape, info) {
         info = info || {};
         var avant = etapeDeduite(e);
+        if (e.suspendu && !info.forcer && etape !== "ANNULEE") return "RT " + (e.nRt || e.id) + " suspendue (" + e.suspendu.motif + ") : levez d'abord la suspension";
         if (!info.forcer && $.inArray(etape, TRANSITIONS[avant] || []) < 0) {
             return "Transition impossible : " + (ETAPES[avant] || {}).label + " → " + (ETAPES[etape] || {}).label + " (" + (e.nRt || e.id) + ")";
         }
@@ -317,7 +328,45 @@ CX.ops = (function () {
         });
         return p + ("000" + (max + 1)).slice(-(chiffres || 3));
     }
-    function numeroBordereau(iso) { return prochainNumero("bordereaux", "BRD", iso, 3); }
+    /* Code agence sur 3 lettres : AKWA -> AKW ; agences « CENTRE / CENTRALE » -> code de la ville (YDE, BFS…) */
+    function codeAgence(id) {
+        var a = agence(id);
+        if (!a) return "XXX";
+        if (/^CENTR/.test(a.nom)) return CX.REF.villeCode(a.ville);
+        return a.nom.replace(/[^A-Z]/g, "").substr(0, 3);
+    }
+    /* N° de bordereau d'expédition (N° BE) : code agence + MMJJ + séquence sur 5 chiffres (ex. AKW112600016) */
+    function numeroBordereau(iso, agId) {
+        var p = codeAgence(agId || agenceCourante().id) + (iso || U.today()).substr(5, 2) + (iso || U.today()).substr(8, 2), max = 0;
+        $.each(CX.api.listSync("bordereaux"), function (_, b) { if (String(b.numero || "").indexOf(p) === 0 && b.numero.length === p.length + 5) max = Math.max(max, parseInt(b.numero.substr(p.length), 10) || 0); });
+        return p + ("00000" + (max + 1)).slice(-5);
+    }
+    /* Référence de lot : AAMMJJ-AGC-NNN-<n>S<total> (NNN = rang de l'expédition dans les saisies du jour de l'agence) */
+    var cacheRang = null;
+    function rangDuJour(e) {
+        function construire() {
+            cacheRang = {}; var cpt = {};
+            $.each(CX.api.listSync("expeditions").sort(function (a, b) { return a.id - b.id; }), function (_, x) {
+                var k = x.dateExp + "|" + (agDep(x) || "X"); cpt[k] = (cpt[k] || 0) + 1; cacheRang[x.id] = cpt[k];
+            });
+        }
+        if (!cacheRang || cacheRang[e.id] == null) construire();
+        return cacheRang[e.id] || 1;
+    }
+    function refBase(e) {
+        if (!e.dateExp) return "";
+        return aammjj(e.dateExp) + "-" + (e.paysDep ? "INT" : codeAgence(agDep(e))) + "-" + ("000" + rangDuJour(e)).slice(-3);
+    }
+    function refsLots(e) {
+        var tot = Math.max(1, parseInt(e.nbColis, 10) || 1), b = refBase(e), r = [];
+        for (var i = 1; i <= tot; i++) r.push(b + "-" + i + "S" + tot);
+        return r;
+    }
+    /* « (30) COLIS (500 kg) » */
+    function contenuCourt(e) {
+        var nat = (e.colis && e.colis[0] && e.colis[0].nature) || "Colis";
+        return "(" + (e.nbColis || 1) + ") " + String(nat).toUpperCase() + " (" + G.kg(e.poids) + ")";
+    }
     function numeroTournee(iso) { return prochainNumero("tournees", "TRN", iso, 2); }
 
     /* =================================================================
@@ -348,7 +397,7 @@ CX.ops = (function () {
             var statut = $.inArray("GROUPEE", etapes) >= 0 ? "PREPARE" : $.inArray("EN_TRANSIT", etapes) >= 0 ? "PARTI" : "CLOTURE";
             var v = VEHICULES[n % VEHICULES.length], c = CHAUFFEURS[n % CHAUFFEURS.length]; n++;
             var b = {
-                numero: numeroBordereau(g.date), date: g.date, heure: "17:30",
+                numero: numeroBordereau(g.date, g.dep), date: g.date, moyen: "ROUTE", numeroTransport: v.immatriculation, transporteur: "Flotte " + (CX.CONFIG.SOCIETE.nom || ""), departPrevu: g.date + " 18:00", arriveePrevue: U.addDays(g.date, 1) + " 15:00", annule: false, heure: "17:30",
                 agenceDepId: aD.id, villeDep: aD.ville, agenceDep: aD.nom, agenceDestId: aA.id, villeDest: aA.ville, agenceDest: aA.nom,
                 vehicule: { type: v.type, immatriculation: v.immatriculation }, chauffeur: { nom: c.nom, tel: c.tel },
                 scelle: "SC-" + ("00000" + (41000 + n * 37)).slice(-6), expeditionIds: $.map(g.exps, function (e) { return e.id; }),
@@ -497,68 +546,328 @@ CX.ops = (function () {
     }
 
     /* =================================================================
-       Remise au destinataire (retrait en agence ou livraison) -> LIVREE
+       Remise au destinataire (« Livré en agence ») -> LIVREE
+       Modale « Mise à jour des informations de livraison » : RT n°, livré
+       par, date + heure, retiré par, pièce (CNI / Passeport / Permis),
+       n° de pièce, téléphone, signature, photo facultative.
+       opts : { mode: "AGENCE" | "DOMICILE", tourneeId, modifier: true }
+       (modifier = correction des informations d'une expédition déjà livrée)
        ================================================================= */
     function modaleRemise(e0, opts) {
         opts = opts || {};
-        var e = e0.destinataireInfo ? e0 : norm(e0), dfd = $.Deferred();
-        var nomDefaut = e.retour ? e.expediteurInfo.nom : e.destinataireInfo.nom;
-        var telDefaut = G.telFmt(e.retour ? e.expediteurInfo.tel : e.destinataireInfo.tel);
+        var e = e0.destinataireInfo ? e0 : norm(e0), dfd = $.Deferred(), r0 = e.remise || {};
+        if (!opts.modifier && e.suspendu) { U.toast("LT " + U.esc(e.nRt) + " suspendue : levez d'abord la suspension.", "warning"); return dfd.reject().promise(); }
+        var nomDefaut = r0.nom || (e.retour ? e.expediteurInfo.nom : e.destinataireInfo.nom);
+        var telDefaut = G.telFmt(r0.tel || (e.retour ? e.expediteurInfo.tel : e.destinataireInfo.tel));
+        var dateDef = (r0.date || U.now()).substr(0, 10), heureDef = (r0.date || U.now()).substr(11, 5);
         var corps =
-            "<div class='ox-remise-head'><div><span class='cx-mono cx-strong'>" + U.esc(e.nRt) + "</span> " + etapeBadge(e.etape) +
-            "<div class='cx-cell-sub'>" + U.esc(e.nbColis || 1) + " colis · " + U.esc(G.kg(e.poids)) + " · " + U.esc(e.contenu || "") + "</div></div>" +
-            "<div class='ox-remise-dest'><small>" + (e.retour ? "Retour à l'expéditeur" : "Destinataire prévu") + "</small><b>" + U.esc(nomDefaut) + "</b><span>" + U.esc(G.telAff(e.retour ? e.expediteurInfo.tel : e.destinataireInfo.tel)) + "</span></div></div>" +
-            "<div class='ox-grid-2'>" +
-            champ("rm-qui", "Personne qui retire", "<select class='form-control' id='rm-qui'><option value='TITULAIRE'>" + (e.retour ? "L'expéditeur" : "Le destinataire") + " lui-même</option><option value='MANDATAIRE'>Un mandataire (procuration)</option></select>", true) +
-            champ("rm-nom", "Nom et prénom", "<input type='text' class='form-control' id='rm-nom' maxlength='80' value='" + U.esc(nomDefaut) + "'>", true) +
-            champ("rm-piece", "Pièce d'identité", "<select class='form-control' id='rm-piece'>" + options(PIECES) + "</select>", true) +
-            champ("rm-numpiece", "N° de la pièce", "<input type='text' class='form-control cx-mono' id='rm-numpiece' maxlength='30' autocomplete='off'>", true) +
+            "<div class='ox-remise-head'><div><span class='cx-label' style='margin:0'>RT n°</span> <span class='cx-mono cx-strong'>" + U.esc(e.nRt) + "</span> " + etapeBadge(e.etape) +
+            "<div class='cx-cell-sub'>" + U.esc(e.refLot) + " · " + U.esc(contenuCourt(e)) + " · " + U.esc(e.contenu || "") + "</div></div>" +
+            "<div class='ox-remise-dest'><small>" + (e.retour ? "Retour à l'expéditeur" : "Destinataire prévu") + "</small><b>" + U.esc(e.retour ? e.expediteurInfo.nom : e.destinataireInfo.nom) + "</b><span>" + U.esc(G.telAff(e.retour ? e.expediteurInfo.tel : e.destinataireInfo.tel)) + "</span></div></div>" +
+            "<div class='ox-grid-3'>" +
+            champ("rm-par", "Livré par", "<input type='text' class='form-control' id='rm-par' maxlength='60' value='" + U.esc(r0.livrePar || CX.CONFIG.USER.nom) + "'>", true) +
+            champ("rm-date", "Date de livraison", "<input type='date' class='form-control' id='rm-date' value='" + dateDef + "' max='" + U.today() + "'>", true) +
+            champ("rm-heure", "Heure", "<input type='time' class='form-control' id='rm-heure' value='" + heureDef + "'>", true) +
+            "</div><div class='ox-grid-2'>" +
+            champ("rm-qui", "Qualité de la personne", "<select class='form-control' id='rm-qui'><option value='TITULAIRE'" + (r0.qui !== "MANDATAIRE" ? " selected" : "") + ">" + (e.retour ? "L'expéditeur" : "Le destinataire") + " lui-même</option><option value='MANDATAIRE'" + (r0.qui === "MANDATAIRE" ? " selected" : "") + ">Un mandataire (procuration)</option></select>", true) +
+            champ("rm-nom", "Retiré par", "<input type='text' class='form-control' id='rm-nom' maxlength='80' value='" + U.esc(nomDefaut) + "'>", true) +
+            champ("rm-piece", "Pièce d'identité", "<select class='form-control' id='rm-piece'>" + options(PIECES, r0.piece) + "</select>", true) +
+            champ("rm-numpiece", "N° de la pièce", "<input type='text' class='form-control cx-mono' id='rm-numpiece' maxlength='30' autocomplete='off' value='" + U.esc(r0.numeroPiece || "") + "'>", true) +
             champ("rm-tel", "Téléphone", "<div class='input-group gx-tel'><span class='input-group-addon'>+237</span><input type='tel' class='form-control' id='rm-tel' maxlength='14' value='" + U.esc(telDefaut) + "'></div>", true) +
             champ("rm-photo", "Photo <span class='cx-opt'>(facultative : pièce ou personne)</span>", "<input type='file' class='form-control' id='rm-photo' accept='image/*' capture='environment'>") +
             "</div>" +
-            "<div class='cx-field'><label class='cx-label req'>Signature de la personne qui retire</label>" +
+            "<div class='cx-field'><label class='cx-label" + (opts.modifier && r0.signature ? "" : " req") + "'>Signature de la personne qui retire" + (opts.modifier && r0.signature ? " <span class='cx-opt'>(laisser vide pour conserver la signature enregistrée)</span>" : "") + "</label>" +
             "<div class='ox-sign'><canvas id='rm-sign' width='600' height='160' aria-label='Zone de signature'></canvas>" +
             "<span class='ox-sign-hint' id='rm-sign-hint'><i class='fa fa-pencil'></i> Signez ici (souris, stylet ou doigt)</span>" +
             "<button type='button' class='cx-btn cx-btn-ghost cx-btn-xs ox-sign-clear' id='rm-sign-clear'><i class='fa fa-eraser'></i> Effacer</button></div></div>" +
-            champ("rm-obs", "Observation <span class='cx-opt'>(état du colis, réserves)</span>", "<input type='text' class='form-control' id='rm-obs' maxlength='200'>") +
-            (e.factureId ? "" : (e.typeClient === "COMPTE" ? "<div class='cx-note cx-note-info'><i class='fa fa-info-circle'></i><div>Client en compte : la remise signée vaut <b>preuve de livraison</b> ; l'expédition devient facturable.</div></div>" : "")) +
-            (e.paiement && e.paiement.statut !== "PAYE" && e.typeClient !== "COMPTE" ? "<div class='cx-note cx-note-warn'><i class='fa fa-money'></i><div>Port dû : encaisser <b>" + U.money(e.montants.total) + "</b> avant la remise.</div></div>" : "");
-        var $m = modale("ox-remise", "Remise au destinataire", "fa-handshake-o", corps,
+            champ("rm-obs", "Observation <span class='cx-opt'>(état du colis, réserves)</span>", "<input type='text' class='form-control' id='rm-obs' maxlength='200' value='" + U.esc(r0.observation || "") + "'>") +
+            (!opts.modifier && e.typeClient === "COMPTE" && !e.factureId ? "<div class='cx-note cx-note-info'><i class='fa fa-info-circle'></i><div>Client en compte : la remise signée vaut <b>preuve de livraison</b> ; l'expédition devient facturable.</div></div>" : "") +
+            (!opts.modifier && e.paiement && e.paiement.statut !== "PAYE" && e.typeClient !== "COMPTE" ? "<div class='cx-note cx-note-warn'><i class='fa fa-money'></i><div>Port dû : encaisser <b>" + U.money(e.montants.total) + "</b> avant la remise.</div></div>" : "");
+        var $m = modale("ox-remise", opts.modifier ? "Modifier les informations de livraison" : "Mise à jour des informations de livraison", "fa-handshake-o", corps,
             "<button type='button' class='cx-btn cx-btn-ghost' data-dismiss='modal'>Annuler</button>" +
-            "<button type='button' class='cx-btn cx-btn-success' id='rm-ok'><i class='fa fa-check'></i> Confirmer la remise</button>");
+            "<button type='button' class='cx-btn cx-btn-success' id='rm-ok'><i class='fa fa-check'></i> " + (opts.modifier ? "Enregistrer les corrections" : "Valider la livraison") + "</button>", "modal-lg");
         var pad = signature($m.find("#rm-sign")[0]), fait = null;
         $m.on("shown.bs.modal", function () { pad.taille(); $("#rm-numpiece").focus(); });
-        $m.on("ox:signe", "#rm-sign", function () { $("#rm-sign-hint").hide(); });
+        $m.on("ox:signe", "#rm-sign", function () { $("#rm-sign-hint").hide(); $(".ox-sign").removeClass("ox-sign-err"); });
         $m.on("click", "#rm-sign-clear", function () { pad.effacer(); $("#rm-sign-hint").show(); });
-        $m.on("change", "#rm-qui", function () {
-            if ($(this).val() === "MANDATAIRE") $("#rm-nom").val("").focus(); else $("#rm-nom").val(nomDefaut);
-        });
+        $m.on("change", "#rm-qui", function () { if ($(this).val() === "MANDATAIRE") $("#rm-nom").val("").focus(); else $("#rm-nom").val(nomDefaut); });
         $m.on("click", "#rm-ok", function () {
             effacerErreurs($m);
-            var nom = $.trim($("#rm-nom").val()), num = $.trim($("#rm-numpiece").val()), tel = G.tel($("#rm-tel").val());
+            var nom = $.trim($("#rm-nom").val()), num = $.trim($("#rm-numpiece").val()), tel = G.tel($("#rm-tel").val()), par = $.trim($("#rm-par").val());
+            var dt = ($("#rm-date").val() || U.today()) + " " + ($("#rm-heure").val() || U.now().substr(11, 5));
+            if (par.length < 2) return erreurChamp($m, "#rm-par", "Indiquez l'agent qui a livré.");
+            if (!$("#rm-date").val() || $("#rm-date").val() > U.today()) return erreurChamp($m, "#rm-date", "Date invalide.");
             if (nom.length < 3) return erreurChamp($m, "#rm-nom", "Indiquez le nom de la personne qui retire.");
             if (num.length < 4) return erreurChamp($m, "#rm-numpiece", "N° de pièce obligatoire.");
             if (tel.length !== 9) return erreurChamp($m, "#rm-tel", "Numéro à 9 chiffres.");
-            if (pad.vide()) { $(".ox-sign").addClass("ox-sign-err"); U.toast("La signature est obligatoire.", "warning"); return; }
+            if (pad.vide() && !(opts.modifier && r0.signature)) { $(".ox-sign").addClass("ox-sign-err"); U.toast("La signature est obligatoire.", "warning"); return; }
             var $b = $(this); U.busy($b, true);
-            var sig = pad.dataUrl();
+            var sig = pad.dataUrl() || r0.signature || null;
             lirePhoto(($("#rm-photo")[0].files || [])[0]).done(function (photo) {
-                var remise = {
-                    date: U.now(), user: CX.CONFIG.USER.nom, agenceId: agenceCourante().id, qui: $("#rm-qui").val(), nom: nom,
-                    piece: $("#rm-piece").val(), numeroPiece: num, tel: tel, signature: sig, photo: photo,
-                    observation: $.trim($("#rm-obs").val()), mode: opts.mode || "AGENCE", tourneeId: opts.tourneeId || null
-                };
-                // TODO API : POST /exploitation/expeditions/{id}/remise  (multipart : signature PNG, photo JPEG, pièce d'identité)
-                avancer(e.id, "LIVREE", {
-                    note: "Remis à " + nom + (remise.qui === "MANDATAIRE" ? " (mandataire)" : "") + " · " + remise.piece + " n° " + num,
-                    preuve: true, patch: { remise: remise }
-                }).done(function (maj) { fait = maj; $m.modal("hide"); })
-                    .fail(function (msg) { U.busy($b, false); U.toast(U.esc(msg || "La remise a échoué."), "error"); });
+                var remise = $.extend({}, r0, {
+                    date: dt, livrePar: par, user: CX.CONFIG.USER.nom, agenceId: r0.agenceId || agenceCourante().id, qui: $("#rm-qui").val(), nom: nom,
+                    piece: $("#rm-piece").val(), numeroPiece: num, tel: tel, signature: sig, photo: photo || r0.photo || null,
+                    observation: $.trim($("#rm-obs").val()), mode: r0.mode || opts.mode || "AGENCE", tourneeId: r0.tourneeId || opts.tourneeId || null
+                });
+                var p;
+                if (opts.modifier) {
+                    // TODO API : PUT /exploitation/expeditions/{id}/remise  (correction des informations de livraison)
+                    p = majExp(e.id, function (x) {
+                        x.remise = remise; x.dateLivraison = dt.substr(0, 10); x.preuveLivraison = true;
+                        x.dateModification = U.now(); x.modifiePar = CX.CONFIG.USER.nom;
+                        journal(x, "Informations de livraison corrigées (livré le " + U.toFr(dt) + " à " + nom + ")");
+                        return true;
+                    });
+                } else {
+                    // TODO API : POST /exploitation/expeditions/{id}/remise  (multipart : signature PNG, photo JPEG, pièce d'identité)
+                    p = avancer(e.id, "LIVREE", {
+                        note: "Remis à " + nom + (remise.qui === "MANDATAIRE" ? " (mandataire)" : "") + " · " + remise.piece + " n° " + num + " · livré par " + par,
+                        preuve: true, date: dt, patch: { remise: remise, livrePar: par }
+                    });
+                }
+                p.done(function (maj) { fait = maj; $m.modal("hide"); }).fail(function (msg) { U.busy($b, false); U.toast(U.esc(msg || "La remise a échoué."), "error"); });
             });
         });
         $m.on("hidden.bs.modal", function () { $m.remove(); if (fait) dfd.resolve(fait); else dfd.reject(); });
         $m.modal("show");
         return dfd.promise();
+    }
+
+    /* =================================================================
+       Remettre au coursier : « Nouvelle fiche de livraison » (= tournée)
+       Colis ARRIVEE (domicile), ECHEC, EN_INSTANCE -> EN_LIVRAISON.
+       ================================================================= */
+    function modaleCoursier(liste) {
+        var dfd = $.Deferred(), A = agenceCourante();
+        var exps = $.map(liste, function (x) { return x.destinataireInfo ? x : norm(x); });
+        var ok = $.grep(exps, function (e) { return !e.suspendu && $.inArray(e.etape, ["ARRIVEE", "ECHEC", "EN_INSTANCE"]) >= 0 && estMoi(e.agDestId) && estMoi(e.positionId); });
+        if (!ok.length) { U.toast("Aucune expédition de la sélection ne peut être remise au coursier (elle doit être dans l'agence, à destination de l'agence, non suspendue).", "warning"); return dfd.reject().promise(); }
+        var livreurs = $.grep(CX.api.listSync("livreurs"), function (l) { return l.ville === A.ville && l.statut === "ACTIF"; });
+        var corps = (ok.length < exps.length ? "<div class='cx-note cx-note-warn'><i class='fa fa-exclamation-triangle'></i><div>" + pl(exps.length - ok.length, "expédition ignorée", "expéditions ignorées") + " (hors agence, suspendue ou déjà livrée).</div></div>" : "") +
+            "<div class='cx-table-wrap' style='max-height:220px;overflow:auto;margin-bottom:12px'><table class='cx-table ox-mini'><thead><tr><th>RT n°</th><th>Destinataire</th><th>Quartier / zone</th><th>Contenu</th></tr></thead><tbody>" +
+            $.map(ok, function (e) {
+                return "<tr><td class='cx-mono cx-strong'>" + U.esc(e.nRt) + "</td><td>" + U.esc(e.destinataireInfo.nom) + "<div class='cx-cell-sub'>" + U.esc(G.telAff(e.livraison.telAppel || e.destinataireInfo.tel)) + "</div></td>" +
+                    "<td>" + U.esc(e.livraison.quartier || "—") + (e.livraison.zone ? " · " + U.esc(e.livraison.zone) : "") + "</td><td>" + U.esc(contenuCourt(e)) + "</td></tr>";
+            }).join("") + "</tbody></table></div>" +
+            "<div class='ox-grid-3'>" +
+            champ("cr-livreur", "Nom du livreur", "<select class='form-control' id='cr-livreur'><option value=''></option>" + $.map(livreurs, function (l) {
+                return "<option value='" + l.id + "'>" + U.esc(l.nom + " · " + l.vehicule) + "</option>";
+            }).join("") + "</select>", true, "Choisissez un coursier ou saisissez un nom.") +
+            champ("cr-matricule", "Matricule du véhicule", "<input type='text' class='form-control cx-mono' id='cr-matricule' maxlength='15' placeholder='LT 123 AB'>") +
+            champ("cr-heure", "Départ", "<input type='time' class='form-control' id='cr-heure' value='" + U.now().substr(11, 5) + "'>") +
+            "</div>";
+        var $m = modale("ox-coursier", "Nouvelle fiche de livraison", "fa-motorcycle", corps,
+            "<button type='button' class='cx-btn cx-btn-ghost' data-dismiss='modal'>Annuler</button><button type='button' class='cx-btn cx-btn-primary' id='cr-ok'><i class='fa fa-motorcycle'></i> Remettre au coursier</button>", "modal-lg");
+        $m.on("shown.bs.modal", function () {
+            if ($.fn.select2) $("#cr-livreur").select2({ width: "100%", tags: true, placeholder: "Coursier (liste ou saisie libre)", dropdownParent: $m });
+        });
+        var fait = null;
+        $m.on("click", "#cr-ok", function () {
+            effacerErreurs($m);
+            var v = $("#cr-livreur").val(), l = $.grep(livreurs, function (x) { return String(x.id) === String(v); })[0];
+            var nomLiv = l ? l.nom : $.trim(v || "");
+            if (nomLiv.length < 3) return erreurChamp($m, "#cr-livreur", "Choisissez ou saisissez le livreur.");
+            var $b = $(this); U.busy($b, true);
+            var t = {
+                numero: numeroTournee(U.today()), date: U.today(), heure: $("#cr-heure").val() || "", agenceId: A.id, ville: A.ville, agence: A.nom,
+                livreurId: l ? l.id : null, livreurNom: nomLiv, vehicule: l ? l.vehicule : "", matricule: $.trim($("#cr-matricule").val()),
+                expeditionIds: [], statut: "EN_COURS", resultats: {}, historique: [{ date: U.now(), user: CX.CONFIG.USER.nom, action: "Fiche de livraison créée" }]
+            };
+            // TODO API : POST /exploitation/fiches-livraison  { livreurId | livreurNom, matricule, heure, expeditionIds[] }
+            CX.api.save("tournees", t).then(function (tt) {
+                return avancerLot($.map(ok, function (e) { return e.id; }), "EN_LIVRAISON", function (x) {
+                    return { note: "Remis au coursier " + nomLiv + " · fiche " + tt.numero, position: A.id,
+                        patch: { tourneeId: tt.id, livreurId: tt.livreurId, coursier: nomLiv, livraison: $.extend({}, x.livraison || {}, { mode: "DOMICILE" }) } };
+                }).then(function (res, ko) {
+                    tt.expeditionIds = $.map(res, function (e) { return e.id; });
+                    return CX.api.save("tournees", tt).then(function (t2) { return { tournee: t2, ok: res, ko: ko }; });
+                });
+            }).done(function (r) { fait = r; $m.modal("hide"); }).fail(function (m) { U.busy($b, false); U.toast(U.esc(m || "Échec."), "error"); });
+        });
+        $m.on("hidden.bs.modal", function () { $m.remove(); if (fait) dfd.resolve(fait); else dfd.reject(); });
+        $m.modal("show");
+        return dfd.promise();
+    }
+
+    /* Rebascule en agence d'une expédition chez le livreur (EN_LIVRAISON -> EN_INSTANCE) */
+    function rebasculerEnAgence(ids, motif) {
+        var A = agenceCourante();
+        // TODO API : POST /exploitation/expeditions/rebascule-agence  { ids[], motif }
+        return avancerLot(ids, "EN_INSTANCE", function (x) {
+            return { note: "Rebasculée en agence" + (motif ? " : " + motif : "") + (x.coursier ? " (reprise au coursier " + x.coursier + ")" : ""), position: A.id,
+                patch: { livraison: $.extend({}, x.livraison || {}, { mode: "BUREAU" }) } };
+        }).then(function (ok, ko) {
+            /* trace sur la fiche de livraison */
+            $.each(ok, function (_, e) {
+                if (!e.tourneeId) return;
+                CX.api.get("tournees", e.tourneeId).done(function (t) {
+                    if (t.statut !== "EN_COURS") return;
+                    t.resultats = t.resultats || {};
+                    t.resultats[e.id] = { resultat: "REBASCULE", heure: U.now().substr(11, 5), motif: motif || "Rebasculée en agence" };
+                    CX.api.save("tournees", t);
+                });
+            });
+            return $.Deferred().resolve(ok, ko).promise();
+        });
+    }
+
+    /* Mettre en agence (ARRIVEE / ECHEC -> EN_INSTANCE) */
+    function mettreEnAgence(ids, note) {
+        // TODO API : POST /exploitation/expeditions/mise-en-agence  { ids[] }
+        return avancerLot(ids, "EN_INSTANCE", function (x) {
+            return { note: note || "Mis en agence, en attente de retrait", position: agenceCourante().id, patch: { livraison: $.extend({}, x.livraison || {}, { mode: "BUREAU" }) } };
+        });
+    }
+
+    /* Suspendre / lever la suspension (statut réversible, l'étape ne change pas) */
+    function modaleSuspendre(liste) {
+        var dfd = $.Deferred(), exps = $.map(liste, function (x) { return x.destinataireInfo ? x : norm(x); });
+        var cibles = $.grep(exps, function (e) { return !e.suspendu && e.etape !== "LIVREE" && e.etape !== "ANNULEE"; });
+        if (!cibles.length) { U.toast("Aucune expédition à suspendre dans la sélection.", "warning"); return dfd.reject().promise(); }
+        var corps = "<p class='cx-muted' style='margin-top:0'>" + $.map(cibles, function (e) { return "<span class='cx-tag cx-mono'>" + U.esc(e.nRt) + "</span>"; }).join(" ") + "</p>" +
+            champ("su-motif", "Motif", "<select class='form-control' id='su-motif'>" + options(MOTIFS_SUSPENSION) + "</select>", true) +
+            champ("su-precision", "Précision", "<input type='text' class='form-control' id='su-precision' maxlength='160'>") +
+            "<p class='cx-help' style='margin:0'><i class='fa fa-info-circle'></i> Une expédition suspendue ne peut être ni remise, ni confiée à un coursier, ni groupée tant que la suspension n'est pas levée.</p>";
+        var $m = modale("ox-suspendre", "Suspendre " + (cibles.length > 1 ? "les expéditions" : "l'expédition"), "fa-pause-circle", corps,
+            "<button type='button' class='cx-btn cx-btn-ghost' data-dismiss='modal'>Annuler</button><button type='button' class='cx-btn cx-btn-danger' id='su-ok'><i class='fa fa-pause'></i> Suspendre</button>");
+        var fait = null;
+        $m.on("click", "#su-ok", function () {
+            effacerErreurs($m);
+            var motif = $("#su-motif").val(), pr = $.trim($("#su-precision").val());
+            if (motif === "Autre" && !pr) return erreurChamp($m, "#su-precision", "Précisez le motif.");
+            var txt = motif + (pr ? " - " + pr : ""), i = 0, res = [];
+            U.busy($(this), true);
+            // TODO API : POST /exploitation/expeditions/suspendre  { ids[], motif }
+            (function suivant() {
+                if (i >= cibles.length) { fait = res; $m.modal("hide"); return; }
+                var c = cibles[i++];
+                majExp(c.id, function (x) {
+                    var C = agenceCourante();
+                    x.suspendu = { date: U.now(), user: CX.CONFIG.USER.nom, motif: txt, agenceId: C.id };
+                    x.suivi = x.suivi || [];
+                    x.suivi.push({ date: U.now(), etape: etapeDeduite(x), lieu: C.ville, agence: C.nom, user: CX.CONFIG.USER.nom, note: "Expédition suspendue : " + txt });
+                    journal(x, "Expédition suspendue : " + txt);
+                    return true;
+                }).done(function (x) { res.push(x); }).always(suivant);
+            })();
+        });
+        $m.on("hidden.bs.modal", function () { $m.remove(); if (fait && fait.length) dfd.resolve(fait); else dfd.reject(); });
+        $m.modal("show");
+        return dfd.promise();
+    }
+    function leverSuspension(id) {
+        // TODO API : DELETE /exploitation/expeditions/{id}/suspension
+        return majExp(id, function (x) {
+            if (!x.suspendu) return "Expédition non suspendue";
+            var C = agenceCourante(), m = x.suspendu.motif;
+            x.suspensions = (x.suspensions || []).concat([$.extend({}, x.suspendu, { levee: U.now(), leveePar: CX.CONFIG.USER.nom })]);
+            x.suspendu = null;
+            x.suivi = x.suivi || [];
+            x.suivi.push({ date: U.now(), etape: etapeDeduite(x), lieu: C.ville, agence: C.nom, user: CX.CONFIG.USER.nom, note: "Suspension levée (" + m + ")" });
+            journal(x, "Suspension levée (" + m + ")");
+            return true;
+        });
+    }
+
+    /* Note rapide sur une expédition */
+    function modaleNote(e) {
+        var dfd = $.Deferred();
+        var $m = modale("ox-note", "Notes · " + U.esc(e.nRt), "fa-sticky-note-o",
+            ((e.notes || []).length ? "<ul class='ox-notes'>" + $.map(e.notes.slice().reverse(), function (x) { return "<li>" + U.esc(x.texte) + "<small>" + U.esc(U.toFr(x.date)) + " · " + U.esc(x.user) + "</small></li>"; }).join("") + "</ul>" : "<p class='cx-muted'>Aucune note.</p>") +
+            champ("nt-texte", "Nouvelle note", "<textarea class='form-control' id='nt-texte' rows='2' maxlength='300'></textarea>", true),
+            "<button type='button' class='cx-btn cx-btn-ghost' data-dismiss='modal'>Fermer</button><button type='button' class='cx-btn cx-btn-primary' id='nt-ok'><i class='fa fa-check'></i> Ajouter</button>");
+        var fait = null;
+        $m.on("shown.bs.modal", function () { $("#nt-texte").focus(); });
+        $m.on("click", "#nt-ok", function () {
+            var t = $.trim($("#nt-texte").val());
+            if (!t) return erreurChamp($m, "#nt-texte", "Saisissez la note.");
+            // TODO API : POST /exploitation/expeditions/{id}/notes  { texte }
+            majExp(e.id, function (x) { x.notes = x.notes || []; x.notes.push({ date: U.now(), user: CX.CONFIG.USER.nom, texte: t }); journal(x, "Note : " + t); return true; })
+                .done(function (x) { fait = x; $m.modal("hide"); });
+        });
+        $m.on("hidden.bs.modal", function () { $m.remove(); if (fait) dfd.resolve(fait); else dfd.reject(); });
+        $m.modal("show");
+        return dfd.promise();
+    }
+
+    /* Modifier la livraison (mode, zone, quartier, repère, téléphone à appeler) */
+    function modaleLivraison(e) {
+        var dfd = $.Deferred(), lv = e.livraison || {};
+        var corps = "<div class='ox-grid-2'>" +
+            champ("ml-mode", "Remise", "<select class='form-control' id='ml-mode'><option value='BUREAU'" + (lv.mode !== "DOMICILE" ? " selected" : "") + ">Retrait en agence</option><option value='DOMICILE'" + (lv.mode === "DOMICILE" ? " selected" : "") + ">Livraison à domicile (urbaine)</option></select>", true) +
+            champ("ml-zone", "Zone", "<select class='form-control' id='ml-zone'><option value=''>—</option>" + $.map(CX.REF.ZONES_LIVRAISON, function (z) { return "<option value='" + z.code + "'" + (z.code === lv.zone ? " selected" : "") + ">" + U.esc(z.nom) + "</option>"; }).join("") + "</select>") +
+            champ("ml-quartier", "Quartier", "<input type='text' class='form-control' id='ml-quartier' maxlength='60' value='" + U.esc(lv.quartier || "") + "'>") +
+            champ("ml-tel", "Personne à appeler", "<input type='tel' class='form-control' id='ml-tel' maxlength='14' value='" + U.esc(G.telFmt(lv.telAppel || "")) + "'>") +
+            "</div>" + champ("ml-repere", "Point de repère", "<input type='text' class='form-control' id='ml-repere' maxlength='120' value='" + U.esc(lv.repere || "") + "'>");
+        var $m = modale("ox-livraison", "Modifier la livraison · " + U.esc(e.nRt), "fa-map-marker", corps,
+            "<button type='button' class='cx-btn cx-btn-ghost' data-dismiss='modal'>Annuler</button><button type='button' class='cx-btn cx-btn-primary' id='ml-ok'><i class='fa fa-check'></i> Enregistrer</button>");
+        var fait = null;
+        $m.on("click", "#ml-ok", function () {
+            effacerErreurs($m);
+            var mode = $("#ml-mode").val(), q = $.trim($("#ml-quartier").val());
+            if (mode === "DOMICILE" && !q) return erreurChamp($m, "#ml-quartier", "Quartier obligatoire pour une livraison.");
+            // TODO API : PUT /exploitation/expeditions/{id}/livraison
+            majExp(e.id, function (x) {
+                x.livraison = $.extend({}, x.livraison || {}, { mode: mode, zone: $("#ml-zone").val(), quartier: q, repere: $.trim($("#ml-repere").val()), telAppel: G.tel($("#ml-tel").val()) });
+                x.dateModification = U.now(); x.modifiePar = CX.CONFIG.USER.nom;
+                journal(x, "Livraison modifiée : " + (mode === "DOMICILE" ? "domicile · " + q : "retrait en agence"));
+                return true;
+            }).done(function (x) { fait = x; $m.modal("hide"); });
+        });
+        $m.on("hidden.bs.modal", function () { $m.remove(); if (fait) dfd.resolve(fait); else dfd.reject(); });
+        $m.modal("show");
+        return dfd.promise();
+    }
+
+    /* Mettre en transit : colis présents dont la destination finale est une autre
+       agence -> ajout à un bordereau en préparation (ou nouveau) vers cette direction */
+    function modaleTransit(liste) {
+        var dfd = $.Deferred(), A = agenceCourante();
+        var exps = $.grep($.map(liste, function (x) { return x.destinataireInfo ? x : norm(x); }), function (e) {
+            return !e.suspendu && estMoi(e.positionId) && !estMoi(e.agDestId) && e.agDestId && $.inArray(e.etape, ["ARRIVEE", "ENREGISTREE", "EN_INSTANCE", "ECHEC"]) >= 0;
+        });
+        if (!exps.length) { U.toast("Aucune expédition à mettre en transit : la destination finale doit être une autre agence (réorientez-la au besoin).", "warning"); return dfd.reject().promise(); }
+        var dests = {}; $.each(exps, function (_, e) { dests[e.agDestId] = (dests[e.agDestId] || 0) + 1; });
+        var best = null; $.each(dests, function (k, n) { if (!best || n > dests[best]) best = k; });
+        var prepa = $.grep(CX.api.listSync("bordereaux"), function (b) { return b.statut === "PREPARE" && !b.annule && estMoi(b.agenceDepId); });
+        var corps = "<p class='cx-muted' style='margin-top:0'>" + pl(exps.length, "expédition") + " · destinations : " + $.map(dests, function (n, k) { return U.esc(agenceLib(k)) + " (" + n + ")"; }).join(", ") + "</p>" +
+            champ("tr-bord", "Bordereau d'expédition", "<select class='form-control' id='tr-bord'><option value='NOUVEAU'>Nouveau bordereau vers…</option>" +
+                $.map(prepa, function (b) { return "<option value='" + b.id + "'" + (String(b.agenceDestId) === String(best) ? " selected" : "") + ">" + U.esc(b.numero + " → " + agenceLib(b.agenceDestId)) + "</option>"; }).join("") + "</select>", true) +
+            "<div id='tr-nouveau'>" + champ("tr-dest", "Agence de destination du bordereau", "<select class='form-control' id='tr-dest'>" + optionsAgences(best) + "</select>", true) + "</div>";
+        var $m = modale("ox-transit", "Mettre en transit", "fa-random", corps,
+            "<button type='button' class='cx-btn cx-btn-ghost' data-dismiss='modal'>Annuler</button><button type='button' class='cx-btn cx-btn-primary' id='tr-ok'><i class='fa fa-truck'></i> Mettre en transit</button>");
+        function maj() { $("#tr-nouveau").toggleClass("cx-hidden", $("#tr-bord").val() !== "NOUVEAU"); }
+        $m.on("change", "#tr-bord", maj);
+        $m.on("shown.bs.modal", maj);
+        var fait = null;
+        $m.on("click", "#tr-ok", function () {
+            var v = $("#tr-bord").val(), $b = $(this), p;
+            if (v === "NOUVEAU") {
+                var d = agence($("#tr-dest").val());
+                if (!d || d.id === A.id) return erreurChamp($m, "#tr-dest", "Choisissez une autre agence.");
+                p = CX.api.save("bordereaux", nouveauBordereau({ agenceDestId: d.id }));
+            } else p = CX.api.get("bordereaux", v);
+            U.busy($b, true);
+            p.then(function (b) { return grouper(b, $.map(exps, function (e) { return e.id; })); })
+                .done(function (r) { fait = r; $m.modal("hide"); }).fail(function (m) { U.busy($b, false); U.toast(U.esc(m || "Échec."), "error"); });
+        });
+        $m.on("hidden.bs.modal", function () { $m.remove(); if (fait) dfd.resolve(fait); else dfd.reject(); });
+        $m.modal("show");
+        return dfd.promise();
+    }
+
+    /* Objet bordereau d'expédition (PREPARE) avec les valeurs par défaut */
+    function nouveauBordereau(o) {
+        var A = agenceCourante(), d = agence(o.agenceDestId), date = o.date || U.today();
+        return $.extend({
+            numero: numeroBordereau(date, A.id), numeroManuel: "", date: date, heure: "",
+            agenceDepId: A.id, villeDep: A.ville, agenceDep: A.nom, agenceDestId: d.id, villeDest: d.ville, agenceDest: d.nom,
+            planVoyage: G.villeNom(A.ville) + " → " + G.villeNom(d.ville), moyen: "ROUTE", numeroTransport: "", transporteur: "", contact: "",
+            departPrevu: date + " 18:00", arriveePrevue: U.addDays(date, 1) + " 12:00",
+            vehicule: { type: "Camionnette (3,5 t)", immatriculation: "" }, chauffeur: { nom: "", tel: "" }, scelle: "",
+            expeditionIds: [], statut: "PREPARE", annule: false, dateDepart: null, dateArrivee: null, dateCloture: null, recus: [], ecarts: [], observations: "",
+            historique: [{ date: U.now(), user: CX.CONFIG.USER.nom, action: "Bordereau d'expédition créé" }]
+        }, o, { agenceDestId: d.id });
     }
 
     /* =================================================================
@@ -641,26 +950,33 @@ CX.ops = (function () {
     }
 
     /* =================================================================
-       Transmission au partenaire international (TNT…)
+       Envoi à un partenaire (DHL, TNT, Aramex…) : n° AWB, date de remise,
+       bordereau partenaire. Colis -> EN_TRANSIT (+ partenaire).
        ================================================================= */
     function modalePartenaire(liste) {
-        var dfd = $.Deferred(), exps = $.map(liste, function (x) { return x.destinataireInfo ? x : norm(x); });
-        var corps = "<p class='cx-muted' style='margin-top:0'>" + $.map(exps, function (e) { return "<span class='cx-tag cx-mono'>" + U.esc(e.nRt) + "</span>"; }).join(" ") + "</p>" +
+        var dfd = $.Deferred(), exps = $.grep($.map(liste, function (x) { return x.destinataireInfo ? x : norm(x); }), function (e) {
+            return !e.suspendu && !e.partenaire && $.inArray(e.etape, ["ENREGISTREE", "ARRIVEE", "EN_INSTANCE"]) >= 0;
+        });
+        if (!exps.length) { U.toast("Aucune expédition de la sélection ne peut être remise à un partenaire.", "warning"); return dfd.reject().promise(); }
+        var corps = "<p class='cx-muted' style='margin-top:0'>" + $.map(exps, function (e) { return "<span class='cx-tag cx-mono'>" + U.esc(e.nRt) + "</span> " + U.esc(destinationLib(e)); }).join(" · ") + "</p>" +
             "<div class='ox-grid-2'>" + champ("pa-nom", "Partenaire", "<select class='form-control' id='pa-nom'>" + options(PARTENAIRES) + "</select>", true) +
-            champ("pa-awb", "N° de lettre de transport partenaire (AWB)", "<input type='text' class='form-control cx-mono' id='pa-awb' maxlength='30'>", true, exps.length > 1 ? "Un même AWB (envoi groupé) ; le n° de chaque colis est suffixé." : "") +
+            champ("pa-awb", "N° AWB (lettre de transport du partenaire)", "<input type='text' class='form-control cx-mono' id='pa-awb' maxlength='30'>", true, exps.length > 1 ? "Envoi groupé : le n° de chaque colis est suffixé." : "") +
+            champ("pa-date", "Date de remise", "<input type='date' class='form-control' id='pa-date' value='" + U.today() + "' max='" + U.today() + "'>", true) +
+            champ("pa-bp", "Bordereau partenaire", "<input type='text' class='form-control cx-mono' id='pa-bp' maxlength='30' placeholder='Ex. DHL-DLA-0312'>") +
             "</div>" + champ("pa-note", "Observation", "<input type='text' class='form-control' id='pa-note' maxlength='160'>");
-        var $m = modale("ox-partenaire", "Transmettre au partenaire international", "fa-plane", corps,
-            "<button type='button' class='cx-btn cx-btn-ghost' data-dismiss='modal'>Annuler</button><button type='button' class='cx-btn cx-btn-primary' id='pa-ok'><i class='fa fa-plane'></i> Transmettre</button>");
+        var $m = modale("ox-partenaire", "Envoyer à un partenaire", "fa-plane", corps,
+            "<button type='button' class='cx-btn cx-btn-ghost' data-dismiss='modal'>Annuler</button><button type='button' class='cx-btn cx-btn-primary' id='pa-ok'><i class='fa fa-plane'></i> Remettre au partenaire</button>");
         var fait = null;
         $m.on("click", "#pa-ok", function () {
             effacerErreurs($m);
-            var nom = $("#pa-nom").val(), awb = $.trim($("#pa-awb").val());
+            var nom = $("#pa-nom").val(), awb = $.trim($("#pa-awb").val()), dr = $("#pa-date").val() || U.today(), bp = $.trim($("#pa-bp").val());
             if (awb.length < 4) return erreurChamp($m, "#pa-awb", "AWB obligatoire.");
             U.busy($(this), true);
-            // TODO API : POST /exploitation/expeditions/partenaire  { ids[], partenaire, awb, note }
+            // TODO API : POST /exploitation/expeditions/partenaire  { ids[], partenaire, awb, dateRemise, bordereauPartenaire, note }
             avancerLot($.map(exps, function (e) { return e.id; }), "EN_TRANSIT", function (e) {
-                return { note: "Remise au partenaire " + nom + " · AWB " + awb + ($("#pa-note").val() ? " · " + $("#pa-note").val() : ""),
-                    patch: { partenaire: { nom: nom, awb: awb + (exps.length > 1 ? "-" + e.id : ""), date: U.now(), user: CX.CONFIG.USER.nom } } };
+                return { note: "Remise au partenaire " + nom + " · AWB " + awb + (bp ? " · bordereau " + bp : "") + ($("#pa-note").val() ? " · " + $("#pa-note").val() : ""),
+                    forcer: e.etape === "EN_INSTANCE",
+                    patch: { partenaire: { nom: nom, awb: awb + (exps.length > 1 ? "-" + e.id : ""), date: U.now(), dateRemise: dr, bordereau: bp, user: CX.CONFIG.USER.nom } } };
             }).done(function (ok, ko) { fait = ok; if (ko.length) U.toast(U.esc(ko.join(" · ")), "warning"); $m.modal("hide"); });
         });
         $m.on("hidden.bs.modal", function () { $m.remove(); if (fait && fait.length) dfd.resolve(fait); else dfd.reject(); });
@@ -763,41 +1079,62 @@ CX.ops = (function () {
             etapeBadge(e.etape), slaBadge(e),
             e.retour ? "<span class='cx-badge cx-badge-purple cx-no-dot'><i class='fa fa-undo'></i> Retour expéditeur</span>" : "",
             (e.incidents || []).length ? "<span class='cx-badge cx-badge-red cx-no-dot'><i class='fa fa-warning'></i> " + pl(e.incidents.length, "incident") + "</span>" : "",
-            e.partenaire ? "<span class='cx-badge cx-badge-blue cx-no-dot'><i class='fa fa-plane'></i> " + U.esc(e.partenaire.nom) + "</span>" : ""
+            e.partenaire ? "<span class='cx-badge cx-badge-blue cx-no-dot'><i class='fa fa-plane'></i> " + U.esc(e.partenaire.nom) + "</span>" : "",
+            e.suspendu ? "<span class='cx-badge cx-badge-red cx-no-dot' title='" + U.esc(e.suspendu.motif) + "'><i class='fa fa-pause-circle'></i> Suspendue</span>" : ""
         ].join(" ");
-        var colis = "<table class='cx-table ox-mini'><thead><tr><th>Nature</th><th>Description</th><th class='num'>Nb</th><th class='num'>Poids réel</th><th class='num'>Dim. (cm)</th><th class='num'>Taxable</th><th class='num'>Valeur</th></tr></thead><tbody>" +
-            $.map(e.colis, function (c) {
-                return "<tr><td>" + U.esc(c.nature) + "</td><td>" + U.esc(c.description || e.contenu || "") + "</td><td class='num'>" + U.esc(c.nombre || 1) + "</td><td class='num'>" + U.esc(G.kg(c.poids)) + "</td>" +
-                    "<td class='num'>" + (c.L ? U.esc(c.L + "×" + c.l + "×" + c.H) : "—") + "</td><td class='num'>" + U.esc(G.kg(c.poidsTaxable || c.poids)) + "</td><td class='num'>" + (c.valeur ? U.money(c.valeur) : "—") + "</td></tr>";
-            }).join("") + "</tbody></table>";
+        var nLot = 0, total = Math.max(1, parseInt(e.nbColis, 10) || 1);
+        var colis = "<div class='ox-lots'>" + $.map(e.colis, function (c) {
+            var nb = Math.max(1, parseInt(c.nombre, 10) || 1), pv = c.poidsVol || (c.L ? CX.tarif.poidsVolumetrique(c.L, c.l, c.H) : 0), refs = [];
+            for (var k = 0; k < nb; k++) { nLot++; refs.push(refBase(e) + "-" + Math.min(nLot, total) + "S" + total); }
+            return "<details class='ox-lot'><summary><span class='cx-mono cx-strong'>" + U.esc(refs[0]) + (refs.length > 1 ? " … " + U.esc(refs[refs.length - 1].split("-").pop()) : "") + "</span>" +
+                "<span>" + U.esc(c.nature) + " · " + nb + " × " + U.esc(G.kg(c.poids)) + "</span><span class='cx-muted'>" + U.esc(c.description || e.contenu || "") + "</span></summary>" +
+                "<dl class='cx-dl ox-dl'><dt>Référence(s)</dt><dd class='cx-mono'>" + $.map(refs, U.esc).join("<br>") + "</dd><dt>Nature</dt><dd>" + U.esc(c.nature) + "</dd>" +
+                "<dt>Poids théorique</dt><dd>" + U.esc(G.kg(c.poids)) + "</dd><dt>Poids volumétrique</dt><dd>" + (pv ? U.esc(G.kg(pv)) : "—") + "</dd>" +
+                "<dt>Poids taxable</dt><dd>" + U.esc(G.kg(c.poidsTaxable || c.poids)) + "</dd><dt>Nombre</dt><dd>" + nb + "</dd>" +
+                "<dt>L × l × H</dt><dd>" + (c.L ? U.esc(c.L + " × " + c.l + " × " + c.H + " cm") : "—") + "</dd><dt>Valeur déclarée</dt><dd>" + (c.valeur ? U.money(c.valeur) : "—") + "</dd></dl></details>";
+        }).join("") + "</div>";
+        var bordHist = $.map(e.bordereauxHist || (e.bordereau ? [e.bordereau] : []), function (n) { return U.esc(n); }).join(", ");
+        var remisePct = e.remisePct || (e.client && e.client.remisePct) || 0;
+
         var notes = (e.notes || []).slice().reverse(), inc = (e.incidents || []).slice().reverse(), reo = (e.reorientations || []).slice().reverse();
         var remise = e.remise ? "<div class='cx-block ox-preuve'><div class='cx-block-title'><i class='fa fa-handshake-o'></i> Preuve de remise</div><div class='ox-preuve-grid'><dl class='cx-dl ox-dl'>" +
             "<dt>Remis le</dt><dd>" + U.esc(U.toFr(e.remise.date)) + "</dd><dt>À</dt><dd><b>" + U.esc(e.remise.nom) + "</b>" + (e.remise.qui === "MANDATAIRE" ? " (mandataire)" : "") + "</dd>" +
             "<dt>Pièce</dt><dd>" + U.esc(e.remise.piece) + " n° <span class='cx-mono'>" + U.esc(e.remise.numeroPiece) + "</span></dd><dt>Téléphone</dt><dd>" + U.esc(G.telAff(e.remise.tel)) + "</dd>" +
-            "<dt>Agent</dt><dd>" + U.esc(e.remise.user) + "</dd>" + (e.remise.observation ? "<dt>Observation</dt><dd>" + U.esc(e.remise.observation) + "</dd>" : "") + "</dl>" +
+            "<dt>Livré par</dt><dd>" + U.esc(e.remise.livrePar || e.remise.user) + "</dd>" + (e.remise.observation ? "<dt>Observation</dt><dd>" + U.esc(e.remise.observation) + "</dd>" : "") + "</dl>" +
             "<div class='ox-preuve-img'>" + (e.remise.signature ? "<img src='" + e.remise.signature + "' alt='Signature'>" : "") + (e.remise.photo ? "<img src='" + e.remise.photo + "' alt='Photo'>" : "") + "</div></div></div>" : "";
         return "<div class='ox-fiche'>" +
-            "<div class='ox-fiche-head'><div><div class='ox-fiche-num'>" + U.esc(e.nRt) + (e.nRtMan ? " <span class='cx-tag cx-mono' title='N° de LT manuelle (feuille de carnet)'>Man. " + U.esc(e.nRtMan) + "</span>" : "") + "</div>" +
+            "<div class='ox-fiche-head'><div><div class='ox-fiche-num'>" + U.esc(e.nRt) + (e.rtMan ? " <span class='cx-tag cx-mono' title='N° de reçu transport manuel'>Man. " + U.esc(e.rtMan) + "</span>" : "") + "</div>" +
+            "<div class='cx-cell-sub'>Réf. " + U.esc(e.refLot) + (e.nbColis > 1 ? " (" + e.nbColis + " lots)" : "") + "</div>" +
+            (e.suspendu ? "<div class='cx-note cx-note-err' style='margin:6px 0 0'><i class='fa fa-pause-circle'></i><div>Suspendue le " + U.esc(U.toFr(e.suspendu.date)) + " par " + U.esc(e.suspendu.user) + " : " + U.esc(e.suspendu.motif) + "</div></div>" : "") +
             "<div class='ox-fiche-route'>" + U.esc(G.villeNom(e.villeDep)) + " <small>" + U.esc(G.titre(e.bureauDep)) + "</small> <i class='fa fa-long-arrow-right'></i> " + U.esc(destinationLib(e)) +
             " <small>" + (lv.mode === "DOMICILE" ? "livraison à domicile" + (lv.quartier ? " · " + U.esc(lv.quartier) : "") : "retrait en agence") + "</small></div>" +
             "<div class='ox-fiche-tags'>" + tags + "</div></div>" +
             "<dl class='ox-fiche-kv'><div><dt>Client</dt><dd>" + (client ? "<a href='../commercial/client-fiche.html?id=" + client.id + "'>" + U.esc(client.raisonSociale) + "</a>" : "Particulier (comptant)") + "</dd></div>" +
             "<div><dt>Montant</dt><dd>" + U.money(e.montants.total) + "</dd></div>" +
+            "<div><dt>Remise %</dt><dd>" + (remisePct ? U.esc(remisePct) + " %" : "—") + "</dd></div>" +
             "<div><dt>Paiement</dt><dd>" + U.esc(e.paiement.mode || "—") + "</dd></div>" +
-            "<div><dt>Remise</dt><dd>" + (lv.mode === "DOMICILE" ? "Domicile" + (lv.zone ? " (" + U.esc(lv.zone) + ")" : "") : "Bureau") + "</dd></div>" +
+            "<div><dt>Livraison</dt><dd>" + (lv.mode === "DOMICILE" ? "Domicile" + (lv.zone ? " (" + U.esc(lv.zone) + ")" : "") : "Bureau") + "</dd></div>" +
             "<div><dt>Délai cible</dt><dd>" + pl(s.cible, "jour") + " · " + U.toFr(s.echeance) + "</dd></div></dl></div>" +
             frise(e) +
             "<div class='ox-grid-2'>" +
-            personneHtml("Expéditeur", "fa-user", e.expediteurInfo, "Cameroun", e.villeDep, e.bureauDep) +
+            personneHtml("Expéditeur", "fa-user", e.expediteurInfo, e.paysDep || "Cameroun", e.villeOrigine || e.villeDep, e.bureauDep) +
             personneHtml("Destinataire", "fa-map-marker", e.destinataireInfo, e.paysDest || "Cameroun", e.villeEtranger || e.villeDest, e.bureauDest,
                 lv.mode === "DOMICILE" ? "<dt>Quartier</dt><dd>" + U.esc(lv.quartier || "—") + (lv.repere ? " · " + U.esc(lv.repere) : "") + "</dd>" : "") +
             "</div>" +
-            "<div class='ox-sec'><h5><i class='fa fa-cubes'></i> Les paquets <small>" + pl(e.nbColis || 1, "colis") + " · " + U.esc(G.kg(e.poids)) + " taxables · " + U.esc(e.contenu || "") + "</small></h5>" + colis + "</div>" +
+            "<div class='ox-sec'><h5><i class='fa fa-cubes'></i> Les lots <small>" + pl(e.nbColis || 1, "colis", "colis") + " · " + U.esc(G.kg(e.poids)) + " taxables · " + U.esc(e.contenu || "") + "</small></h5>" + colis + "</div>" +
             "<div class='ox-grid-2'><div class='ox-sec'><h5><i class='fa fa-info-circle'></i> Informations</h5><dl class='cx-dl ox-dl'>" +
-            "<dt>Créé par</dt><dd>" + U.esc(e.guichetier || e.creePar || "—") + " · " + U.toFr(e.dateExp) + (e.heure ? " " + U.esc(e.heure) : "") + "</dd>" +
+            "<dt>N° reçu transport</dt><dd class='cx-mono'>" + U.esc(e.nRt) + "</dd>" +
+            "<dt>N° reçu manuel</dt><dd class='cx-mono'>" + (e.rtMan ? U.esc(e.rtMan) : "—") + "</dd>" +
+            "<dt>Réf. client</dt><dd>" + (e.refClient ? U.esc(e.refClient) : client ? U.esc(client.code || "") : "—") + "</dd>" +
+            "<dt>Créé par</dt><dd>" + U.esc(e.guichetier || e.creePar || "—") + "</dd>" +
+            "<dt>Enregistrée le</dt><dd>" + U.toFr(e.dateExp) + (e.heure ? " " + U.esc(e.heure) : "") + "</dd>" +
+            "<dt>Dernière modif.</dt><dd>" + (e.dateModification ? U.esc(U.toFr(e.dateModification)) + " par " + U.esc(e.modifiePar || "—") : (e.historique && e.historique[0] ? U.esc(U.toFr(e.historique[0].date)) + " par " + U.esc(e.historique[0].user) : "—")) + "</dd>" +
+            (e.etape === "LIVREE" ? "<dt>Livré le</dt><dd>" + U.esc(U.toFr(e.remise ? e.remise.date : e.dateLivraison)) + "</dd><dt>Retiré par</dt><dd>" + U.esc(e.remise ? e.remise.nom : "—") + "</dd>" : "") +
             "<dt>Facture liée</dt><dd>" + (fac ? "<a href='../commercial/facture.html?id=" + fac.id + "'>" + U.esc(fac.numero) + "</a> " + badge(CX.REF.STATUT_FACTURE, fac.statut) : e.typeClient === "COMPTE" ? "<span class='cx-muted'>Non facturée</span>" : "<span class='cx-muted'>Payée au comptant</span>") + "</dd>" +
             "<dt>Carnet</dt><dd>" + (e.nRtMan ? "Feuille <b class='cx-mono'>" + U.esc(e.nRtMan) + "</b> · <a href='../maquettes-carnets/carnets-liste.html" + (e.clientId ? "?client=" + e.clientId : "") + "'>carnets du client</a>" : "<span class='cx-muted'>—</span>") + "</dd>" +
-            "<dt>Bordereau</dt><dd>" + (bord || "<span class='cx-muted'>—</span>") + "</dd>" +
+            "<dt>Bordereau(x)</dt><dd>" + (bord || "<span class='cx-muted'>—</span>") + (bordHist && bordHist !== U.esc(e.bordereau || "") ? "<div class='cx-cell-sub'>" + bordHist + "</div>" : "") + (e.bordereauManuel ? "<div class='cx-cell-sub'>Manuel : " + U.esc(e.bordereauManuel) + "</div>" : "") + "</dd>" +
+            (e.coursier ? "<dt>Coursier</dt><dd>" + U.esc(e.coursier) + "</dd>" : "") +
+            (e.partenaire ? "<dt>Partenaire</dt><dd>" + U.esc(e.partenaire.nom) + " · AWB <span class='cx-mono'>" + U.esc(e.partenaire.awb) + "</span>" + (e.partenaire.bordereau ? " · " + U.esc(e.partenaire.bordereau) : "") + "</dd>" : "") +
             "<dt>Position</dt><dd>" + (e.positionId ? U.esc(agenceLib(e.positionId)) : e.partenaire ? "Chez " + U.esc(e.partenaire.nom) + " (AWB " + U.esc(e.partenaire.awb) + ")" : e.etape === "EN_TRANSIT" ? "Dans le véhicule" : "—") + "</dd>" +
             (e.avis && e.avis.length ? "<dt>Avis envoyés</dt><dd>" + e.avis.length + " (dernier le " + U.toFr(e.avis[e.avis.length - 1].date) + ")</dd>" : "") +
             "</dl></div>" +
@@ -821,6 +1158,9 @@ CX.ops = (function () {
             "<button type='button' class='cx-btn cx-btn-ghost cx-btn-sm' data-fx='note'><i class='fa fa-sticky-note-o'></i> Ajouter une note</button>" +
             "<button type='button' class='cx-btn cx-btn-ghost cx-btn-sm' data-fx='incident'><i class='fa fa-warning'></i> Déclarer un incident</button>" +
             "<button type='button' class='cx-btn cx-btn-success cx-btn-sm' data-fx='remise'><i class='fa fa-handshake-o'></i> Remettre</button>" +
+            "<button type='button' class='cx-btn cx-btn-ghost cx-btn-sm' data-fx='suspendre'><i class='fa fa-pause-circle'></i> Suspendre</button>" +
+            "<button type='button' class='cx-btn cx-btn-ghost cx-btn-sm' data-fx='lever'><i class='fa fa-play-circle'></i> Lever la suspension</button>" +
+            "<button type='button' class='cx-btn cx-btn-ghost cx-btn-sm' data-fx='modifier-remise'><i class='fa fa-pencil-square-o'></i> Modifier la livraison</button>" +
             "<button type='button' class='cx-btn cx-btn-ghost cx-btn-sm' data-fx='partenaire-livre'><i class='fa fa-plane'></i> Livraison partenaire confirmée</button>" +
             "</div><div class='ox-fiche-liens'><a class='cx-btn cx-btn-ghost cx-btn-sm' id='fx-recu' target='_blank'><i class='fa fa-print'></i> Réimprimer le reçu</a>" +
             "<a class='cx-btn cx-btn-ghost cx-btn-sm' id='fx-track' target='_blank'><i class='fa fa-crosshairs'></i> Tracking</a>" +
@@ -837,7 +1177,10 @@ CX.ops = (function () {
                 $m.find("[data-fx=reorienter]").prop("disabled", fini || e.etape === "EN_LIVRAISON");
                 $m.find("[data-fx=destinataire]").prop("disabled", fini);
                 $m.find("[data-fx=remise]").toggleClass("cx-hidden", !(estMoi(e.positionId) && $.inArray(e.etape, ["ARRIVEE", "EN_INSTANCE", "ECHEC"]) >= 0 && estMoi(e.agDestId)));
-                $m.find("[data-fx=partenaire-livre]").toggleClass("cx-hidden", !(e.partenaire && e.etape === "EN_TRANSIT"));
+                $m.find("[data-fx=partenaire-livre]").toggleClass("cx-hidden", !(e.partenaire && e.etape === "EN_TRANSIT" && !importe(e)));
+                $m.find("[data-fx=suspendre]").toggleClass("cx-hidden", !!e.suspendu || fini);
+                $m.find("[data-fx=lever]").toggleClass("cx-hidden", !e.suspendu);
+                $m.find("[data-fx=modifier-remise]").toggleClass("cx-hidden", e.etape !== "LIVREE" || !e.remise);
             }).fail(function () { $("#ox-fiche-body").html("<div class='cx-empty'><i class='fa fa-search'></i><b>LT introuvable</b></div>"); });
         }
         function apres(maj, msg) { change = true; if (msg) U.toast(msg, "success"); charger(); if (options.onChange) options.onChange(maj); }
@@ -912,12 +1255,13 @@ CX.ops = (function () {
                     }).done(function (maj) { apres(maj, "Destinataire corrigé."); });
                 });
             }
-            if (act === "reorienter" || act === "remise") {
+            if (act === "lever") { leverSuspension(e.id).done(function (maj) { apres(maj, "Suspension levée."); }); return; }
+            if (act === "reorienter" || act === "remise" || act === "suspendre" || act === "modifier-remise") {
                 var cur = e;
                 $m.one("hidden.bs.modal.oxre", function () {
-                    var p = act === "reorienter" ? modaleReorienter([cur]) : modaleRemise(cur);
+                    var p = act === "reorienter" ? modaleReorienter([cur]) : act === "suspendre" ? modaleSuspendre([cur]) : act === "modifier-remise" ? modaleRemise(cur, { modifier: true }) : modaleRemise(cur);
                     p.done(function (r) {
-                        U.toast(act === "reorienter" ? "LT réorientée." : "Colis remis : LT <b>" + U.esc(cur.nRt) + "</b> livrée.", "success");
+                        U.toast(act === "reorienter" ? "LT réorientée." : act === "suspendre" ? "Expédition suspendue." : act === "modifier-remise" ? "Informations de livraison corrigées." : "Colis remis : LT <b>" + U.esc(cur.nRt) + "</b> livrée.", "success");
                         if (options.onChange) options.onChange(r);
                     }).always(function () { fiche(cur.id, options); });
                 });
@@ -968,7 +1312,10 @@ CX.ops = (function () {
     function grouper(b, ids) {
         // TODO API : POST /exploitation/bordereaux/{id}/colis  { expeditionIds[] }
         var A = agenceCourante();
-        return avancerLot(ids, "GROUPEE", { note: "Bordereau " + b.numero + " vers " + agenceLib(b.agenceDestId), position: A.id, patch: { bordereau: b.numero, bordereauId: b.id } })
+        return avancerLot(ids, "GROUPEE", function (x) {
+            return { note: "Bordereau " + b.numero + " vers " + agenceLib(b.agenceDestId), position: A.id,
+                patch: { bordereau: b.numero, bordereauId: b.id, bordereauManuel: b.numeroManuel || "", bordereauxHist: (x.bordereauxHist || []).concat([b.numero]) } };
+        })
             .then(function (ok, ko) {
                 return CX.api.get("bordereaux", b.id).then(function (bb) {
                     $.each(ok, function (_, e) { if ($.inArray(e.id, bb.expeditionIds) < 0) bb.expeditionIds.push(e.id); });
@@ -990,10 +1337,17 @@ CX.ops = (function () {
         });
     }
     function annulerBordereau(b) {
-        // TODO API : DELETE /exploitation/bordereaux/{id}  (uniquement en préparation)
+        // TODO API : POST /exploitation/bordereaux/{id}/annuler  (uniquement en préparation ; le bordereau reste tracé « Annulé OUI »)
         var exps = CX.api.listSync("expeditions"), ids = b.expeditionIds.slice(), d = $.Deferred(), i = 0;
         (function suivant() {
-            if (i >= ids.length) { CX.api.remove("bordereaux", b.id).done(function () { d.resolve(); }); return; }
+            if (i >= ids.length) {
+                CX.api.get("bordereaux", b.id).then(function (bb) {
+                    bb.annule = true; bb.dateAnnulation = U.now(); bb.expeditionIdsAnnules = bb.expeditionIds; bb.expeditionIds = [];
+                    logBordereau(bb, "Bordereau annulé");
+                    return CX.api.save("bordereaux", bb);
+                }).done(function () { d.resolve(); });
+                return;
+            }
             var id = ids[i++], e = $.grep(exps, function (x) { return String(x.id) === String(id); })[0];
             if (!e || e.etape !== "GROUPEE") { suivant(); return; }
             avancer(id, etapeAvantGroupage(e), { note: "Bordereau " + b.numero + " annulé", forcer: true, patch: { bordereau: null, bordereauId: null } }).always(suivant);
@@ -1004,7 +1358,7 @@ CX.ops = (function () {
     function modaleDepart(b) {
         var dfd = $.Deferred(), v = b.vehicule || {}, c = b.chauffeur || {};
         var corps = "<p class='cx-muted' style='margin-top:0'>Bordereau <b class='cx-mono'>" + U.esc(b.numero) + "</b> · " + U.esc(agenceLib(b.agenceDepId)) + " <i class='fa fa-long-arrow-right'></i> " +
-            U.esc(agenceLib(b.agenceDestId)) + " · " + pl(b.expeditionIds.length, "colis") + "</p><div class='ox-grid-2'>" +
+            U.esc(agenceLib(b.agenceDestId)) + " · " + pl(b.expeditionIds.length, "colis", "colis") + "</p><div class='ox-grid-2'>" +
             champ("dp-type", "Véhicule", "<select class='form-control' id='dp-type'>" + options(CX.REF.TYPES_VEHICULE, v.type) + "</select>", true) +
             champ("dp-immat", "Immatriculation", "<input type='text' class='form-control cx-mono' id='dp-immat' maxlength='15' value='" + U.esc(v.immatriculation || "") + "'>", true) +
             champ("dp-chauffeur", "Chauffeur", "<input type='text' class='form-control' id='dp-chauffeur' maxlength='60' value='" + U.esc(c.nom || "") + "'>", true) +
@@ -1051,12 +1405,13 @@ CX.ops = (function () {
         return s ? U.daysBetween(s.date.substr(0, 10), U.today()) : 0;
     }
     function files(exps, bordereaux) {
-        var bMap = {};
+        var bMap = {}, depuis = U.addDays(U.today(), -30);
         $.each(bordereaux || [], function (_, b) { bMap[b.id] = b; });
         var f = { aGrouper: [], locaux: [], transitIci: [], enTransitVersNous: [], bordereauxAttendus: [], enInstance: [], instanceAncien: [],
-            aLivrer: [], enLivraison: [], echecs: [], international: [], aMettreEnAgence: [] };
+            aLivrer: [], enLivraison: [], echecs: [], international: [], aMettreEnAgence: [], livrees: [], importsAttendus: [], suspendues: [] };
         $.each(exps, function (_, e) {
             var ici = estMoi(e.positionId), et = e.etape, dest = estMoi(e.agDestId);
+            if (e.suspendu && ici) f.suspendues.push(e);
             if (et === "ENREGISTREE" && ici) {
                 if (international(e)) f.international.push(e);
                 else if (dest) f.locaux.push(e);
@@ -1068,6 +1423,7 @@ CX.ops = (function () {
                 else if (e.livraison && e.livraison.mode === "DOMICILE") f.aLivrer.push(e);
                 else f.aMettreEnAgence.push(e);
             }
+            if (et === "EN_TRANSIT" && importe(e) && dest) f.importsAttendus.push(e);
             if (et === "EN_TRANSIT" && !e.partenaire) {
                 var b = e.bordereauId ? bMap[e.bordereauId] : null;
                 if (b ? estMoi(b.agenceDestId) : dest) f.enTransitVersNous.push(e);
@@ -1075,10 +1431,67 @@ CX.ops = (function () {
             if (et === "EN_INSTANCE" && ici) { f.enInstance.push(e); if (ageInstance(e) > INSTANCE_ALERTE_J) f.instanceAncien.push(e); }
             if (et === "ECHEC" && ici) { f.echecs.push(e); f.aLivrer.push(e); }
             if (et === "EN_LIVRAISON" && ici) f.enLivraison.push(e);
+            if (et === "LIVREE" && (e.dateLivraison || "") >= depuis && (e.remise && e.remise.agenceId ? estMoi(e.remise.agenceId) : dest)) f.livrees.push(e);
         });
-        f.bordereauxAttendus = $.grep(bordereaux || [], function (b) { return (b.statut === "PARTI" || b.statut === "ARRIVE") && estMoi(b.agenceDestId); });
+        /* vocabulaire métier (alias) */
+        f.aMettreEnLivraison = f.aLivrer;
+        f.chezLivreur = f.enLivraison;
+        f.bordereauxAttendus = $.grep(bordereaux || [], function (b) { return !b.annule && (b.statut === "PARTI" || b.statut === "ARRIVE") && estMoi(b.agenceDestId); });
         return f;
     }
+
+    /* =================================================================
+       Démonstration : quelques expéditions internationales (export via
+       partenaire, import reçu de l'étranger), une seule fois (meta).
+       ================================================================= */
+    function assurerDemoInternational() {
+        var deja = false;
+        CX.api.list("meta").done(function (m) { deja = $.grep(m, function (x) { return x.cle === "demoInternational"; }).length > 0; });
+        if (deja) return;
+        var t = U.today();
+        function mk(o) {
+            var dep = o.dep ? agence(o.dep) : null, dst = o.dst ? agence(o.dst) : null, date = U.addDays(t, -o.age), n = G.prochainNumero(date), h = o.heure || "10:20";
+            var e = {
+                nRt: n, numero: n, clientId: null, typeClient: "PARTICULIER", nRtMan: null, dateExp: date, heure: h,
+                service: o.service || "INTERNATIONALE", typeTrajet: o.service === "REGIONALE" ? "REGIONAL" : "INTERNATIONAL",
+                villeDep: dep ? dep.ville : "", bureauDep: dep ? dep.nom : "", paysDep: o.paysDep || null, villeOrigine: o.villeOrigine || "",
+                villeDest: dst ? dst.ville : "", bureauDest: dst ? dst.nom : "", paysDest: o.paysDest || null, villeEtranger: o.villeEtranger || "",
+                expediteur: o.exp, destinataire: o.dst2, telDestinataire: o.tel,
+                expediteurInfo: { nom: o.exp, tel: o.telExp || "699112233", whatsapp: "", adresse: "", email: "" },
+                destinataireInfo: { nom: o.dst2, tel: G.tel(o.tel), whatsapp: "", adresse: "", email: "" },
+                livraison: { mode: o.mode || "BUREAU", zone: o.mode === "DOMICILE" ? "Z1" : "", quartier: o.quartier || "", repere: "", telAppel: "" },
+                colis: [{ nature: o.nature || "Colis", poids: o.poids, L: 40, l: 30, H: 30, nombre: o.nb || 1, valeur: o.valeur || 50000, description: o.contenu, poidsVol: 7.2, poidsTaxable: o.poids }],
+                contenu: o.contenu, nbColis: o.nb || 1, poids: o.poids, montant: o.montant,
+                montants: { transport: o.montant, emballage: 0, livraison: 0, autres: 0, total: o.montant },
+                paiement: { mode: "Espèces", statut: "PAYE", recu: o.montant, rendu: 0 }, statut: "EN_TRANSIT", preuveLivraison: false, dateLivraison: null, factureId: null,
+                guichetier: dep ? "Support KuTiWa" : "Partenaire " + (o.partenaire || ""), bureau: dep ? { ville: dep.ville, agence: dep.nom, agenceId: dep.id } : null,
+                etape: "ENREGISTREE", historique: [{ date: date + " " + h, user: "Support KuTiWa", action: "Expédition internationale enregistrée" }],
+                suivi: [{ date: date + " " + h, etape: "ENREGISTREE", lieu: dep ? dep.ville : o.villeOrigine, agence: dep ? dep.nom : (o.partenaire || ""),
+                    user: dep ? "Support KuTiWa" : o.partenaire, note: dep ? "Saisie au guichet (international)" : "Prise en charge à l'étranger par " + o.partenaire }]
+            };
+            if (o.partenaire) {
+                e.partenaire = { nom: o.partenaire, awb: o.awb, date: date + " 16:00", dateRemise: date, user: "Support KuTiWa", bordereau: o.bp || "" };
+                e.etape = "EN_TRANSIT";
+                e.suivi.push({ date: date + " 16:00", etape: "EN_TRANSIT", lieu: dep ? dep.ville : o.villeOrigine, agence: dep ? dep.nom : o.partenaire, user: "Support KuTiWa", note: "Remise au partenaire " + o.partenaire + " · AWB " + o.awb });
+            }
+            if (o.livre) {
+                var dl = U.addDays(date, 4);
+                e.etape = "LIVREE"; e.statut = "LIVREE"; e.dateLivraison = dl; e.preuveLivraison = true;
+                e.suivi.push({ date: dl + " 11:00", etape: "LIVREE", lieu: o.villeEtranger, agence: o.partenaire, user: o.partenaire, note: "Livraison confirmée par " + o.partenaire });
+            }
+            CX.api.save("expeditions", e);
+        }
+        mk({ dep: 1, paysDest: "France", villeEtranger: "Paris", exp: "NGASSA Mireille", dst2: "DUPONT Claire", tel: "+33 6 12 34 56 78", contenu: "Vêtements et épices", poids: 6, montant: 68000, age: 0 });
+        mk({ dep: 1, service: "REGIONALE", paysDest: "Gabon", villeEtranger: "Libreville", exp: "FOTSO Paul", dst2: "MBA Jean", tel: "+241 77 12 34 56", contenu: "Pièces auto", poids: 12, montant: 54000, age: 1, nb: 2 });
+        mk({ dep: 1, paysDest: "Nigeria", villeEtranger: "Lagos", exp: "BELLO Ibrahim", dst2: "ADEYEMI Tunde", tel: "+234 803 123 4567", contenu: "Tissus pagne", poids: 9, montant: 61000, age: 3, partenaire: "DHL Express", awb: "1234567890", bp: "DHL-DLA-0311" });
+        mk({ dep: 4, paysDest: "Belgique", villeEtranger: "Bruxelles", exp: "ATANGANA Rose", dst2: "MARTIN Luc", tel: "+32 470 12 34 56", contenu: "Documents administratifs", nature: "Document", poids: 1, montant: 32000, age: 10, partenaire: "TNT", awb: "GD123456789CM", livre: true });
+        mk({ dep: 4, service: "REGIONALE", paysDest: "Guinée équatoriale", villeEtranger: "Malabo", exp: "ESSOMBA Hervé", dst2: "OBIANG Pedro", tel: "+240 222 123 456", contenu: "Produits cosmétiques", poids: 4, montant: 39000, age: 0 });
+        mk({ paysDep: "France", villeOrigine: "Paris", dst: 1, exp: "DIAS Sophie", dst2: "EKOTTO Sandrine", tel: "699 55 44 33", contenu: "Ordinateur portable", nature: "Électronique", poids: 3, montant: 0, age: 2, partenaire: "DHL Express", awb: "9876543210" });
+        mk({ paysDep: "Émirats arabes unis", villeOrigine: "Dubaï", dst: 4, exp: "AL MANSOURI Trading", dst2: "NKOULOU Boris", tel: "677 88 99 00", contenu: "Téléphones", nature: "Électronique", poids: 5, montant: 0, age: 1, partenaire: "Aramex", awb: "AX44556677", mode: "DOMICILE", quartier: "Bastos" });
+        mk({ paysDep: "Chine", villeOrigine: "Shanghai", dst: 1, exp: "SHANGHAI EXPORT Co", dst2: "TALLA Christian", tel: "690 11 22 33", contenu: "Pièces détachées", poids: 18, montant: 0, age: 4, partenaire: "DHL Express", awb: "5566778899", nb: 3 });
+        CX.api.save("meta", { cle: "demoInternational", version: 1, date: U.now(), numero: "META-OPS-INT" });
+    }
+
 
     /* Indicateur cliquable */
     function kpi(label, valeur, foot, icon, color, href) {
@@ -1087,6 +1500,7 @@ CX.ops = (function () {
     }
 
     /* Exécution au chargement : bordereaux / tournées de démonstration */
+    try { assurerDemoInternational(); } catch (err) { if (window.console) console.warn("CX.ops.assurerDemoInternational", err); }
     try { assurerDemo(); } catch (err) { if (window.console) console.warn("CX.ops.assurerDemo", err); }
 
     return {
@@ -1104,6 +1518,10 @@ CX.ops = (function () {
         modaleRemise: modaleRemise, modaleReorienter: modaleReorienter, modalePartenaire: modalePartenaire, reorienterBrut: reorienterBrut,
         chercherLt: chercherLt, scanner: scanner, flash: flash, bip: bip, frise: frise, timeline: timeline, fiche: fiche,
         menusFixes: menusFixes, kpi: kpi, files: files, ageInstance: ageInstance,
+        MOYENS_TRANSPORT: MOYENS_TRANSPORT, MOTIFS_SUSPENSION: MOTIFS_SUSPENSION, importe: importe, origineLib: origineLib, codeAgence: codeAgence,
+        refBase: refBase, refsLots: refsLots, contenuCourt: contenuCourt, modaleCoursier: modaleCoursier, rebasculerEnAgence: rebasculerEnAgence,
+        mettreEnAgence: mettreEnAgence, modaleSuspendre: modaleSuspendre, leverSuspension: leverSuspension, modaleNote: modaleNote,
+        modaleLivraison: modaleLivraison, modaleTransit: modaleTransit, nouveauBordereau: nouveauBordereau,
         grouper: grouper, retirerDuBordereau: retirerDuBordereau, annulerBordereau: annulerBordereau, modaleDepart: modaleDepart, logBordereau: logBordereau,
         /* Chargement commun : expéditions normalisées + bordereaux
            TODO API : GET /exploitation/expeditions?agence={id}&actives=1  et  GET /exploitation/bordereaux?agence={id} */

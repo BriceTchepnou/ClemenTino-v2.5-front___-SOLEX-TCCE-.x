@@ -76,7 +76,7 @@ $(function () {
         var html =
             "<div class='cx-card'><div class='cx-card-body'><div class='ox-track-head'><div>" +
             "<div class='cx-crumb'>Lettre de transport</div><div class='ox-fiche-num'>" + U.esc(e.nRt) + (e.nRtMan && !pub ? " <span class='cx-tag cx-mono'>Man. " + U.esc(e.nRtMan) + "</span>" : "") + "</div>" +
-            "<div class='ox-fiche-route'>" + U.esc(G.villeNom(e.villeDep)) + " <i class='fa fa-long-arrow-right'></i> " + U.esc(O.destinationLib(e)) + " <small>" + (lv.mode === "DOMICILE" ? "livraison à domicile" : "retrait en agence") + "</small></div>" +
+            "<div class='ox-fiche-route'>" + U.esc(O.origineLib(e)) + " <i class='fa fa-long-arrow-right'></i> " + U.esc(O.destinationLib(e)) + " <small>" + (lv.mode === "DOMICILE" ? "livraison à domicile" : "retrait en agence") + "</small></div>" +
             "<div style='margin-top:10px'>" + statutEntete(e) + "</div>" +
             (dernier ? "<div class='cx-cell-sub' style='margin-top:4px'>Dernière mise à jour : " + U.esc(U.toFr(dernier.date)) + " · " + U.esc(G.villeNom(dernier.lieu)) + "</div>" : "") +
             "</div><div class='ox-track-eta'>" + eta + "</div></div>" + O.frise(e) + "</div></div>" +
@@ -84,7 +84,7 @@ $(function () {
             "<p class='cx-card-sub'>" + O.pl(e.suivi.length, "évènement") + "</p></div></div><div class='cx-card-body'>" + O.timeline(e, pub) + "</div></div>" +
             "<aside><div class='cx-card'><div class='cx-card-head'><span class='cx-step'><i class='fa fa-cube'></i></span><div><h3 class='cx-card-title'>Envoi</h3></div></div><div class='cx-card-body'><dl class='cx-dl ox-dl'>" +
             "<dt>Déposé le</dt><dd>" + U.toFrLong(e.dateExp) + "</dd><dt>Expéditeur</dt><dd>" + expd + "</dd><dt>Destinataire</dt><dd>" + dest + "<div class='cx-cell-sub'>" + (pub ? telMasque(e.destinataireInfo.tel) : U.esc(G.telAff(e.destinataireInfo.tel))) + "</div></dd>" +
-            "<dt>Colis</dt><dd>" + O.pl(e.nbColis || 1, "colis") + " · " + U.esc(G.kg(e.poids)) + "</dd>" +
+            "<dt>Colis</dt><dd>" + O.pl(e.nbColis || 1, "colis", "colis") + " · " + U.esc(G.kg(e.poids)) + "</dd>" +
             "<dt>Remise</dt><dd>" + (lv.mode === "DOMICILE" ? "À domicile" + (lv.quartier ? " · " + U.esc(lv.quartier) : "") : "En agence" + (agRetrait ? " · " + U.esc(O.agenceLib(agRetrait.id)) : "")) + "</dd>" +
             (e.etape === "EN_INSTANCE" ? "<dt>Retrait</dt><dd>Munissez-vous de ce numéro et d'une pièce d'identité.</dd>" : "") +
             (e.etape === "LIVREE" && e.remise ? "<dt>Remis à</dt><dd>" + (pub ? nomMasque(e.remise.nom) : U.esc(e.remise.nom)) + "</dd>" : "") +
