@@ -262,7 +262,7 @@ CX.shell = {
         /* Sélecteur d'entreprise (drop-up) : charte, logo et coordonnées des documents */
         var items = $.map(CX.societe.liste(), function (s) {
             var src = CX.societe.logoUrl($.extend({}, s, { logo: s.icone || s.logo }));
-            return "<li class='" + (s.code === S.code ? "active" : "") + "'><a href='#' data-societe='" + esc(s.code) + "'>" +
+            return "<li class='" + (s.code === S.code ? "active" : "") + "'><a href='#' data-choix-societe='" + esc(s.code) + "'>" +
                 "<span class='cx-soc-logo'>" + (src ? "<img src='" + esc(src) + "' alt=''>" : "<b>" + esc(CX.util.initials(s.nom)) + "</b>") + "</span>" +
                 "<span class='cx-soc-txt'><b>" + esc(s.nom) + "</b><small>" + esc(s.alias || s.slogan || "") + "</small></span>" +
                 "<i class='cx-soc-pastille' style='background:" + esc(s.theme.navy2) + "'></i>" +
@@ -338,8 +338,8 @@ CX.shell = {
         if ($("#cx-header").length) $("#cx-header").replaceWith(CX.shell.headerHtml(current));
         if ($("#cx-subnav").length) $("#cx-subnav").replaceWith(CX.shell.subnavHtml(current));
         if ($("#cx-footer").length) $("#cx-footer").replaceWith(CX.shell.footerHtml());
-        $(document).on("click", "[data-societe]", function (e) { e.preventDefault(); var c = $(this).data("societe"); if (c !== CX.societe.code()) CX.societe.choisir(c); });
-        $(document).on("click", "[data-societe-perso]", function (e) { e.preventDefault(); CX.shell.modaleSocietePerso(); });
+        $(document).on("click", ".cx-soc-pick [data-choix-societe]", function (e) { e.preventDefault(); var c = $(this).data("choix-societe"); if (c !== CX.societe.code()) CX.societe.choisir(c); });
+        $(document).on("click", ".cx-soc-pick [data-societe-perso]", function (e) { e.preventDefault(); CX.shell.modaleSocietePerso(); });
 
         /* Page hors du dossier commercial/ (ex : carnets) : window.CX_BASE = "../commercial/"
            préfixe les liens du menu pour qu'ils restent valides. */
