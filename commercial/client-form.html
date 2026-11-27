@@ -391,6 +391,76 @@
                         </div>
                     </div>
 
+                    <!-- Conditions de facturation (en compte / forfait) : reprises à chaque facture -->
+                    <div class="cx-block cx-hidden" id="bloc-conditions" style="margin-top:12px">
+                        <div class="cx-block-title">Conditions de facturation</div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="compte">N° de compte client</label>
+                                    <input type="text" class="form-control cx-mono" id="compte" name="compte" maxlength="8" placeholder="411xxxxx">
+                                    <span class="cx-help" id="compte-help">411 + 5 chiffres (compte de tiers Sage). Vide = attribué automatiquement.</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label">TVA</label>
+                                    <div class="cf-inline">
+                                        <label class="cx-switch"><input type="checkbox" name="avecTva" id="avecTva"><span class="cx-switch-track"></span><span class="cx-switch-text"><b>Avec TVA</b></span></label>
+                                        <div class="input-group cf-taux"><input type="number" class="form-control" id="tauxTva" name="tauxTva" min="0" max="100" step="0.01"><span class="input-group-addon">%</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label">Acompte IS retenu à la source</label>
+                                    <div class="cf-inline">
+                                        <label class="cx-switch"><input type="checkbox" name="abonnementIs" id="abonnementIs"><span class="cx-switch-track"></span><span class="cx-switch-text"><b>Abonnement IS</b></span></label>
+                                        <div class="input-group cf-taux"><input type="number" class="form-control" id="tauxIs" name="tauxIs" min="0" max="100" step="0.1"><span class="input-group-addon">%</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="assurance">Assurance <span class="cx-opt">(par facture)</span></label>
+                                    <div class="input-group"><input type="number" class="form-control" id="assurance" name="assurance" min="0" step="500"><span class="input-group-addon">FCFA</span></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="manutention">Manutention <span class="cx-opt">(par facture)</span></label>
+                                    <div class="input-group"><input type="number" class="form-control" id="manutention" name="manutention" min="0" step="500"><span class="input-group-addon">FCFA</span></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="emballage">Emballage <span class="cx-opt">(par facture)</span></label>
+                                    <div class="input-group"><input type="number" class="form-control" id="emballage" name="emballage" min="0" step="500"><span class="input-group-addon">FCFA</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label class="cx-switch" style="margin-top:6px">
+                                    <input type="checkbox" name="afficherPuMoyen" id="afficherPuMoyen"><span class="cx-switch-track"></span>
+                                    <span class="cx-switch-text"><b>Afficher le PU moyen</b><small>Poids volumétrique et prix moyen au kg sur la facture</small></span>
+                                </label>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="cx-field" style="margin-bottom:0">
+                                    <label class="cx-label" for="sousTotal">Sous-totaux sur la facture</label>
+                                    <select class="form-control" id="sousTotal" name="sousTotal">
+                                        <option value="AUCUN">Aucun</option>
+                                        <option value="DEPART">Par ville de départ</option>
+                                        <option value="DESTINATION">Par ville de destination</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <hr class="cx-sep">
 
                     <!-- Tarification automatique -->
@@ -430,17 +500,24 @@
                     <hr class="cx-sep">
 
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <div class="cx-field">
                                 <label class="cx-label" for="agenceId">Agence de rattachement</label>
                                 <select class="form-control" id="agenceId" name="agenceId" style="width:100%"></select>
                                 <span class="cx-help">Agence qui suit le compte et émet les factures.</span>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <div class="cx-field">
                                 <label class="cx-label" for="commercial">Commercial en charge</label>
                                 <select class="form-control" id="commercial" name="commercial" style="width:100%"></select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="apporteurId">Apporteur d'affaires <span class="cx-opt">(facultatif)</span></label>
+                                <select class="form-control" id="apporteurId" name="apporteurId" style="width:100%"></select>
+                                <span class="cx-help">Commissionné sur le chiffre d'affaires du client. <a href="apporteurs-liste.html">Apporteurs</a></span>
                             </div>
                         </div>
                     </div>

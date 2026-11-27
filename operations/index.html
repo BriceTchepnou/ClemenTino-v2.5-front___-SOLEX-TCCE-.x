@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>Opérations · Tableau de bord exploitation - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte commune (module Commercial) + Opérations ===== -->
+    <link rel="stylesheet" href="../commercial/assets/cx.css">
+    <link rel="stylesheet" href="assets/ops.css">
+</head>
+<body class="cx-app" data-module="operations" data-page="o-dashboard">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb">Opérations · Flux des colis</div>
+            <h1 class="cx-title">Tableau de bord exploitation <small id="l-agence"></small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <div id="ox-agence-slot"></div>
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-refresh"><i class="fa fa-refresh"></i> Rafraîchir</button>
+            <a class="cx-btn cx-btn-new" href="groupage.html"><i class="fa fa-cubes"></i> Groupage</a>
+        </div>
+    </div>
+
+    <!-- Colis par étape (cliquables) -->
+    <div class="cx-card">
+        <div class="cx-card-head">
+            <span class="cx-step"><i class="fa fa-exchange"></i></span>
+            <div><h3 class="cx-card-title">Colis à traiter dans l'agence</h3><p class="cx-card-sub">Cliquez sur une étape pour ouvrir l'écran de traitement</p></div>
+        </div>
+        <div class="cx-card-body"><div class="ox-pipeline" id="pipeline"></div></div>
+    </div>
+
+    <div class="cx-kpis" id="kpis"></div>
+
+    <div class="ox-dash">
+        <div>
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step"><i class="fa fa-clock-o"></i></span>
+                    <div><h3 class="cx-card-title">Retards <small class="cx-muted" id="n-retards"></small></h3>
+                        <p class="cx-card-sub">Colis au départ ou à destination de l'agence ayant dépassé leur délai cible (SLA)</p></div>
+                    <div class="cx-card-tools"><a href="lettres-voiture.html?retard=1">Tout voir <i class="fa fa-angle-right"></i></a></div>
+                </div>
+                <div class="cx-card-body"><div id="dt-retards"></div></div>
+            </div>
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step"><i class="fa fa-truck"></i></span>
+                    <div><h3 class="cx-card-title">Bordereaux du jour</h3><p class="cx-card-sub">Départs en préparation et arrivées attendues</p></div>
+                    <div class="cx-card-tools"><a href="bordereaux.html">Tous les bordereaux <i class="fa fa-angle-right"></i></a></div>
+                </div>
+                <div class="cx-card-body"><div class="ox-cards" id="bordereaux"></div></div>
+            </div>
+        </div>
+        <aside>
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step"><i class="fa fa-bolt"></i></span>
+                    <div><h3 class="cx-card-title">Flux du jour</h3><p class="cx-card-sub" id="flux-sub"></p></div>
+                </div>
+                <div class="cx-card-body"><div class="ox-flux" id="flux"></div></div>
+            </div>
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step"><i class="fa fa-rocket"></i></span>
+                    <div><h3 class="cx-card-title">Raccourcis</h3></div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="ox-shortcuts">
+                        <a href="groupage.html"><i class="fa fa-cubes"></i> Constituer un bordereau</a>
+                        <a href="degroupage.html"><i class="fa fa-sign-in"></i> Réceptionner</a>
+                        <a href="instance.html"><i class="fa fa-handshake-o"></i> Remettre un colis</a>
+                        <a href="livraisons.html"><i class="fa fa-motorcycle"></i> Préparer une tournée</a>
+                        <a href="lettres-voiture.html"><i class="fa fa-search"></i> Rechercher une LT</a>
+                        <a href="tracking.html"><i class="fa fa-crosshairs"></i> Tracking</a>
+                        <a href="../guichet/expedition-form.html"><i class="fa fa-plus"></i> Nouvelle expédition</a>
+                        <a href="bordereaux.html"><i class="fa fa-list-alt"></i> Bordereaux</a>
+                    </div>
+                </div>
+            </div>
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step"><i class="fa fa-tachometer"></i></span>
+                    <div><h3 class="cx-card-title">Délais cibles (SLA)</h3><p class="cx-card-sub">Taux de livraison dans les délais, colis livrés par l'agence sur 30 jours</p></div>
+                </div>
+                <div class="cx-card-body" id="sla"></div>
+            </div>
+        </aside>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur · <a href="#" id="btn-reset-demo">Réinitialiser les données</a></p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="../commercial/assets/cx-core.js"></script>
+<script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-tarifs.js"></script>
+<script src="../commercial/assets/cx-demo-exploitation.js"></script>
+<script src="../guichet/assets/guichet-commun.js"></script>
+<script src="assets/ops-commun.js"></script>
+<script>window.CX_BASE = "../commercial/";</script>
+<script src="../commercial/assets/cx-shell.js"></script>
+<script src="assets/pages/index.js"></script>
+</body>
+</html>

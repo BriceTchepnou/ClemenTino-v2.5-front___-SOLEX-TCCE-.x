@@ -1,0 +1,234 @@
+/* =====================================================================
+   ClemenTino 2.0 - Module GUICHET - styles propres (préfixe « gx- »)
+   ---------------------------------------------------------------------
+   Couche au-dessus de la charte commune commercial/assets/cx.css.
+   Portage de la maquette « Nouvelle expédition, guichet ClemenTino ».
+   Le reçu A4 a sa propre feuille de style : recu.css.
+   ===================================================================== */
+
+.cx-app .select2-container { width: 100% !important; }
+.gx-num { text-align: right; font-variant-numeric: tabular-nums; }
+.gx-tab { font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------------
+   En-tête de page : type de client (pastilles « NATEX » / « Particulier »)
+   --------------------------------------------------------------------- */
+.gx-typeclient { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.gx-typeclient label { margin: 0; cursor: pointer; font-weight: 400; }
+.gx-typeclient input { position: absolute; opacity: 0; pointer-events: none; }
+.gx-typeclient span {
+    display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 999px;
+    background: #fff; border: 1px solid var(--cx-line); color: #26344d; font-size: 13px; font-weight: 600;
+}
+.gx-typeclient span em { font-style: normal; font-family: Consolas, "Courier New", monospace; font-size: 11.5px; letter-spacing: .06em; }
+.gx-typeclient label:hover span { border-color: var(--cx-navy-3); }
+.gx-typeclient input:checked + span { background: var(--cx-ink); border-color: var(--cx-ink); color: #fff; }
+.gx-typeclient input:focus-visible + span { box-shadow: 0 0 0 3px rgba(42,99,196,.25); }
+
+/* ---------------------------------------------------------------------
+   Bandeau « démarrage rapide »
+   --------------------------------------------------------------------- */
+.gx-quick { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 20px; padding: 16px 20px; }
+.gx-quick .cx-field { margin: 0; flex: 1 1 340px; min-width: 0; }
+.gx-quick-row { display: flex; gap: 8px; }
+.gx-quick-row .form-control { flex: 1; min-width: 0; }
+.gx-quick-msg { min-height: 40px; background: var(--cx-soft) !important; border-color: var(--cx-line) !important; text-align: left; }
+.gx-quick-msg .fa { color: var(--cx-navy-2); }
+.gx-quick .cx-note { margin: 0; flex-basis: 100%; }
+
+/* Bloc « client en compte » */
+.gx-client-card .cx-card-body { padding-top: 14px; }
+.gx-client-info { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--cx-muted); margin-top: 6px; }
+.gx-client-info b { color: var(--cx-ink); }
+.gx-feuille-ok { color: #17653f !important; }
+.gx-feuille-err { color: var(--cx-red) !important; }
+.gx-feuille-warn { color: #8a4b00 !important; }
+.gx-proposer { cursor: pointer; font-weight: 600; text-decoration: underline; }
+
+/* ---------------------------------------------------------------------
+   Carte 1 : trajet
+   --------------------------------------------------------------------- */
+.gx-services { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.gx-services .cx-seg-item > span { min-height: 60px; }
+.gx-route { display: grid; grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr); gap: 12px; align-items: stretch; margin-top: 16px; }
+.gx-route .cx-block { display: flex; flex-direction: column; gap: 10px; }
+.gx-route .cx-block-title { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 0; }
+.gx-route .cx-block-title small { text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--cx-muted); font-size: 11.5px; }
+.gx-route .cx-field { margin: 0; }
+.gx-route-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.gx-route-arrow {
+    align-self: center; width: 36px; height: 36px; border-radius: 50%; background: var(--cx-blue-soft); color: var(--cx-navy-2);
+    display: flex; align-items: center; justify-content: center;
+}
+@media (max-width: 767px) {
+    .gx-route { grid-template-columns: 1fr; }
+    .gx-route-arrow { transform: rotate(90deg); justify-self: center; }
+}
+.gx-remise { margin-top: 16px; }
+.gx-remise .cx-seg-item > span { display: flex; align-items: center; gap: 12px; min-height: 56px; }
+.gx-remise .cx-seg-item > span .fa { float: none; order: -1; font-size: 18px; color: inherit; margin: 0; }
+.gx-remise .cx-seg-item > span b { display: inline; font-size: 14px; }
+.gx-domicile { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 14px 16px; margin-top: 14px; }
+.gx-domicile .cx-field { margin: 0; }
+.gx-annexes { border-top: 1px solid var(--cx-line-2); margin-top: 18px; padding-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 14px 16px; }
+.gx-annexes .cx-field { margin: 0; }
+
+/* Champ téléphone « +237 » */
+.gx-tel .input-group-addon { font-family: Consolas, "Courier New", monospace; color: #26344d; }
+.gx-tel .form-control { font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------------
+   Carte 2 : colis
+   --------------------------------------------------------------------- */
+.gx-colis { border: 1px solid var(--cx-line); border-radius: 12px; padding: 16px 18px; margin-bottom: 14px; background: #fff; }
+.gx-colis-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.gx-colis-head b { font-size: 14.5px; color: var(--cx-ink); }
+.gx-colis-grid { display: flex; flex-wrap: wrap; gap: 14px 16px; margin-top: 14px; }
+.gx-colis-grid .cx-field { margin: 0; }
+.gx-c-poids { flex: 1 1 110px; min-width: 0; }
+.gx-c-dims { flex: 2 1 230px; min-width: 0; }
+.gx-c-nb { flex: 0 0 150px; }
+.gx-c-val { flex: 1 1 150px; min-width: 0; }
+.gx-dims { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.gx-dims .form-control { text-align: center; padding-left: 4px; padding-right: 4px; }
+.gx-colis .cx-stepper { display: flex; }
+.gx-colis .cx-stepper button { width: 40px; height: 40px; flex: 0 0 40px; }
+.gx-colis .cx-stepper input { flex: 1; width: auto; font-size: 16px; }
+.gx-c-desc { margin-top: 14px; }
+.gx-c-desc .cx-field { margin: 0; }
+.gx-poids { margin-top: 14px; background: var(--cx-soft); border-radius: 10px; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; }
+.gx-poids-bars { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.gx-poids-bar { display: flex; align-items: center; gap: 12px; font-size: 12.5px; }
+.gx-poids-bar > span:first-child { flex: 0 0 132px; color: #26344d; }
+.gx-poids-bar .cx-bar { flex: 1; height: 8px; }
+.gx-poids-bar .cx-bar > i { background: #98a4b6; }
+.gx-poids-bar.win .cx-bar > i { background: var(--cx-navy-2); }
+.gx-poids-bar > b { flex: 0 0 64px; text-align: right; font-weight: 600; color: var(--cx-ink); font-variant-numeric: tabular-nums; }
+.gx-taxable { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.gx-taxable small { font-size: 11.5px; color: var(--cx-muted); }
+.gx-taxable b { font-size: 26px; line-height: 1.1; font-weight: 700; color: var(--cx-ink); font-variant-numeric: tabular-nums; letter-spacing: -.3px; }
+.gx-taxable em { font-style: normal; font-size: 11.5px; color: var(--cx-navy-2); font-weight: 600; }
+
+/* ---------------------------------------------------------------------
+   Carte 3 : expéditeur et destinataire
+   --------------------------------------------------------------------- */
+.gx-parties { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 18px; }
+.gx-partie { border: 1px solid var(--cx-line); border-radius: 12px; padding: 18px; }
+.gx-partie .cx-block-title { margin-bottom: 14px; }
+.gx-partie .cx-switch { display: flex; justify-content: space-between; width: 100%; min-height: 40px; margin-bottom: 10px; }
+.gx-partie .cx-switch .cx-switch-text { order: -1; font-size: 13.5px; color: var(--cx-ink); }
+.gx-toggle { font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none !important; display: inline-flex; align-items: center; gap: 6px; }
+.gx-plus { margin-top: 12px; }
+
+/* ---------------------------------------------------------------------
+   Colonne de droite : « LETTRE DE TRANSPORT »
+   --------------------------------------------------------------------- */
+.gx-lt .cx-summary-hero { background: #0e1b2e; padding: 20px 22px 22px; }
+.gx-statut { padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; letter-spacing: 0; text-transform: none; }
+.gx-statut.brouillon { background: #ffe2a8; color: #4a2e00; }
+.gx-statut.enregistree { background: #bfe8cf; color: #0b4a26; }
+.gx-statut.correction { background: #c9d8f0; color: #13306b; }
+.gx-lt .cx-hero-route b { font-size: 22px; letter-spacing: .01em; overflow-wrap: break-word; line-height: 1.1; }
+.gx-lt .cx-hero-route b.gx-long { font-size: 17px; }
+.gx-lt .cx-hero-route small { display: block; color: #c9d8f0; opacity: 1; font-size: 12px; margin-top: 2px; }
+.gx-lt .cx-hero-route .cx-route-line { flex: 0 0 40px; border-top-color: #8fb3ee; }
+.gx-lt .cx-hero-route > div:not(.cx-route-line) { flex: 1 1 0; min-width: 0; }
+.gx-lt .cx-hero-tags span { background: #1e2f4a; font-size: 12px; padding: 4px 10px; }
+.gx-lt .cx-summary-body { padding: 18px 22px 16px; }
+.gx-lt .cx-switch { display: flex; justify-content: space-between; width: 100%; margin-bottom: 6px; }
+.gx-lt .cx-switch .cx-switch-text { order: -1; }
+.gx-lt .cx-sum-line { min-height: 40px; }
+.gx-lt .cx-sum-line span:first-child { color: #26344d; }
+.gx-sum-input { display: inline-flex; align-items: center; gap: 6px; }
+.gx-sum-input .form-control { width: 112px; height: 36px; text-align: right; font-variant-numeric: tabular-nums; }
+.gx-sum-input small { color: var(--cx-muted); font-size: 11.5px; }
+.gx-detail { margin-top: 4px; }
+.gx-detail .cx-calc { font-size: 12px; }
+.gx-lt .cx-tarif-chip { margin: 10px 0 6px; }
+
+/* Découpe façon ticket (cercles latéraux + pointillés) */
+.gx-cut { position: relative; height: 0; border-top: 2px dashed #c5cedb; margin: 0 14px; }
+.gx-cut:before, .gx-cut:after {
+    content: ""; position: absolute; top: -13px; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--cx-bg); border: 1px solid var(--cx-line);
+}
+.gx-cut:before { left: -27px; }
+.gx-cut:after { right: -27px; }
+.gx-lt .cx-summary-foot { padding: 18px 22px 22px; }
+.gx-lt .cx-sum-total { border-top: 0; margin: 0 0 12px; padding: 0; align-items: flex-end; }
+.gx-lt .cx-sum-total b { font-size: 34px; line-height: 1; }
+
+/* Paiement */
+.gx-paiement { border: 1px solid var(--cx-line); border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; background: var(--cx-soft); }
+.gx-paiement .cx-field { margin-bottom: 10px; }
+.gx-paiement .cx-field:last-child { margin-bottom: 0; }
+.gx-paiement-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.gx-rendu { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; margin-top: 8px; }
+.gx-rendu b { font-size: 17px; color: var(--cx-ink); font-variant-numeric: tabular-nums; }
+.gx-rendu.ko b { color: var(--cx-red); }
+.gx-encompte { display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; color: var(--cx-navy); }
+.gx-encompte b { display: block; color: var(--cx-ink); }
+
+/* Champs obligatoires manquants (cliquables) */
+.gx-manq { margin: 4px 0 0; padding: 0 0 0 4px; list-style: none; font-size: 12.5px; }
+.gx-manq li { cursor: pointer; padding: 1px 0 1px 18px; }
+.gx-manq li:hover { text-decoration: underline; }
+.gx-wa-note { display: flex; gap: 8px; font-size: 12.5px; color: var(--cx-muted); margin: 10px 0 14px; }
+.gx-wa-note .fa { color: #1a7a43; margin-top: 2px; font-size: 15px; }
+.gx-lt .cx-btn-primary:disabled { background: #e3e8f0; color: #4d5b73 !important; opacity: 1; }
+.gx-lt .cx-btn-lg { min-height: 50px; font-size: 15px; }
+.cx-field.has-error .select2-selection { border-color: var(--cx-red) !important; }
+.gx-flash { animation: gxflash 1.2s ease-out 1; }
+@keyframes gxflash { 0% { box-shadow: 0 0 0 4px rgba(217,119,6,.45); } 100% { box-shadow: 0 0 0 0 rgba(217,119,6,0); } }
+
+/* ---------------------------------------------------------------------
+   Vue « expédition enregistrée » (reçu + actions)
+   --------------------------------------------------------------------- */
+.gx-recu-zone { background: #e3e8f0; border-radius: 14px; padding: 24px; overflow-x: auto; min-width: 0; }
+.gx-recu-zone .gx-sheet { margin: 0 auto; box-shadow: 0 12px 32px rgba(14,27,46,.14); }
+.gx-done .cx-card-body { display: flex; flex-direction: column; gap: 14px; }
+.gx-done-ok { background: var(--cx-green-soft); color: #0f5a30; border-radius: 10px; padding: 14px 16px; }
+.gx-done-ok b { font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.gx-done-ok span { display: block; font-family: Consolas, "Courier New", monospace; font-size: 16px; padding-left: 24px; margin-top: 2px; }
+.gx-done .cx-dl { grid-template-columns: 1fr auto; font-size: 13px; }
+.gx-done .cx-dl dd { text-align: right; font-weight: 600; }
+.gx-done-btns { display: flex; flex-direction: column; gap: 8px; }
+.gx-btn-wa { background: #1a7a43; color: #fff !important; }
+.gx-btn-wa:hover:not(:disabled) { background: #146236; }
+
+/* ---------------------------------------------------------------------
+   Modale « Remplir depuis un message client »
+   --------------------------------------------------------------------- */
+#gx-msg-texte { min-height: 140px; font-size: 13px; }
+.gx-extraits { width: 100%; font-size: 12.5px; margin-top: 12px; }
+.gx-extraits td { padding: 5px 6px; border-bottom: 1px solid var(--cx-line-2); vertical-align: middle; }
+.gx-extraits td:first-child { color: var(--cx-muted); width: 90px; }
+.gx-extraits select { height: 32px; font-size: 12.5px; }
+
+/* ---------------------------------------------------------------------
+   Historique des saisies
+   --------------------------------------------------------------------- */
+.gx-periodes { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+.gx-periodes button { border: 1px solid #d5dbe6; background: #fff; border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 600; color: var(--cx-ink); }
+.gx-periodes button.active { background: var(--cx-ink); border-color: var(--cx-ink); color: #fff; }
+.gx-hist-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
+@media (max-width: 1599px) {   /* le tableau garde toute la largeur ; la caisse passe dessous */
+    .gx-hist-layout { grid-template-columns: 1fr; }
+    .gx-caisse { max-width: 520px; }
+}
+#dt-exp .cx-cell-main { min-width: 120px; }
+.gx-hist-layout .cx-toolbar select.form-control { min-width: 130px; }
+.gx-hist-layout .cx-toolbar input[type=date] { width: 150px; }
+.gx-client-filtre { min-width: 220px; }
+#dt-exp .dropdown-menu { min-width: 250px; z-index: 1050; }
+#dt-exp tr.gx-annulee td { color: var(--cx-muted); }
+#dt-exp tr.gx-annulee .cx-cell-main { text-decoration: line-through; color: var(--cx-muted); }
+.cx-app .dropdown-menu > li.disabled > a { cursor: not-allowed; }
+.cx-app .dropdown-menu > li.disabled > a small { display: block; padding-left: 18px; font-size: 11px; }
+.gx-caisse .cx-card-body { padding-top: 12px; }
+.gx-caisse table { width: 100%; font-size: 13px; }
+.gx-caisse td { padding: 7px 0; border-bottom: 1px solid var(--cx-line-2); }
+.gx-caisse td.num { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.gx-caisse td small { color: var(--cx-muted); }
+.gx-caisse tr.total td { border-bottom: 0; border-top: 2px solid var(--cx-ink); font-weight: 800; font-size: 14px; color: var(--cx-ink); }
+.gx-caisse .gx-caisse-compte td { color: var(--cx-muted); }

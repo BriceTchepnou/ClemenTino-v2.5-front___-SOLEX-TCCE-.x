@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>États · Catalogue des états - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte commune + États ===== -->
+    <link rel="stylesheet" href="../commercial/assets/cx.css">
+    <link rel="stylesheet" href="assets/etats.css">
+</head>
+<body class="cx-app" data-module="etats" data-page="e-index">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb">États</div>
+            <h1 class="cx-title">États et statistiques <small id="cat-count"></small></h1>
+        </div>
+    </div>
+
+    <div class="ex-cat-tools">
+        <div class="cx-search">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <label class="sr-only" for="cat-q">Rechercher un état</label>
+            <input type="search" class="form-control" id="cat-q" placeholder="Rechercher un état : chiffre d'affaires, caisse, colis, délai…" autocomplete="off">
+        </div>
+        <span class="cx-muted" style="font-size:12px" id="cat-maj"></span>
+    </div>
+
+    <div id="cat"></div>
+
+    <p class="ex-todo">TODO API : GET /etats/catalogue/chiffres-cles · GET|PUT /utilisateur/preferences/etats-favoris</p>
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="../commercial/assets/cx-core.js"></script>
+<script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-tarifs.js"></script>
+<script src="../commercial/assets/cx-demo-exploitation.js"></script>
+<script>window.CX_BASE = "../commercial/";</script>
+<script src="../commercial/assets/cx-shell.js"></script>
+<script src="../commercial/assets/cx-pdf.js"></script>
+<script src="../guichet/assets/guichet-commun.js"></script>
+<script src="assets/etats-commun.js"></script>
+<script src="assets/index.js"></script>
+</body>
+</html>

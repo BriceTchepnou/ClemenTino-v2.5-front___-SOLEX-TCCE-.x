@@ -51,5 +51,10 @@
 .cx-file-name b { display: block; color: var(--cx-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cx-file-name small { color: var(--cx-muted); font-size: 11.5px; }
 
+/* Conditions de facturation : interrupteur + taux sur une ligne */
+.cf-inline { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 40px; }
+.cf-taux { width: 130px; flex: 0 0 130px; }
+.cf-taux .form-control { text-align: right; padding-left: 6px; padding-right: 6px; }
+
 /* Select2 dans un input-group / pleine largeur */
 .cx-app .select2-container { width: 100% !important; }

@@ -32,11 +32,91 @@
             <button type="button" class="cx-btn cx-btn-soft cx-hidden" id="btn-emettre"><i class="fa fa-check"></i> Émettre</button>
             <button type="button" class="cx-btn cx-btn-ghost cx-hidden" id="btn-paiement"><i class="fa fa-money"></i> Enregistrer un paiement</button>
             <button type="button" class="cx-btn cx-btn-ghost" id="btn-envoyer"><i class="fa fa-envelope-o"></i> Envoyer</button>
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-excel"><i class="fa fa-file-excel-o"></i> Exporter en Excel</button>
             <button type="button" class="cx-btn cx-btn-ghost" id="btn-pdf"><i class="fa fa-file-pdf-o"></i> Télécharger en PDF</button>
             <button type="button" class="cx-btn cx-btn-primary" id="btn-imprimer"><i class="fa fa-print"></i> Imprimer</button>
         </div>
     </div>
     <div class="cx-no-print" id="fx-alertes"></div>
+
+    <!-- =============================================================
+         Options de la facture (non imprimées) : l'aperçu du document se
+         met à jour immédiatement ; « Recalculer les montants » enregistre.
+         (Symfony : formulaire FactureOptionsType, POST .../recalculer)
+         ============================================================= -->
+    <section class="cx-card cx-no-print fo-panel cx-hidden" id="fo-panel">
+        <div class="cx-card-head">
+            <div>
+                <h3 class="cx-card-title"><i class="fa fa-sliders"></i> Options de la facture</h3>
+                <p class="cx-card-sub">Affichage, taxes, acompte, frais et références - l'aperçu se met à jour immédiatement</p>
+            </div>
+            <div class="cx-card-tools">
+                <span class="cx-badge cx-badge-orange cx-hidden" id="fo-modifie">Aperçu non enregistré</span>
+                <button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" id="fo-toggle" title="Replier / déplier"><i class="fa fa-chevron-up"></i></button>
+            </div>
+        </div>
+        <div class="cx-card-body" id="fo-body">
+            <div id="fo-ecart"></div>
+            <div class="fo-grid">
+                <!-- Affichage -->
+                <div class="fo-col">
+                    <div class="cx-block-title">Affichage</div>
+                    <label class="cx-switch fo-sw"><input type="checkbox" data-opt="afficherPuMoyen" id="fo-afficherPuMoyen"><span class="cx-switch-track"></span>
+                        <span class="cx-switch-text"><b>PU moyen</b><small>Colonnes poids volumétrique et P.U. moyen</small></span></label>
+                    <label class="cx-switch fo-sw"><input type="checkbox" data-st="DEPART" id="fo-st-depart"><span class="cx-switch-track"></span>
+                        <span class="cx-switch-text"><b>Sous-total par ville de départ</b></span></label>
+                    <label class="cx-switch fo-sw"><input type="checkbox" data-st="DESTINATION" id="fo-st-destination"><span class="cx-switch-track"></span>
+                        <span class="cx-switch-text"><b>Sous-total par ville de destination</b></span></label>
+                    <label class="cx-switch fo-sw"><input type="checkbox" data-opt="periodeAuto" id="fo-periodeAuto"><span class="cx-switch-track"></span>
+                        <span class="cx-switch-text"><b>Période automatique</b><small>Du 1er au dernier envoi facturé</small></span></label>
+                </div>
+                <!-- Taxes -->
+                <div class="fo-col">
+                    <div class="cx-block-title">Taxes &amp; remise</div>
+                    <div class="fo-line">
+                        <label class="cx-switch"><input type="checkbox" data-opt="avecTva" id="fo-avecTva"><span class="cx-switch-track"></span><span class="cx-switch-text"><b>Avec TVA</b></span></label>
+                        <div class="input-group input-group-sm fo-taux"><input type="text" class="form-control input-sm" data-opt="tauxTva" data-num id="fo-tauxTva"><span class="input-group-addon">%</span></div>
+                    </div>
+                    <div class="fo-line">
+                        <label class="cx-switch"><input type="checkbox" data-opt="abonnementIs" id="fo-abonnementIs"><span class="cx-switch-track"></span><span class="cx-switch-text"><b>Acompte IS</b><small>retenu à la source</small></span></label>
+                        <div class="input-group input-group-sm fo-taux"><input type="text" class="form-control input-sm" data-opt="tauxIs" data-num id="fo-tauxIs"><span class="input-group-addon">%</span></div>
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="fo-remisePct">Remise</label>
+                        <div class="input-group input-group-sm"><input type="text" class="form-control input-sm" data-opt="remisePct" data-num id="fo-remisePct"><span class="input-group-addon">%</span></div>
+                    </div>
+                </div>
+                <!-- Acompte & frais -->
+                <div class="fo-col">
+                    <div class="cx-block-title">Acompte &amp; frais additionnels</div>
+                    <div class="fo-mt"><label for="fo-acompte">Acompte versé</label><input type="text" class="form-control input-sm" data-opt="acompte" data-num id="fo-acompte"></div>
+                    <div class="fo-mt"><label for="fo-assurance">Assurance</label><input type="text" class="form-control input-sm" data-opt="assurance" data-num id="fo-assurance"></div>
+                    <div class="fo-mt"><label for="fo-manutention">Manutention</label><input type="text" class="form-control input-sm" data-opt="manutention" data-num id="fo-manutention"></div>
+                    <div class="fo-mt"><label for="fo-emballage">Emballage</label><input type="text" class="form-control input-sm" data-opt="emballage" data-num id="fo-emballage"></div>
+                    <span class="cx-help">Montants HT en FCFA, ajoutés une fois à la facture.</span>
+                </div>
+                <!-- Références -->
+                <div class="fo-col">
+                    <div class="cx-block-title">Références</div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="fo-bonCommande">Bon de commande n°</label>
+                        <input type="text" class="form-control input-sm" data-opt="bonCommande" id="fo-bonCommande" maxlength="40">
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="fo-delaiPaiement">Délai de paiement</label>
+                        <div class="input-group input-group-sm"><input type="text" class="form-control input-sm" data-opt="delaiPaiement" data-num id="fo-delaiPaiement"><span class="input-group-addon">jours</span></div>
+                        <span class="cx-help" id="fo-echeance"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="fo-actions">
+                <button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" id="fo-client"><i class="fa fa-user-o"></i> Appliquer les conditions du client</button>
+                <button type="button" class="cx-btn cx-btn-link cx-btn-sm" id="fo-annuler"><i class="fa fa-undo"></i> Annuler les modifications</button>
+                <span class="fo-spacer"></span>
+                <button type="button" class="cx-btn cx-btn-primary" id="fo-recalculer"><i class="fa fa-refresh"></i> Recalculer les montants</button>
+            </div>
+        </div>
+    </section>
 
     <!-- Facture introuvable -->
     <div class="cx-card cx-hidden" id="fx-erreur">
@@ -72,6 +152,8 @@
                     <tr><th>Date d'échéance</th><td id="fx-dateEcheance"></td></tr>
                     <tr><th>Période facturée</th><td id="fx-periode"></td></tr>
                     <tr><th>Code client</th><td id="fx-codeClient"></td></tr>
+                    <tr><th>N° de compte</th><td id="fx-compte"></td></tr>
+                    <tr id="fx-row-bc" class="cx-hidden"><th>Bon de commande</th><td id="fx-bonCommande"></td></tr>
                 </table>
             </div>
         </header>
@@ -91,29 +173,12 @@
             </div>
         </section>
 
+        <!-- Colonnes, lignes (éventuellement groupées par ville) et total générés par facture.js
+             selon les options : « PU moyen » ajoute Poids V. et P.U. moyen (et masque Contenu). -->
         <table class="fx-lignes">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>N° RT</th>
-                    <th>N° LT manuel</th>
-                    <th>Trajet</th>
-                    <th>Destinataire</th>
-                    <th>Contenu</th>
-                    <th class="num">Colis</th>
-                    <th class="num">Poids (kg)</th>
-                    <th class="num">Montant HT</th>
-                </tr>
-            </thead>
+            <thead id="fx-thead"></thead>
             <tbody id="fx-lignes"></tbody>
-            <tbody class="fx-soustotal">
-                <tr>
-                    <td colspan="6">Sous-total · <span id="fx-nb"></span></td>
-                    <td class="num" id="fx-tot-colis"></td>
-                    <td class="num" id="fx-tot-poids"></td>
-                    <td class="num" id="fx-soustotal"></td>
-                </tr>
-            </tbody>
+            <tbody class="fx-soustotal" id="fx-total-lignes"></tbody>
         </table>
 
         <section class="fx-bas">
@@ -131,15 +196,9 @@
                 </div>
             </div>
             <div class="fx-totaux">
-                <table>
-                    <tr><th>Total HT</th><td id="fx-ht"></td></tr>
-                    <tr id="fx-row-remise"><th>Remise <span id="fx-remisePct"></span></th><td id="fx-remise"></td></tr>
-                    <tr><th>Net HT</th><td id="fx-net"></td></tr>
-                    <tr><th>TVA <span id="fx-taux"></span></th><td id="fx-tva"></td></tr>
-                    <tr class="fx-ttc"><th>Total TTC</th><td id="fx-ttc"></td></tr>
-                    <tr class="fx-row-paye cx-hidden" id="fx-row-paye"><th>Déjà réglé</th><td id="fx-paye"></td></tr>
-                    <tr class="fx-row-reste cx-hidden" id="fx-row-reste"><th>Reste à payer</th><td id="fx-reste"></td></tr>
-                </table>
+                <!-- Montant total, remise, frais, Net HT, TVA, TTC, Acompte IS, Acompte,
+                     Solde à payer, Déjà réglé, Reste à payer (lignes affichées selon la facture) -->
+                <table id="fx-totaux"></table>
                 <div class="fx-devise">Montants en francs CFA (XAF)</div>
             </div>
         </section>
@@ -172,6 +231,7 @@
 <script src="assets/cx-data.js"></script>
 <script src="assets/cx-shell.js"></script>
 <script src="assets/cx-pdf.js"></script>
+<script src="assets/pages/exports.js"></script>
 <script src="assets/pages/facturation.js"></script>
 <script src="assets/pages/facture.js"></script>
 </body>

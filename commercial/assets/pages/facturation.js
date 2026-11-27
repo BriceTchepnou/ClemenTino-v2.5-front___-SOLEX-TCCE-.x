@@ -12,6 +12,14 @@
      CX.fac.mailtoEnvoi(f, client)  lien mailto: d'envoi de la facture
      CX.fac.marquerEnvoyee(f, c)    ouvre le mailto + statut ENVOYEE + historique
      CX.fac.ouvrirPaiement(f, cb)   modale « Enregistrer un paiement »
+     CX.fac.calculer(f, client, exps[, opts])  calcul centralisé (remise, frais,
+                                    TVA, acompte IS, acompte, solde, sous-totaux)
+     CX.fac.appliquer(f, calcul)    reporte un calcul sur une copie de la facture
+     CX.fac.optionsFacture / optionsClient / ecartConditions   options de facturation
+     CX.fac.recalculer(f[, opts])   « Recalculer les montants » (confirmation + enregistrement)
+     CX.fac.marquerReglee(f)        « Facture réglée » (paiement du solde en un clic)
+     CX.fac.aPayer(f)               solde attendu (TTC - IS - acompte, ou TTC)
+   Également chargé par journal-vente.html et commissions.html.
    >>> INTÉGRATION SYMFONY <<<
    La modale de paiement est injectée par JS : elle peut devenir un
    include Twig (_modal_paiement.html.twig) partagé par les deux écrans.
@@ -29,11 +37,214 @@ CX.fac = (function () {
         $.each(f.paiements || [], function (_, p) { s += Number(p.montant) || 0; });
         return U.round(s);
     }
+    /* Montant attendu du client : solde à payer (TTC - acompte IS - acompte) s'il a
+       été calculé, sinon le TTC (factures antérieures aux options de facturation). */
+    function aPayer(f) { return f.soldeAPayer != null ? U.round(f.soldeAPayer) : U.round(f.montantTTC); }
     function reste(f) {
         if (f.statut === "ANNULEE") return 0;
-        return Math.max(0, U.round(f.montantTTC) - paye(f));
+        return Math.max(0, aPayer(f) - paye(f));
     }
-    function netHT(f) { return U.round(f.montantHT) - U.round(f.remise || 0); }
+    /* Net HT = total des lignes - remise + frais additionnels (assurance, manutention, emballage) */
+    function netHT(f) { return U.round(f.montantHT) - U.round(f.remise || 0) + U.round(f.fraisTotal || 0); }
+
+    /* =================================================================
+       Options de facturation + calcul centralisé
+       -----------------------------------------------------------------
+       f.options (facultatif) : { remisePct, avecTva, tauxTva, abonnementIs,
+         tauxIs, acompte, assurance, manutention, emballage, afficherPuMoyen,
+         sousTotal (AUCUN|DEPART|DESTINATION), periodeAuto, bonCommande,
+         delaiPaiement }. Absentes : on reproduit la facture telle qu'elle
+         a été créée (remise et taux de TVA enregistrés, pas d'IS, pas de frais).
+       >>> INTÉGRATION SYMFONY <<< : ce calcul doit être refait à l'identique
+       côté serveur (service FacturationCalculator) - le navigateur n'affiche
+       qu'un aperçu.
+       ================================================================= */
+    function optionsFacture(f, c) {
+        var taux = f.tauxTva == null ? CX.CONFIG.TVA : Number(f.tauxTva);
+        var delai = f.dateEmission && f.dateEcheance ? U.daysBetween(f.dateEmission, f.dateEcheance) : null;
+        var base = {
+            remisePct: Number(f.remisePct) || 0,
+            avecTva: taux > 0,
+            tauxTva: taux > 0 ? taux : CX.CONFIG.TVA,
+            abonnementIs: false,
+            tauxIs: CX.REF.TAUX_IS,
+            acompte: 0, assurance: 0, manutention: 0, emballage: 0,
+            afficherPuMoyen: false, sousTotal: "AUCUN", periodeAuto: false, bonCommande: "",
+            delaiPaiement: delai != null && delai >= 0 ? delai : (c && c.delaiPaiement) || CX.CONFIG.DELAI_PAIEMENT_JOURS
+        };
+        return $.extend(base, f.options || {});
+    }
+    /* Options proposées à partir des conditions de facturation du client */
+    function optionsClient(f, c) {
+        var k = CX.REF.conditionsFacturation(c);
+        return $.extend(optionsFacture(f, c), {
+            remisePct: k.remisePct, avecTva: k.avecTva, tauxTva: k.tauxTva, abonnementIs: k.abonnementIs, tauxIs: k.tauxIs,
+            assurance: k.assurance, manutention: k.manutention, emballage: k.emballage,
+            afficherPuMoyen: k.afficherPuMoyen, sousTotal: k.sousTotal, delaiPaiement: k.delaiPaiement
+        });
+    }
+    /* Les options d'une facture diffèrent-elles des conditions du client ? (montants seulement) */
+    function ecartConditions(f, c) {
+        var a = optionsFacture(f, c), b = optionsClient(f, c), ecarts = [];
+        function lib(o) {
+            return {
+                remisePct: "remise " + U.fmt(o.remisePct, o.remisePct % 1 ? 2 : 0) + " %",
+                avecTva: o.avecTva ? "avec TVA" : "sans TVA",
+                abonnementIs: o.abonnementIs ? "acompte IS " + U.fmt(o.tauxIs, 1) + " %" : "sans acompte IS",
+                frais: "frais " + U.money(U.round(o.assurance) + U.round(o.manutention) + U.round(o.emballage))
+            };
+        }
+        var la = lib(a), lb = lib(b);
+        if (a.remisePct !== b.remisePct) ecarts.push(lb.remisePct);
+        if (a.avecTva !== b.avecTva || (a.avecTva && Number(a.tauxTva) !== Number(b.tauxTva))) ecarts.push(lb.avecTva);
+        if (a.abonnementIs !== b.abonnementIs || (a.abonnementIs && Number(a.tauxIs) !== Number(b.tauxIs))) ecarts.push(lb.abonnementIs);
+        if (la.frais !== lb.frais) ecarts.push(lb.frais);
+        return ecarts;
+    }
+
+    /* Poids volumétrique d'une expédition (champ poidsVol, ou dimensions L × l × H) */
+    function poidsVol(e) {
+        if (e.poidsVol != null && e.poidsVol !== "") return Number(e.poidsVol) || 0;
+        if (e.L && e.l && e.H) return CX.tarif.poidsVolumetrique(e.L, e.l, e.H);
+        return null;
+    }
+    /* Prix unitaire moyen : montant HT / poids taxable (F par kg) */
+    function puMoyen(e) {
+        var p = Math.max(Number(e.poids) || 0, poidsVol(e) || 0);
+        return p > 0 ? U.round((Number(e.montant) || 0) / p) : null;
+    }
+
+    /* Calcul complet d'une facture.
+       facture : la facture ; client : son client ; exps : ses expéditions ;
+       opts (facultatif) : options à appliquer (aperçu), sinon celles de la facture. */
+    function calculer(facture, client, exps, opts) {
+        var o = $.extend(optionsFacture(facture, client), opts || {});
+        var lignes = (exps || []).slice().sort(function (a, b) {
+            return a.dateExp === b.dateExp ? (a.nRt > b.nRt ? 1 : -1) : (a.dateExp > b.dateExp ? 1 : -1);
+        });
+        var r = { options: o, lignes: lignes, nb: lignes.length, total: 0, colis: 0, poids: 0, poidsVol: 0, groupes: [] };
+        $.each(lignes, function (_, e) {
+            r.total += U.round(e.montant); r.colis += Number(e.nbColis) || 0; r.poids += Number(e.poids) || 0; r.poidsVol += poidsVol(e) || 0;
+        });
+        r.remisePct = Number(o.remisePct) || 0;
+        r.remise = U.round(r.total * r.remisePct / 100);
+        r.assurance = U.round(o.assurance); r.manutention = U.round(o.manutention); r.emballage = U.round(o.emballage);
+        r.frais = r.assurance + r.manutention + r.emballage;
+        r.netHT = r.total - r.remise + r.frais;
+        r.tauxTva = o.avecTva ? Number(o.tauxTva) || 0 : 0;
+        r.tva = U.round(r.netHT * r.tauxTva / 100);
+        r.ttc = r.netHT + r.tva;
+        r.tauxIs = o.abonnementIs ? Number(o.tauxIs) || 0 : 0;
+        r.is = U.round(r.netHT * r.tauxIs / 100);       // acompte IS : assis sur le montant HT
+        r.acompte = U.round(o.acompte);
+        r.solde = r.ttc - r.is - r.acompte;
+
+        /* Période : saisie, ou automatique (1re et dernière date d'expédition) */
+        r.periode = { du: facture.periodeDu, au: facture.periodeAu };
+        if (o.periodeAuto && lignes.length) r.periode = { du: lignes[0].dateExp, au: lignes[lignes.length - 1].dateExp };
+
+        /* Sous-totaux par ville de départ ou de destination */
+        if (o.sousTotal === "DEPART" || o.sousTotal === "DESTINATION") {
+            var champ = o.sousTotal === "DEPART" ? "villeDep" : "villeDest", idx = {};
+            $.each(lignes, function (_, e) {
+                var k = e[champ] || "—";
+                if (!idx[k]) { idx[k] = { cle: k, lignes: [], total: 0, colis: 0, poids: 0 }; r.groupes.push(idx[k]); }
+                var g = idx[k];
+                g.lignes.push(e); g.total += U.round(e.montant); g.colis += Number(e.nbColis) || 0; g.poids += Number(e.poids) || 0;
+            });
+            r.groupes.sort(function (a, b) { return a.cle > b.cle ? 1 : -1; });
+        }
+        return r;
+    }
+
+    /* Reporte un calcul sur la facture (copie) : montants + options + période + échéance */
+    function appliquer(f, calc) {
+        var o = calc.options, maj = $.extend(true, {}, f);
+        $.extend(maj, {
+            options: $.extend({}, o),
+            montantHT: calc.total, remisePct: calc.remisePct, remise: calc.remise,
+            frais: { assurance: calc.assurance, manutention: calc.manutention, emballage: calc.emballage }, fraisTotal: calc.frais,
+            tauxTva: calc.tauxTva, tva: calc.tva, montantTTC: calc.ttc,
+            tauxIs: calc.tauxIs, montantIS: calc.is, acompte: calc.acompte, soldeAPayer: calc.solde,
+            periodeDu: calc.periode.du, periodeAu: calc.periode.au,
+            bonCommande: o.bonCommande || ""
+        });
+        if (maj.dateEmission) maj.dateEcheance = U.addDays(maj.dateEmission, parseInt(o.delaiPaiement, 10) || 0);
+        return maj;
+    }
+
+    /* « Recalculer les montants » : recharge le client et les expéditions, recalcule
+       avec les options de la facture (opts pour en imposer d'autres), affiche
+       l'écart puis enregistre. Retourne une promesse (facture mise à jour). */
+    function recalculer(f, opts) {
+        var dfd = $.Deferred();
+        if (f.statut === "ANNULEE") { U.toast("Une facture annulée ne peut pas être recalculée.", "warning"); return dfd.reject().promise(); }
+        // TODO API : POST /commercial/factures/{id}/recalculer  { options }  (calcul serveur, renvoie la facture)
+        $.when(
+            CX.api.get("clients", f.clientId),
+            CX.api.list("expeditions", function (e) { return $.inArray(e.id, $.map(f.expeditionIds || [], Number)) >= 0; })
+        ).done(function (c, exps) {
+            var calc = calculer(f, c, exps, opts), maj = appliquer(f, calc), p = paye(f);
+            var lignes = [
+                ["Net HT", netHT(f), netHT(maj)], ["TVA", U.round(f.tva), maj.tva], ["Total TTC", U.round(f.montantTTC), maj.montantTTC],
+                ["Acompte IS", U.round(f.montantIS || 0), maj.montantIS], ["Solde à payer", aPayer(f), aPayer(maj)]
+            ];
+            var change = $.grep(lignes, function (l) { return l[1] !== l[2]; }).length > 0;
+            if (p > aPayer(maj)) {
+                U.toast("Recalcul impossible : les paiements déjà reçus (" + U.money(p) + ") dépassent le nouveau solde (" + U.money(aPayer(maj)) + ").", "error");
+                dfd.reject(); return;
+            }
+            U.confirm({
+                title: "Recalculer la facture " + f.numero,
+                message: "<p>Montants recalculés à partir des <b>" + exps.length + " expédition(s)</b> rattachées et des options de la facture.</p>" +
+                    "<table class='cx-table' style='font-size:12.5px'><thead><tr><th></th><th class='num'>Actuel</th><th class='num'>Recalculé</th></tr></thead><tbody>" +
+                    $.map(lignes, function (l) {
+                        return "<tr><td>" + l[0] + "</td><td class='num cx-nowrap'>" + U.money(l[1]) + "</td><td class='num cx-nowrap" + (l[1] !== l[2] ? " cx-strong" : "") + "'>" + U.money(l[2]) + "</td></tr>";
+                    }).join("") + "</tbody></table>" +
+                    (change ? "" : "<div class='cx-note cx-note-ok'><i class='fa fa-check'></i><div>Aucun écart : les montants sont déjà à jour.</div></div>") +
+                    (p ? "<div class='cx-note cx-note-warn'><i class='fa fa-info-circle'></i><div>Déjà encaissé : <b>" + U.money(p) + "</b>. Le statut sera ajusté.</div></div>" : ""),
+                okText: "Recalculer et enregistrer"
+            }).done(function () {
+                if (p && (maj.statut === "PAYEE" || maj.statut === "PARTIELLE")) maj.statut = reste(maj) === 0 ? "PAYEE" : "PARTIELLE";
+                CX.api.save("factures", maj).then(function () {
+                    return CX.api.log("factures", f.id, "Montants recalculés" + (change ? " : solde " + U.money(aPayer(f)) + " → " + U.money(aPayer(maj)) : " (sans changement)"));
+                }).done(function (r) { U.toast("Facture " + U.esc(f.numero) + " recalculée.", "success"); dfd.resolve(r); })
+                    .fail(function (e) { U.toast(e || "Erreur lors de l'enregistrement", "error"); dfd.reject(e); });
+            }).fail(function () { dfd.reject(); });
+        }).fail(function (e) { U.toast(e || "Facture ou client introuvable", "error"); dfd.reject(e); });
+        return dfd.promise();
+    }
+
+    /* « Facture réglée » : enregistre en un clic le paiement du solde restant */
+    function marquerReglee(f) {
+        var dfd = $.Deferred(), r = reste(f);
+        if (!peutPayer(f)) { U.toast("La facture " + U.esc(f.numero) + " n'a pas de solde à régler.", "info"); return dfd.reject().promise(); }
+        var modes = $.map(CX.REF.MODES_PAIEMENT, function (m) { return "<option>" + U.esc(m) + "</option>"; }).join("");
+        U.confirm({
+            title: "Facture réglée - " + f.numero,
+            message: "<p>Le règlement du solde de <b>" + U.money(r) + "</b> (" + U.esc(CX.api.clientNom(f.clientId)) + ") sera enregistré à la date du jour ; la facture passera au statut <b>Payée</b>.</p>" +
+                "<div class='row'><div class='col-sm-6 cx-field'><label class='cx-label' for='rg-mode'>Mode de paiement</label><select class='form-control' id='rg-mode'>" + modes + "</select></div>" +
+                "<div class='col-sm-6 cx-field'><label class='cx-label' for='rg-ref'>Référence <span class='cx-opt'>(facultatif)</span></label><input type='text' class='form-control' id='rg-ref'></div></div>",
+            okText: "Marquer réglée", okClass: "cx-btn-success"
+        }).done(function () {
+            /* lecture après fermeture : les valeurs ont été mémorisées à la saisie */
+            var mode = memo.mode || CX.REF.MODES_PAIEMENT[0], ref = memo.ref || "";
+            var maj = $.extend(true, {}, f);
+            maj.paiements = maj.paiements || [];
+            maj.paiements.push({ date: U.today(), montant: r, mode: mode, reference: ref });
+            maj.statut = "PAYEE";
+            // TODO API : POST /commercial/factures/{id}/regler  { mode, reference }  (paiement du solde)
+            CX.api.save("factures", maj).then(function () {
+                return CX.api.log("factures", f.id, "Facture réglée : paiement du solde de " + U.money(r) + " (" + mode + ")");
+            }).done(function (res) { U.toast("Facture " + U.esc(f.numero) + " réglée.", "success"); dfd.resolve(res); })
+                .fail(function (e) { U.toast(e || "Erreur lors de l'enregistrement", "error"); dfd.reject(e); });
+        }).fail(function () { dfd.reject(); }).always(function () { $(document).off(".cxregl"); });
+        var memo = {};
+        $(document).off(".cxregl")
+            .on("change.cxregl", "#rg-mode", function () { memo.mode = $(this).val(); })
+            .on("input.cxregl", "#rg-ref", function () { memo.ref = $.trim($(this).val()); });
+        return dfd.promise();
+    }
 
     /* Une facture compte dans l'encours dès qu'elle est émise (ni brouillon, ni annulée) */
     function active(f) { return f.statut !== "BROUILLON" && f.statut !== "ANNULEE"; }
@@ -176,6 +387,10 @@ CX.fac = (function () {
     return {
         paye: paye, reste: reste, netHT: netHT, active: active, enRetard: enRetard, joursRetard: joursRetard,
         peutPayer: peutPayer, statutHtml: statutHtml, emailClient: emailClient, contactClient: contactClient,
-        mailtoEnvoi: mailtoEnvoi, marquerEnvoyee: marquerEnvoyee, ouvrirPaiement: ouvrirPaiement
+        mailtoEnvoi: mailtoEnvoi, marquerEnvoyee: marquerEnvoyee, ouvrirPaiement: ouvrirPaiement,
+        /* options de facturation et calcul centralisé */
+        aPayer: aPayer, optionsFacture: optionsFacture, optionsClient: optionsClient, ecartConditions: ecartConditions,
+        poidsVol: poidsVol, puMoyen: puMoyen, calculer: calculer, appliquer: appliquer,
+        recalculer: recalculer, marquerReglee: marquerReglee
     };
 })();

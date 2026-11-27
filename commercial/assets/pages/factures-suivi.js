@@ -4,8 +4,10 @@
    Indicateurs, onglets par statut (dont « En retard », calculé),
    filtres (recherche, client, période d'émission) et actions :
    voir / imprimer, émettre un brouillon, marquer envoyée (+ mailto),
-   enregistrer un paiement, relancer (mailto + historique), annuler
-   (libère les expéditions, qui redeviennent facturables).
+   enregistrer un paiement, « Facture réglée » (paiement du solde en un
+   clic), « Recalculer les montants » (CX.fac.recalculer), relancer
+   (mailto + historique), annuler (libère les expéditions, qui
+   redeviennent facturables).
    Paramètre d'URL : ?relance=ID ouvre directement la relance.
    Dépend de assets/pages/facturation.js (CX.fac).
    ===================================================================== */
@@ -87,6 +89,8 @@ $(function () {
         if (f.statut === "BROUILLON") h.push(btn("emettre", "fa-check", "Émettre la facture", "cx-btn-soft"));
         if (F.active(f)) h.push(btn("envoyer", "fa-envelope-o", f.statut === "EMISE" ? "Marquer envoyée (ouvre la messagerie)" : "Renvoyer par e-mail"));
         if (F.peutPayer(f)) h.push(btn("paiement", "fa-money", "Enregistrer un paiement"));
+        if (F.peutPayer(f)) h.push(btn("reglee", "fa-check-circle", "Facture réglée (paiement du solde en un clic)", "cx-btn-soft"));
+        if (f.statut !== "ANNULEE" && f.statut !== "PAYEE") h.push(btn("recalculer", "fa-refresh", "Recalculer les montants"));
         if (F.peutPayer(f)) h.push(btn("relance", "fa-bell-o", "Relancer le client", F.enRetard(f) ? "cx-btn-danger" : "cx-btn-ghost"));
         if (f.statut !== "ANNULEE" && !(f.paiements && f.paiements.length)) h.push(btn("annuler", "fa-ban", "Annuler la facture", "cx-btn-danger"));
         return "<div class='fs-actions'>" + h.join("") + "</div>";
@@ -118,7 +122,11 @@ $(function () {
                 }
                 return "<span class='cx-nowrap'>" + U.toFr(f.dateEcheance) + "</span>" + sub;
             }, searchValue: function (f) { return U.toFr(f.dateEcheance); } },
-            { key: "montantTTC", title: "Montant TTC", className: "num", render: function (f) { return "<span class='cx-nowrap'>" + U.money(f.montantTTC) + "</span>"; },
+            { key: "montantTTC", title: "Montant TTC", className: "num", render: function (f) {
+                /* solde à payer différent du TTC : acompte IS retenu à la source et/ou acompte */
+                return "<span class='cx-nowrap'>" + U.money(f.montantTTC) + "</span>" +
+                    (F.aPayer(f) !== U.round(f.montantTTC) ? "<div class='cx-cell-sub cx-nowrap'>Solde " + U.money(F.aPayer(f)) + (f.montantIS ? " (IS retenu)" : "") + "</div>" : "");
+            },
                 searchValue: function (f) { return U.fmt(f.montantTTC) + " " + f.montantTTC; } },
             { key: "paye", title: "Payé", className: "num", sortValue: function (f) { return F.paye(f); }, searchValue: function () { return ""; },
                 render: function (f) { var p = F.paye(f); return p ? "<span class='cx-nowrap'>" + U.money(p) + "</span>" : "<span class='cx-muted'>—</span>"; } },
@@ -178,6 +186,8 @@ $(function () {
         if (act === "emettre") emettre(f);
         else if (act === "envoyer") F.marquerEnvoyee(f, client(f.clientId)).done(recharger);
         else if (act === "paiement") F.ouvrirPaiement(f, recharger);
+        else if (act === "reglee") F.marquerReglee(f).done(recharger);
+        else if (act === "recalculer") F.recalculer(f).done(recharger);
         else if (act === "relance") ouvrirRelance(f);
         else if (act === "annuler") annuler(f);
     });

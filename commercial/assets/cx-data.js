@@ -84,6 +84,74 @@ CX.REF = {
 };
 
 /* =====================================================================
+   Ajouts : conditions de facturation des clients, comptabilité (journal
+   de vente, export Sage), apporteurs d'affaires et commissions.
+   ---------------------------------------------------------------------
+   Nouveaux champs d'un client (tous facultatifs ; absents = comportement
+   historique) :
+     compte          n° de compte client (411 + 5 chiffres, ex. 41100006)
+     avecTva         facture avec TVA (défaut true) - tauxTva (défaut CX.CONFIG.TVA)
+     abonnementIs    acompte d'impôt sur les sociétés retenu à la source
+     tauxIs          taux de l'acompte IS (défaut 2,2 %)
+     assurance, manutention, emballage   frais fixes ajoutés à chaque facture (HT)
+     afficherPuMoyen colonnes « Poids V. » et « P.U. moyen » sur la facture
+     sousTotal       AUCUN | DEPART | DESTINATION (sous-totaux par ville)
+     apporteurId     apporteur d'affaires qui a apporté le client
+   ===================================================================== */
+$.extend(CX.REF, {
+    TAUX_IS: 2.2,   // % acompte IS retenu à la source (régime du réel) - TODO : paramètre société
+    TYPES_APPORTEUR: {
+        COMMERCIAL: { label: "Commercial interne", color: "blue" },
+        AGENT: { label: "Agent indépendant", color: "purple" },
+        PARTENAIRE: { label: "Partenaire", color: "orange" },
+        PARRAIN: { label: "Client parrain", color: "green" }
+    },
+    STATUT_APPORTEUR: {
+        ACTIF: { label: "Activé", color: "green" },
+        SUSPENDU: { label: "Suspendu", color: "orange" }
+    },
+    BASES_COMMISSION: {
+        FACTURE: { label: "CA HT facturé", desc: "Factures émises sur la période (net HT)" },
+        ENCAISSE: { label: "CA encaissé", desc: "Paiements reçus sur la période (part HT)" }
+    },
+    STATUT_COMMISSION: {
+        A_PAYER: { label: "À payer", color: "orange" },
+        PAYEE: { label: "Payée", color: "green" }
+    },
+    SOUS_TOTAL: { AUCUN: "Aucun", DEPART: "Par ville de départ", DESTINATION: "Par ville de destination" },
+
+    /* Code ville sur 3 lettres (DOUALA -> DLA) */
+    villeCode: function (nom) {
+        var v = $.grep(CX.REF.VILLES, function (x) { return x.nom === nom; })[0];
+        return v ? v.code : String(nom || "XXX").substr(0, 3).toUpperCase();
+    },
+    /* N° de compte comptable du client : champ « compte » ou 411 + id sur 5 chiffres */
+    compteClient: function (c) {
+        if (!c) return "";
+        if (c.compte) return String(c.compte);
+        return "411" + ("00000" + (c.id || 0)).slice(-5);
+    },
+    /* Conditions de facturation d'un client, valeurs par défaut comprises */
+    conditionsFacturation: function (c) {
+        c = c || {};
+        function n(v, def) { return v == null || v === "" || isNaN(Number(v)) ? def : Number(v); }
+        return {
+            remisePct: n(c.remisePct, 0),
+            delaiPaiement: n(c.delaiPaiement, 0) || CX.CONFIG.DELAI_PAIEMENT_JOURS,
+            avecTva: c.avecTva !== false,
+            tauxTva: n(c.tauxTva, CX.CONFIG.TVA),
+            abonnementIs: !!c.abonnementIs,
+            tauxIs: n(c.tauxIs, CX.REF.TAUX_IS),
+            assurance: n(c.assurance, 0),
+            manutention: n(c.manutention, 0),
+            emballage: n(c.emballage, 0),
+            afficherPuMoyen: !!c.afficherPuMoyen,
+            sousTotal: CX.REF.SOUS_TOTAL[c.sousTotal] ? c.sousTotal : "AUCUN"
+        };
+    }
+});
+
+/* =====================================================================
    Tarification indicative - conservée pour compatibilité.
    ---------------------------------------------------------------------
    Le moteur de tarification complet est CX.tarifs (assets/cx-tarifs.js,
@@ -142,17 +210,29 @@ CX.api = (function () {
        navigateur contient déjà des données de démo, on ajoute seulement les
        collections manquantes (le reste des données saisies est conservé). */
     var COLLECTIONS_AJOUTEES = ["tarifaires", "groupesClients", "contrats"];
+    /* Rubrique « Apporteurs d'affaires » (ajoutée ensuite, même principe) */
+    var COLLECTIONS_APPORTEURS = ["apporteurs", "commissions"];
     function completer(d) {
-        var ajout = null;
+        var ajout = null, app = null;
+        d.seq = d.seq || {};
         $.each(COLLECTIONS_AJOUTEES, function (_, k) {
             if ($.isArray(d[k])) return;
             ajout = ajout || seedTarifs();
             d[k] = ajout[k];
         });
-        if (!ajout) return false;
-        d.seq = d.seq || {};
-        $.each(ajout.seq, function (k, v) { if (!d.seq[k]) d.seq[k] = v; });
-        return true;
+        if (ajout) $.each(ajout.seq, function (k, v) { if (!d.seq[k]) d.seq[k] = v; });
+        $.each(COLLECTIONS_APPORTEURS, function (_, k) {
+            if ($.isArray(d[k])) return;
+            app = app || seedApporteurs();
+            d[k] = app[k];
+        });
+        if (app) {
+            $.each(app.seq, function (k, v) { if (!d.seq[k]) d.seq[k] = v; });
+            /* rattachement des clients de démo à leurs apporteurs + conditions de facturation
+               (uniquement les champs absents : les saisies du navigateur sont conservées) */
+            if (d.apporteurs === app.apporteurs) complementsClientsDemo(d.clients || []);
+        }
+        return !!(ajout || app);
     }
     function persist() { localStorage.setItem(CX.STORAGE_KEY, JSON.stringify(db)); }
     function ok(v) { return $.Deferred().resolve(JSON.parse(JSON.stringify(v))).promise(); }   // copie défensive
@@ -173,6 +253,7 @@ CX.api = (function () {
         if (coll === "contrats") return "CTR-" + year + "-" + ("0000" + n).slice(-4);
         if (coll === "tarifaires") return "TAR-" + ("0000" + n).slice(-4);
         if (coll === "groupesClients") return "GRP-" + ("000" + n).slice(-3);
+        if (coll === "commissions") return "COM-" + year + "-" + ("0000" + n).slice(-4);
         return coll.toUpperCase() + "-" + n;
     }
 
@@ -350,9 +431,13 @@ CX.api = (function () {
         seq["factures-" + year] = fid;
         var tar = seedTarifs();
         $.extend(seq, tar.seq);
+        var app = seedApporteurs();
+        $.extend(seq, app.seq);
+        complementsClientsDemo(clients);
         return {
             clients: clients, expeditions: exps, factures: factures, cotations: cotations,
-            tarifaires: tar.tarifaires, groupesClients: tar.groupesClients, contrats: tar.contrats, seq: seq
+            tarifaires: tar.tarifaires, groupesClients: tar.groupesClients, contrats: tar.contrats,
+            apporteurs: app.apporteurs, commissions: app.commissions, seq: seq
         };
 
         function cli(id, code, rs, sigle, secteur, ville, enCompte, forfait, agenceId, contact, tel, email, delai) {
@@ -545,5 +630,63 @@ CX.api = (function () {
         var seq = { tarifaires: tarifaires.length, groupesClients: groupesClients.length };
         seq["contrats-" + year] = 3;
         return { tarifaires: tarifaires, groupesClients: groupesClients, contrats: contrats, seq: seq };
+    }
+
+    /* -----------------------------------------------------------------
+       Données de démonstration « Apporteurs d'affaires »
+       Code = CRS + n° d'ordre + code de la ville d'affectation (CRS513DLA).
+       Les commissions (collection « commissions ») sont créées par
+       commissions.html quand une commission est marquée payée.
+       ----------------------------------------------------------------- */
+    function seedApporteurs() {
+        var today = CX.util.today();
+        function d(n) { return CX.util.addDays(today, -n); }
+        function app(id, n, matricule, type, nom, prenoms, sexe, naissance, tel1, tel2, email, adresse, ville, agenceId, taux, base, statut, age) {
+            var code = "CRS" + n + CX.REF.villeCode(ville);
+            return {
+                id: id, code: code, numero: code, matricule: matricule, type: type, nom: nom, prenoms: prenoms, sexe: sexe,
+                dateNaissance: naissance, tel1: tel1, tel2: tel2, email: email, adresse: adresse, ville: ville, agenceId: agenceId,
+                tauxCommission: taux, baseCommission: base, statut: statut, notes: "",
+                dateCreation: d(age), creePar: "Support KuTiWa",
+                historique: [{ date: d(age) + " 09:15", user: "Support KuTiWa", action: "Apporteur d'affaires enregistré" }]
+                    .concat(statut === "SUSPENDU" ? [{ date: d(20) + " 16:40", user: "Support KuTiWa", action: "Apporteur suspendu - contrat d'agent non renouvelé" }] : [])
+            };
+        }
+        var apporteurs = [
+            app(1, 502, "MAT-2018-0142", "COMMERCIAL", "NANA", "Brice Arnaud", "M", "1988-04-12", "699 45 12 78", "", "b.nana@solex.cm", "Bonapriso, rue Njo-Njo", "DOUALA", 1, 3, "FACTURE", "ACTIF", 420),
+            app(2, 503, "AGT-0031", "AGENT", "EKOTTO", "Marie-Claire", "F", "1991-09-03", "677 21 08 55", "655 10 20 30", "mc.ekotto@gmail.com", "Akwa Nord", "DOUALA", 2, 5, "ENCAISSE", "ACTIF", 380),
+            app(3, 504, "PART-0007", "PARTENAIRE", "MBARGA", "Thierry", "M", "1979-01-27", "690 87 44 12", "", "contact@medicaconseil.cm", "Bali, BP 3310 Douala", "DOUALA", 1, 4, "FACTURE", "ACTIF", 300),
+            app(4, 505, "MAT-2020-0210", "COMMERCIAL", "ABENA", "Josiane", "F", "1993-06-18", "699 30 41 52", "", "j.abena@solex.cm", "Bastos, Yaoundé", "YAOUNDE", 4, 3, "FACTURE", "ACTIF", 290),
+            app(5, 506, "AGT-0044", "AGENT", "ONANA", "Serge Patrice", "M", "1985-11-02", "677 55 66 77", "", "serge.onana@yahoo.fr", "Mvan, Yaoundé", "YAOUNDE", 6, 5, "ENCAISSE", "ACTIF", 240),
+            app(6, 507, "AGT-0052", "AGENT", "FOTSO", "Gisèle", "F", "1990-02-14", "696 12 13 14", "", "gisele.fotso@gmail.com", "Marché A, Bafoussam", "BAFOUSSAM", 7, 4, "FACTURE", "ACTIF", 210),
+            app(7, 508, "MAT-2021-0305", "COMMERCIAL", "BELLO", "Ibrahim", "M", "1987-07-30", "699 70 80 90", "", "i.bello@solex.cm", "Quartier Plateau, Garoua", "GAROUA", 8, 3, "FACTURE", "ACTIF", 190),
+            app(8, 509, "AGT-0058", "AGENT", "ESSOMBA", "Rodrigue", "M", "1994-12-09", "650 11 22 33", "", "r.essomba@gmail.com", "Kribi centre", "KRIBI", 9, 5, "ENCAISSE", "SUSPENDU", 160),
+            app(9, 510, "PAR-0003", "PARRAIN", "KAMGA", "Odile", "F", "1982-03-21", "677 77 66 55", "", "odile.kamga@pharmaciepacific.cm", "Akwa, Douala", "DOUALA", 1, 2, "ENCAISSE", "ACTIF", 120),
+            app(10, 511, "AGT-0061", "AGENT", "TABI", "Emmanuel", "M", "1989-08-05", "670 45 45 45", "", "emmanuel.tabi@gmail.com", "Down Beach, Limbé", "LIMBE", 10, 4, "FACTURE", "ACTIF", 90),
+            app(11, 512, "PART-0011", "PARTENAIRE", "NJOYA", "Aïcha", "F", "1986-05-16", "699 01 23 45", "", "a.njoya@transitplus.cm", "Elig-Essono, Yaoundé", "YAOUNDE", 5, 3.5, "FACTURE", "ACTIF", 60),
+            app(12, 513, "MAT-2024-0412", "COMMERCIAL", "ETOGA", "Marie", "F", "1996-10-11", "655 98 76 54", "", "m.etoga@solex.cm", "Bonabéri, Douala", "DOUALA", 3, 3, "FACTURE", "ACTIF", 30)
+        ];
+        return { apporteurs: apporteurs, commissions: [], seq: { apporteurs: 513 } };
+    }
+
+    /* Compléments des clients de démo (n° de compte, conditions de facturation,
+       apporteur) : n'écrase jamais un champ déjà renseigné. */
+    function complementsClientsDemo(clients) {
+        var demo = {
+            1: { apporteurId: 2 },
+            2: { apporteurId: 1 },
+            3: { apporteurId: 4 },
+            4: { apporteurId: 3 },
+            6: { apporteurId: 1, abonnementIs: true, tauxIs: 2.2, afficherPuMoyen: true, sousTotal: "DESTINATION" },
+            7: { apporteurId: 1, abonnementIs: true, tauxIs: 2.2, assurance: 5000 },
+            8: { apporteurId: 3, avecTva: false },
+            10: { apporteurId: 2, manutention: 5000, emballage: 2500, afficherPuMoyen: true },
+            11: { apporteurId: 4, abonnementIs: true, tauxIs: 2.2, sousTotal: "DEPART" }
+        };
+        $.each(clients, function (_, c) {
+            if (!c || !c.id || c.id > 12) return;
+            var ajout = $.extend({ compte: "411" + ("00000" + c.id).slice(-5) }, demo[c.id] || {});
+            $.each(ajout, function (k, v) { if (c[k] == null) c[k] = v; });
+        });
     }
 })();

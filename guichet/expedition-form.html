@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Guichet · Nouvelle expédition - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+    <!-- ===== Charte commune (module Commercial) + Guichet ===== -->
+    <link rel="stylesheet" href="../commercial/assets/cx.css">
+    <link rel="stylesheet" href="assets/guichet.css">
+    <link rel="stylesheet" href="assets/recu.css">
+</head>
+<body class="cx-app" data-module="guichet" data-page="g-expedition-form">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head cx-no-print">
+        <div>
+            <div class="cx-crumb">Guichet · <a href="expeditions-liste.html">Expéditions</a> / <span id="gx-crumb">Nouvelle</span></div>
+            <h1 class="cx-title" id="gx-titre">Nouvelle expédition</h1>
+        </div>
+        <div class="cx-page-actions">
+            <!-- Type de client (pastilles « NATEX » / « Particulier » de la maquette) -->
+            <div class="gx-typeclient" id="gx-typeclient" role="radiogroup" aria-label="Type de client">
+                <label><input type="radio" name="typeClient" value="COMPTE"><span><em>NATEX</em> Client en compte</span></label>
+                <label><input type="radio" name="typeClient" value="PARTICULIER" checked><span><i class="fa fa-user-o"></i> Particulier</span></label>
+            </div>
+            <a class="cx-btn cx-btn-ghost" href="expeditions-liste.html"><i class="fa fa-history"></i> Historique</a>
+        </div>
+    </div>
+
+    <!-- Expédition non modifiable (livrée, facturée, annulée) -->
+    <div class="cx-note cx-note-warn cx-hidden cx-no-print" id="gx-lecture"><i class="fa fa-lock"></i><div id="gx-lectureTexte"></div></div>
+
+    <!-- =================================================================
+         VUE 1 : saisie
+         ================================================================= -->
+    <div class="cx-layout cx-no-print" id="gx-vue-saisie">
+        <div>
+
+            <!-- ======== Démarrage rapide ======== -->
+            <section class="cx-card gx-quick" aria-label="Démarrage rapide">
+                <div class="cx-field">
+                    <label class="cx-label" for="prereg">Pré-enregistrement du client</label>
+                    <div class="gx-quick-row">
+                        <input type="text" class="form-control" id="prereg" placeholder="Scanner le QR ou saisir le numéro" autocomplete="off">
+                        <button type="button" class="cx-btn cx-btn-ghost" id="btn-prereg" style="border-color:var(--cx-navy-2);color:var(--cx-navy-2) !important"><i class="fa fa-qrcode"></i> Rechercher</button>
+                    </div>
+                </div>
+                <button type="button" class="cx-btn cx-btn-ghost gx-quick-msg" id="btn-message"><i class="fa fa-magic"></i> Remplir depuis un message client</button>
+                <div class="cx-note cx-note-info cx-hidden" id="prereg-info"><i class="fa fa-info-circle"></i><div></div></div>
+            </section>
+
+            <!-- ======== Client en compte (NATEX) ======== -->
+            <section class="cx-card gx-client-card cx-hidden" id="gx-carte-client" aria-labelledby="t-client">
+                <div class="cx-card-head">
+                    <span class="cx-step"><i class="fa fa-building-o"></i></span>
+                    <div>
+                        <h2 class="cx-card-title" id="t-client">Client en compte</h2>
+                        <p class="cx-card-sub">Facturé en fin de période · tarif de son contrat ou de sa grille · feuille de son carnet de LT</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="cx-field" style="margin-bottom:0">
+                        <label class="cx-label req" for="gx-client">Client</label>
+                        <select class="form-control" id="gx-client"><option value=""></option></select>
+                        <div class="gx-client-info" id="gx-client-info"><span>Recherchez par raison sociale, sigle ou code client.</span></div>
+                        <div class="cx-note cx-note-err cx-hidden" id="gx-client-alerte"><i class="fa fa-ban"></i><div></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======== Carte 1 : trajet ======== -->
+            <section class="cx-card" aria-labelledby="t-trajet">
+                <div class="cx-card-head">
+                    <span class="cx-step">1</span>
+                    <div><h2 class="cx-card-title" id="t-trajet">Trajet</h2></div>
+                </div>
+                <div class="cx-card-body">
+                    <p class="cx-section-label" id="l-service">Type d'expédition</p>
+                    <div class="cx-seg gx-services" id="segService" role="radiogroup" aria-labelledby="l-service">
+                        <label class="cx-seg-item"><input type="radio" name="service" value="URBAINE"><span><b>Urbaine</b><small>Dans la même ville</small></span></label>
+                        <label class="cx-seg-item"><input type="radio" name="service" value="NATIONALE" checked><span><b>Nationale</b><small>Entre deux villes</small></span></label>
+                        <label class="cx-seg-item"><input type="radio" name="service" value="REGIONALE"><span><b>Régionale</b><small>Pays voisins</small></span></label>
+                        <label class="cx-seg-item"><input type="radio" name="service" value="INTERNATIONALE"><span><b>Internationale</b><small>Autres pays</small></span></label>
+                    </div>
+
+                    <div class="gx-route">
+                        <div class="cx-block">
+                            <div class="cx-block-title"><span>Départ</span><small>Votre bureau, repris par défaut</small></div>
+                            <div class="gx-route-2">
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="villeDep">Ville</label>
+                                    <select class="form-control" id="villeDep" name="villeDep"></select>
+                                </div>
+                                <div class="cx-field">
+                                    <label class="cx-label" for="bureauDep">Bureau</label>
+                                    <select class="form-control" id="bureauDep" name="bureauDep"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gx-route-arrow" aria-hidden="true"><i class="fa fa-long-arrow-right"></i></div>
+                        <div class="cx-block">
+                            <div class="cx-block-title"><span>Destination</span></div>
+                            <div class="gx-route-2" id="gx-dest-nat">
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="villeDest">Ville</label>
+                                    <select class="form-control" id="villeDest" name="villeDest"></select>
+                                </div>
+                                <div class="cx-field">
+                                    <label class="cx-label" for="bureauDest">Bureau</label>
+                                    <select class="form-control" id="bureauDest" name="bureauDest"></select>
+                                </div>
+                            </div>
+                            <div class="gx-route-2 cx-hidden" id="gx-dest-etr">
+                                <div class="cx-field">
+                                    <label class="cx-label req" for="paysDest">Pays</label>
+                                    <select class="form-control" id="paysDest" name="paysDest"></select>
+                                </div>
+                                <div class="cx-field">
+                                    <label class="cx-label" for="villeEtranger">Ville</label>
+                                    <input type="text" class="form-control" id="villeEtranger" name="villeEtranger" maxlength="60">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="cx-section-label gx-remise" id="l-remise">Remise au destinataire</p>
+                    <div class="cx-seg cx-seg-soft gx-remise" style="margin-top:0" id="segLivraison" role="radiogroup" aria-labelledby="l-remise">
+                        <label class="cx-seg-item"><input type="radio" name="livraison" value="BUREAU" checked><span><i class="fa fa-building"></i><b>Retrait au bureau</b></span></label>
+                        <label class="cx-seg-item"><input type="radio" name="livraison" value="DOMICILE"><span><i class="fa fa-home"></i><b>Livraison à domicile</b></span></label>
+                    </div>
+                    <div class="cx-note cx-note-info cx-hidden" id="gx-sans-bureau"><i class="fa fa-info-circle"></i><div>Aucun bureau dans la ville de destination : la livraison à domicile est obligatoire.</div></div>
+
+                    <div class="gx-domicile cx-hidden" id="gx-domicile">
+                        <div class="cx-field">
+                            <label class="cx-label req" for="quartier">Quartier de livraison</label>
+                            <input type="text" class="form-control" id="quartier" name="quartier" maxlength="80" placeholder="Quartier">
+                        </div>
+                        <div class="cx-field">
+                            <label class="cx-label" for="zone">Zone de livraison</label>
+                            <select class="form-control" id="zone" name="zone"></select>
+                            <span class="cx-help" id="zoneHint"></span>
+                        </div>
+                        <div class="cx-field">
+                            <label class="cx-label req" for="repere">Point de rencontre ou repère</label>
+                            <input type="text" class="form-control" id="repere" name="repere" maxlength="120" placeholder="Carrefour, commerce, portail">
+                        </div>
+                        <div class="cx-field">
+                            <label class="cx-label" for="telLiv">Personne à appeler à la livraison</label>
+                            <div class="input-group gx-tel"><span class="input-group-addon">+237</span>
+                                <input type="tel" class="form-control" id="telLiv" name="telLiv" inputmode="numeric" maxlength="16" placeholder="6XX XX XX XX"></div>
+                            <span class="cx-help">Vide : le livreur appelle le destinataire.</span>
+                        </div>
+                    </div>
+
+                    <div class="gx-annexes">
+                        <div class="cx-field">
+                            <label class="cx-label" for="nRtMan" id="l-nRtMan">N° reçu transport manuel <span class="cx-opt">(facultatif)</span></label>
+                            <input type="text" class="form-control" id="nRtMan" name="nRtMan" maxlength="20" inputmode="numeric" autocomplete="off">
+                            <span class="cx-help" id="nRtManInfo"></span>
+                        </div>
+                        <div class="cx-field">
+                            <label class="cx-label" for="bordereau">Bordereau d'expédition <span class="cx-opt">(facultatif)</span></label>
+                            <select class="form-control" id="bordereau" name="bordereau"></select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======== Carte 2 : colis ======== -->
+            <section class="cx-card" aria-labelledby="t-colis">
+                <div class="cx-card-head">
+                    <span class="cx-step">2</span>
+                    <div>
+                        <h2 class="cx-card-title" id="t-colis">Colis à expédier</h2>
+                        <p class="cx-card-sub" id="colisSub">Poids taxable = le plus grand du poids réel et du poids volumétrique (L × l × H / 5 000), arrondi au kg supérieur</p>
+                    </div>
+                    <div class="cx-card-tools" id="gx-colis-resume"></div>
+                </div>
+                <div class="cx-card-body">
+                    <div id="gx-colis-list"></div>
+                    <button type="button" class="cx-btn cx-btn-dashed" id="btn-add-colis"><i class="fa fa-plus"></i> Ajouter un colis</button>
+                </div>
+            </section>
+
+            <!-- ======== Carte 3 : expéditeur et destinataire ======== -->
+            <section class="cx-card" aria-labelledby="t-contacts">
+                <div class="cx-card-head">
+                    <span class="cx-step">3</span>
+                    <div>
+                        <h2 class="cx-card-title" id="t-contacts">Expéditeur et destinataire</h2>
+                        <p class="cx-card-sub cx-hidden" id="contactsSub">Expéditeur pré-rempli depuis la fiche du client en compte</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="gx-parties">
+                        <div class="gx-partie" data-partie="exp">
+                            <div class="cx-block-title">Expéditeur</div>
+                            <div class="cx-field">
+                                <label class="cx-label req" for="expTel">Téléphone</label>
+                                <div class="input-group gx-tel"><span class="input-group-addon">+237</span>
+                                    <input type="tel" class="form-control" id="expTel" name="expTel" inputmode="numeric" maxlength="16" placeholder="6XX XX XX XX"></div>
+                            </div>
+                            <div class="cx-field">
+                                <label class="cx-label req" for="expNom">Nom complet</label>
+                                <input type="text" class="form-control" id="expNom" name="expNom" maxlength="120">
+                            </div>
+                            <label class="cx-switch">
+                                <input type="checkbox" id="expSame" checked><span class="cx-switch-track"></span>
+                                <span class="cx-switch-text">WhatsApp sur le même numéro</span>
+                            </label>
+                            <div class="cx-field cx-hidden" id="expWaBloc">
+                                <label class="cx-label req" for="expWa">Numéro WhatsApp</label>
+                                <div class="input-group gx-tel"><span class="input-group-addon">+237</span>
+                                    <input type="tel" class="form-control" id="expWa" name="expWa" inputmode="numeric" maxlength="16" placeholder="6XX XX XX XX"></div>
+                            </div>
+                            <a class="gx-toggle" data-plus="#expPlus" role="button" aria-expanded="false"><i class="fa fa-angle-down"></i> <span>Ajouter l'adresse et l'email</span></a>
+                            <div class="gx-plus cx-hidden" id="expPlus">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="expAdresse">Adresse</label>
+                                    <input type="text" class="form-control" id="expAdresse" name="expAdresse" maxlength="160">
+                                </div>
+                                <div class="cx-field" style="margin-bottom:0">
+                                    <label class="cx-label" for="expEmail">Email</label>
+                                    <input type="email" class="form-control" id="expEmail" name="expEmail" maxlength="120">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gx-partie" data-partie="dst">
+                            <div class="cx-block-title">Destinataire</div>
+                            <div class="cx-field">
+                                <label class="cx-label req" for="dstTel">Téléphone</label>
+                                <div class="input-group gx-tel"><span class="input-group-addon">+237</span>
+                                    <input type="tel" class="form-control" id="dstTel" name="dstTel" inputmode="numeric" maxlength="16" placeholder="6XX XX XX XX"></div>
+                            </div>
+                            <div class="cx-field">
+                                <label class="cx-label req" for="dstNom">Nom complet</label>
+                                <input type="text" class="form-control" id="dstNom" name="dstNom" maxlength="120" placeholder="Nom et prénom du destinataire">
+                            </div>
+                            <label class="cx-switch">
+                                <input type="checkbox" id="dstSame" checked><span class="cx-switch-track"></span>
+                                <span class="cx-switch-text">WhatsApp sur le même numéro</span>
+                            </label>
+                            <div class="cx-field cx-hidden" id="dstWaBloc">
+                                <label class="cx-label req" for="dstWa">Numéro WhatsApp</label>
+                                <div class="input-group gx-tel"><span class="input-group-addon">+237</span>
+                                    <input type="tel" class="form-control" id="dstWa" name="dstWa" inputmode="numeric" maxlength="16" placeholder="6XX XX XX XX"></div>
+                            </div>
+                            <a class="gx-toggle" data-plus="#dstPlus" role="button" aria-expanded="false"><i class="fa fa-angle-down"></i> <span>Ajouter l'adresse et l'email</span></a>
+                            <div class="gx-plus cx-hidden" id="dstPlus">
+                                <div class="cx-field">
+                                    <label class="cx-label" for="dstAdresse">Adresse</label>
+                                    <input type="text" class="form-control" id="dstAdresse" name="dstAdresse" maxlength="160">
+                                </div>
+                                <div class="cx-field" style="margin-bottom:0">
+                                    <label class="cx-label" for="dstEmail">Email</label>
+                                    <input type="email" class="form-control" id="dstEmail" name="dstEmail" maxlength="120">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ============================================================
+             Colonne de droite : LETTRE DE TRANSPORT (collante)
+             ============================================================ -->
+        <aside class="cx-aside" aria-label="Lettre de transport">
+            <div class="cx-summary gx-lt">
+                <div class="cx-summary-hero">
+                    <div class="cx-hero-top"><span style="color:#c9d8f0">Lettre de transport</span><span class="gx-statut brouillon" id="r-statut">Brouillon</span></div>
+                    <div class="cx-hero-route">
+                        <div><b id="r-dep">—</b><small id="r-depSub"></small></div>
+                        <div class="cx-route-line" aria-hidden="true"></div>
+                        <div class="cx-right"><b id="r-dst">—</b><small id="r-dstSub"></small></div>
+                    </div>
+                    <div class="cx-hero-tags" id="r-tags"></div>
+                </div>
+
+                <div class="cx-summary-body">
+                    <label class="cx-switch">
+                        <input type="checkbox" id="tarifAuto" checked><span class="cx-switch-track"></span>
+                        <span class="cx-switch-text"><b>Tarification automatique</b><small id="autoHint">Transport et livraison calculés</small></span>
+                    </label>
+                    <div class="cx-tarif-chip" id="r-tarif"><i class="fa fa-table"></i>
+                        <div>Tarif appliqué : <a id="r-tarifNom" href="#" target="_blank" rel="noopener">—</a><small id="r-tarifOrigine"></small></div></div>
+
+                    <div class="cx-sum-line"><span><label for="m-transport" style="font-weight:400;margin:0">Transport</label></span>
+                        <b id="r-transport">0 FCFA</b>
+                        <span class="gx-sum-input cx-hidden" id="w-transport"><input type="text" class="form-control" id="m-transport" inputmode="numeric"><small>FCFA</small></span></div>
+                    <div class="cx-sum-line"><span><label for="m-emballage" style="font-weight:400;margin:0">Emballage</label></span>
+                        <span class="gx-sum-input"><input type="text" class="form-control" id="m-emballage" inputmode="numeric" value="0"><small>FCFA</small></span></div>
+                    <div class="cx-sum-line"><span><label for="m-livraison" style="font-weight:400;margin:0">Livraison</label></span>
+                        <b id="r-livraison">0 FCFA</b>
+                        <span class="gx-sum-input cx-hidden" id="w-livraison"><input type="text" class="form-control" id="m-livraison" inputmode="numeric"><small>FCFA</small></span></div>
+                    <div class="cx-sum-line"><span><label for="m-autres" style="font-weight:400;margin:0">Autres</label></span>
+                        <span class="gx-sum-input"><input type="text" class="form-control" id="m-autres" inputmode="numeric" value="0"><small>FCFA</small></span></div>
+                    <a class="gx-toggle cx-hidden" id="r-detailToggle" role="button" aria-expanded="false"><i class="fa fa-plus-circle"></i> <span>Détail du calcul</span></a>
+                    <div class="gx-detail cx-hidden" id="r-detail"></div>
+                    <div id="r-alertes"></div>
+                </div>
+
+                <div class="gx-cut" aria-hidden="true"></div>
+
+                <div class="cx-summary-foot">
+                    <div class="cx-sum-total"><span>Montant total</span><b><span id="r-total">0</span><small>FCFA</small></b></div>
+
+                    <!-- Paiement -->
+                    <div class="gx-paiement" id="gx-paiement">
+                        <div id="gx-pay-comptant">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="payMode">Mode de paiement (comptant)</label>
+                                <select class="form-control" id="payMode"></select>
+                            </div>
+                            <div class="cx-field" id="w-payRecu">
+                                <label class="cx-label req" for="payRecu">Montant reçu</label>
+                                <div class="input-group"><input type="text" class="form-control gx-num" id="payRecu" inputmode="numeric"><span class="input-group-addon">FCFA</span></div>
+                                <div class="gx-rendu" id="w-rendu"><span>Monnaie à rendre</span><b id="payRendu">0 FCFA</b></div>
+                            </div>
+                            <div class="cx-field cx-hidden" id="w-payRef">
+                                <label class="cx-label" for="payRef">Référence de la transaction <span class="cx-opt">(facultatif)</span></label>
+                                <input type="text" class="form-control" id="payRef" maxlength="40" placeholder="Ex. : MP261127.1042.A12345">
+                            </div>
+                        </div>
+                        <div class="gx-encompte cx-hidden" id="gx-pay-compte"><i class="fa fa-building-o" style="margin-top:2px"></i>
+                            <div><b>En compte – facturé en fin de période</b><span id="payCompteInfo"></span></div></div>
+                    </div>
+
+                    <div class="cx-note cx-note-warn" id="r-manquants" role="status">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <div><b id="r-nbManq">0 champ obligatoire à compléter</b><ul class="gx-manq" id="r-listeManq"></ul></div>
+                    </div>
+                    <div class="cx-note cx-note-ok cx-hidden" id="r-ok" role="status"><i class="fa fa-check"></i><div><b>Tous les champs obligatoires sont remplis</b></div></div>
+
+                    <div class="gx-wa-note"><i class="fa fa-whatsapp"></i><span>À l'enregistrement, le reçu part par WhatsApp à l'expéditeur et au destinataire.</span></div>
+
+                    <button type="button" class="cx-btn cx-btn-primary cx-btn-lg cx-btn-block" id="btn-enregistrer" disabled>Enregistrer l'expédition</button>
+                    <button type="button" class="cx-btn cx-btn-link cx-btn-block" id="btn-annuler" style="margin-top:6px">Annuler</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- =================================================================
+         VUE 2 : expédition enregistrée (reçu + actions)
+         ================================================================= -->
+    <div class="cx-layout gx-vue-recu cx-hidden" id="gx-vue-recu">
+        <div class="gx-recu-zone" id="gx-recu"></div>
+        <aside class="cx-aside cx-no-print" aria-label="Expédition enregistrée">
+            <div class="cx-card gx-done">
+                <div class="cx-card-body">
+                    <div class="gx-done-ok" role="status"><b><i class="fa fa-check"></i> Expédition enregistrée</b><span id="d-numero"></span></div>
+                    <dl class="cx-dl" id="d-infos"></dl>
+                    <div class="gx-done-btns">
+                        <button type="button" class="cx-btn cx-btn-primary cx-btn-lg cx-btn-block" id="btn-imprimer"><i class="fa fa-print"></i> Imprimer le reçu</button>
+                        <button type="button" class="cx-btn cx-btn-ghost cx-btn-block" id="btn-pdf"><i class="fa fa-file-pdf-o"></i> Télécharger en PDF</button>
+                        <a class="cx-btn gx-btn-wa cx-btn-block" id="btn-wa-exp" href="#" target="_blank" rel="noopener"><i class="fa fa-whatsapp"></i> Envoyer par WhatsApp à l'expéditeur</a>
+                        <a class="cx-btn cx-btn-ghost cx-btn-block" id="btn-wa-dst" href="#" target="_blank" rel="noopener"><i class="fa fa-whatsapp"></i> … et au destinataire</a>
+                        <button type="button" class="cx-btn cx-btn-ghost cx-btn-block" id="btn-corriger"><i class="fa fa-pencil"></i> Corriger la saisie</button>
+                        <a class="cx-btn cx-btn-link cx-btn-block" href="expedition-form.html" id="btn-nouvelle"><i class="fa fa-plus"></i> Nouvelle expédition</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <p class="cx-demo-bar cx-no-print">Maquette - données de démonstration stockées dans le navigateur · tarifs selon les grilles de démonstration</p>
+</main>
+
+<!-- ===== Modale : remplir depuis un message client (WhatsApp, SMS) ===== -->
+<div class="modal fade" id="gx-modal-msg" tabindex="-1" role="dialog" aria-labelledby="gx-modal-msg-titre">
+    <div class="modal-dialog" style="max-width:640px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">&times;</button>
+                <h4 class="modal-title" id="gx-modal-msg-titre"><i class="fa fa-magic"></i>Remplir depuis un message client</h4>
+            </div>
+            <div class="modal-body">
+                <div class="cx-field">
+                    <label class="cx-label" for="gx-msg-texte">Message reçu (WhatsApp, SMS…)</label>
+                    <textarea class="form-control" id="gx-msg-texte" placeholder="Collez ici le message du client. Ex. : Bonjour, envoi pour Paul Etoundi 677 00 33 44 à Yaoundé, quartier Bastos, devant la pharmacie. Expéditeur Mireille Ngassa 699 00 11 22"></textarea>
+                    <span class="cx-help">Les téléphones, noms, ville, quartier et repère sont repérés automatiquement ; vérifiez l'affectation avant d'appliquer.</span>
+                </div>
+                <button type="button" class="cx-btn cx-btn-soft" id="gx-msg-analyser"><i class="fa fa-search"></i> Analyser le message</button>
+                <div id="gx-msg-resultat"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="cx-btn cx-btn-ghost" data-dismiss="modal">Fermer</button>
+                <button type="button" class="cx-btn cx-btn-primary" id="gx-msg-appliquer" disabled><i class="fa fa-check"></i> Appliquer au formulaire</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="../commercial/assets/cx-core.js"></script>
+<script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-tarifs.js"></script>
+<script src="../commercial/assets/cx-demo-exploitation.js"></script>
+<script src="../commercial/assets/cx-pdf.js"></script>
+<script>window.CX_BASE = "../commercial/";</script>
+<script src="../commercial/assets/cx-shell.js"></script>
+<script src="../maquettes-carnets/assets/carnets-common.js"></script>
+<script src="assets/guichet-commun.js"></script>
+<script src="assets/recu.js"></script>
+<script src="assets/expedition-form.js"></script>
+</body>
+</html>

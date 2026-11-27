@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Apporteur d'affaires - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/apporteurs.css">
+</head>
+<body class="cx-app" data-page="apporteur-form">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> › <a href="apporteurs-liste.html">Apporteurs d'affaires</a> › <span id="crumb-current">Nouveau</span></div>
+            <h1 class="cx-title"><span id="page-title">Nouvel apporteur d'affaires</span> <small id="page-sub">Les champs marqués * sont obligatoires</small></h1>
+        </div>
+        <div class="cx-page-actions" id="page-actions">
+            <a class="cx-btn cx-btn-ghost" href="apporteurs-liste.html"><i class="fa fa-list"></i> Liste des apporteurs</a>
+        </div>
+    </div>
+
+    <div class="cx-card cx-hidden" id="not-found">
+        <div class="cx-empty">
+            <i class="fa fa-exclamation-circle"></i><b>Apporteur introuvable</b>
+            Cet apporteur d'affaires n'existe pas ou a été supprimé.<br><br>
+            <a class="cx-btn cx-btn-primary" href="apporteurs-liste.html">Retour à la liste</a>
+        </div>
+    </div>
+
+    <form id="f-apporteur" class="cx-layout" novalidate autocomplete="off">
+        <div>
+            <!-- 1. Identité -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="identite">1</span>
+                    <div>
+                        <h3 class="cx-card-title">Identité</h3>
+                        <p class="cx-card-sub">Type d'apporteur, état civil et matricule</p>
+                    </div>
+                    <div class="cx-card-tools"><span class="ap-code-chip"><i class="fa fa-hashtag"></i> Code : <b id="code-display">—</b></span></div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="cx-field">
+                        <label class="cx-label req">Type d'apporteur</label>
+                        <div class="cx-seg" id="seg-type">
+                            <label class="cx-seg-item"><input type="radio" name="type" value="COMMERCIAL" checked><span><i class="fa fa-id-badge"></i><b>Commercial interne</b><small>Salarié de la société</small></span></label>
+                            <label class="cx-seg-item"><input type="radio" name="type" value="AGENT"><span><i class="fa fa-user"></i><b>Agent indépendant</b><small>Rémunéré à la commission</small></span></label>
+                            <label class="cx-seg-item"><input type="radio" name="type" value="PARTENAIRE"><span><i class="fa fa-briefcase"></i><b>Partenaire</b><small>Entreprise apporteuse</small></span></label>
+                            <label class="cx-seg-item"><input type="radio" name="type" value="PARRAIN"><span><i class="fa fa-star-o"></i><b>Client parrain</b><small>Recommande des clients</small></span></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="nom">Nom</label>
+                                <input type="text" class="form-control" id="nom" name="nom" maxlength="60" placeholder="Ex. : NANA" style="text-transform:uppercase">
+                            </div>
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="prenoms">Prénoms</label>
+                                <input type="text" class="form-control" id="prenoms" name="prenoms" maxlength="80" placeholder="Ex. : Brice Arnaud">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label">Sexe</label>
+                                <div class="cx-pills">
+                                    <label class="cx-pill"><input type="radio" name="sexe" value="M"><span>Masculin</span></label>
+                                    <label class="cx-pill"><input type="radio" name="sexe" value="F"><span>Féminin</span></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="dateNaissance">Date de naissance</label>
+                                <input type="date" class="form-control" id="dateNaissance" name="dateNaissance">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="matricule">N° matricule</label>
+                                <input type="text" class="form-control cx-mono" id="matricule" name="matricule" maxlength="20" placeholder="MAT-2026-0001" style="text-transform:uppercase">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Coordonnées -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="coordonnees">2</span>
+                    <div>
+                        <h3 class="cx-card-title">Coordonnées</h3>
+                        <p class="cx-card-sub">Pour le joindre et lui adresser ses relevés de commissions</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="tel1">Téléphone 1</label>
+                                <div class="input-group"><span class="input-group-addon"><i class="fa fa-phone"></i></span>
+                                    <input type="tel" class="form-control" id="tel1" name="tel1" data-phone placeholder="6XX XX XX XX"></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="tel2">Téléphone 2 <span class="cx-opt">(facultatif)</span></label>
+                                <input type="tel" class="form-control" id="tel2" name="tel2" data-phone placeholder="6XX XX XX XX">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label" for="email">Email</label>
+                                <div class="input-group"><span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="nom@exemple.cm"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cx-field" style="margin-bottom:0">
+                        <label class="cx-label" for="adresse">Adresse</label>
+                        <input type="text" class="form-control" id="adresse" name="adresse" maxlength="150" placeholder="Quartier, rue, BP">
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Affectation & commission -->
+            <section class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step" data-step="affectation">3</span>
+                    <div>
+                        <h3 class="cx-card-title">Affectation &amp; commission</h3>
+                        <p class="cx-card-sub">Ville et agence d'affectation, taux et base de calcul</p>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="ville">Ville d'affectation</label>
+                                <select class="form-control" id="ville" name="ville" style="width:100%"></select>
+                                <span class="cx-help">Le code de l'apporteur se termine par le code de la ville (DLA, YDE…).</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="agenceId">Agence d'affectation</label>
+                                <select class="form-control" id="agenceId" name="agenceId" style="width:100%"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="cx-field">
+                                <label class="cx-label req" for="tauxCommission">Taux de commission</label>
+                                <div class="input-group ap-taux"><input type="number" class="form-control" id="tauxCommission" name="tauxCommission" min="0" max="100" step="0.5"><span class="input-group-addon">%</span></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="cx-field">
+                                <label class="cx-label">Base de commission</label>
+                                <div class="cx-seg cx-seg-soft">
+                                    <label class="cx-seg-item"><input type="radio" name="baseCommission" value="FACTURE" checked><span><i class="fa fa-file-text-o"></i><b>CA HT facturé</b><small>Factures émises sur la période</small></span></label>
+                                    <label class="cx-seg-item"><input type="radio" name="baseCommission" value="ENCAISSE"><span><i class="fa fa-money"></i><b>CA encaissé</b><small>Paiements reçus sur la période</small></span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="cx-switch">
+                        <input type="checkbox" name="actif" id="actif">
+                        <span class="cx-switch-track"></span>
+                        <span class="cx-switch-text"><b>Apporteur activé</b><small>Un apporteur suspendu ne peut plus être rattaché à de nouveaux clients</small></span>
+                    </label>
+                    <hr class="cx-sep">
+                    <div class="cx-field" style="margin-bottom:0">
+                        <label class="cx-label" for="notes">Notes internes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="Conditions particulières, contrat d'agent, RIB…"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Historique (modification) -->
+            <section class="cx-card cx-hidden" id="card-histo">
+                <div class="cx-card-head"><div><h3 class="cx-card-title">Historique</h3></div></div>
+                <div class="cx-card-body"><ul class="cx-timeline" id="timeline"></ul></div>
+            </section>
+        </div>
+
+        <!-- Récapitulatif -->
+        <aside class="cx-aside">
+            <div class="cx-summary">
+                <div class="cx-summary-hero">
+                    <div class="cx-hero-top"><span id="ap-mode">Nouvel apporteur</span><span id="ap-statut"></span></div>
+                    <div class="ap-who">
+                        <span class="cx-avatar ap-avatar-lg" id="ap-avatar">?</span>
+                        <div style="min-width:0">
+                            <div class="cx-hero-title" id="ap-nom">Prénoms NOM</div>
+                            <div class="cx-hero-sub" id="ap-sub">—</div>
+                        </div>
+                    </div>
+                    <div class="cx-hero-tags" id="ap-tags"></div>
+                </div>
+                <div class="cx-summary-body">
+                    <div class="ap-stats">
+                        <div class="ap-stat"><small>Clients apportés</small><b id="ap-nb-clients">0</b></div>
+                        <div class="ap-stat"><small>CA HT de l'année</small><b id="ap-ca">0</b></div>
+                    </div>
+                    <div class="cx-sum-line"><span>Commission estimée (année)</span><b id="ap-commission">—</b></div>
+                    <div class="ap-section">Clients apportés</div>
+                    <ul class="ap-clients" id="ap-clients"><li><span class="cx-muted">Aucun client pour l'instant</span></li></ul>
+                    <p class="cx-help" style="margin-top:8px">Le rattachement d'un client se fait dans son formulaire (champ « Apporteur d'affaires »).</p>
+                </div>
+                <div class="cx-summary-foot">
+                    <button type="submit" class="cx-btn cx-btn-primary cx-btn-lg cx-btn-block" id="btn-save"><i class="fa fa-check"></i> Enregistrer</button>
+                    <a class="cx-btn cx-btn-ghost cx-btn-block cx-hidden" id="btn-commissions" href="commissions.html" style="margin-top:8px"><i class="fa fa-percent"></i> Ses commissions</a>
+                    <a class="cx-btn cx-btn-link cx-btn-block" href="apporteurs-liste.html" style="margin-top:4px">Annuler</a>
+                </div>
+            </div>
+        </aside>
+    </form>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur.</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/facturation.js"></script>
+<script src="assets/pages/apporteurs.js"></script>
+<script src="assets/pages/apporteur-form.js"></script>
+</body>
+</html>

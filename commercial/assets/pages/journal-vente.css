@@ -1,0 +1,64 @@
+/* =====================================================================
+   Commercial · Journal de vente (préfixe « jv- »)
+   ===================================================================== */
+
+.jv-filtres .jv-clients { min-width: 260px; }
+.jv-filtres .select2-container--default .select2-selection--multiple { min-height: 36px; }
+.jv-boutons { display: flex; gap: 6px; }
+.jv-boutons .cx-btn { height: 36px; }
+.jv-exports { display: flex; gap: 6px; flex-wrap: wrap; }
+.jv-exports .cx-btn { height: 36px; }
+.cx-table td.jv-rang { color: var(--cx-muted); width: 46px; }
+
+/* ---------- Modale Sage ---------- */
+.jv-modal-sage { width: 1080px; max-width: calc(100vw - 30px); }
+.jv-params { border: 1px solid var(--cx-line); border-radius: 10px; margin-bottom: 12px; }
+.jv-params-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; cursor: pointer; font-weight: 700; color: var(--cx-ink) !important; text-decoration: none !important; }
+.jv-params-head .cx-muted { font-weight: 500; font-size: 12px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.jv-params-body { padding: 4px 14px 10px; border-top: 1px solid var(--cx-line-2); }
+.jv-params-body .cx-field { margin-bottom: 10px; }
+.jv-checks { display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
+.jv-params-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.jv-apercu { max-height: 330px; overflow: auto; border: 1px solid var(--cx-line); border-radius: 10px; }
+.jv-ecritures { font-size: 12px; }
+.jv-ecritures th { position: sticky; top: 0; z-index: 1; }
+.jv-ecritures td { padding: 5px 10px; }
+.jv-ecritures tr.jv-piece td { border-top: 2px solid var(--cx-line); }
+.jv-ecritures tr.jv-ko td { background: var(--cx-red-soft); }
+.jv-ecritures tfoot td { position: sticky; bottom: 0; }
+.jv-fichier { margin-top: 12px; }
+.jv-fichier pre {
+    max-height: 150px; overflow: auto; font-size: 11px; background: #0f1b33; color: #dbe5f8;
+    border: 0; border-radius: 8px; padding: 10px 12px; margin: 0; white-space: pre;
+}
+
+/* ---------- Feuille A4 paysage (PDF / impression) ---------- */
+.jv-sheet { background: #fff; color: #1a2233; font-family: "Inter", "Segoe UI", Arial, sans-serif; font-size: 11px; line-height: 1.4; }
+.jv-sheet.jv-pdf { width: 1123px; padding: 0 12mm; }
+.jv-sheet-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--cx-navy); padding-bottom: 8px; }
+.jv-soc { font-size: 18px; font-weight: 800; color: var(--cx-navy); }
+.jv-sheet-titre { text-align: right; }
+.jv-sheet-titre h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 2px; color: var(--cx-navy); }
+.jv-small { font-size: 10px; color: #4b5563; }
+.jv-filtres-txt { margin: 6px 0 8px; }
+.jv-mono { font-family: Consolas, "Courier New", monospace; }
+.jv-table { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+.jv-table thead { display: table-header-group; }
+.jv-table th { background: var(--cx-navy); color: #fff; text-align: left; padding: 5px 6px; font-size: 9.5px; text-transform: uppercase; letter-spacing: .3px; white-space: nowrap; }
+.jv-table td { padding: 4px 6px; border-bottom: 1px solid #e5e9f0; }
+.jv-table tbody tr:nth-child(even) td { background: #f7f9fc; }
+.jv-table tr { page-break-inside: avoid; break-inside: avoid; }
+.jv-table .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.jv-table tfoot td { font-weight: 800; background: #eef2f8; border-top: 2px solid var(--cx-navy); }
+.jv-table tr.jv-annulee td { color: #9aa3b2; text-decoration: line-through; }
+.jv-vide { text-align: center; padding: 20px !important; color: #6b7280; }
+.jv-sheet-pied { margin-top: 10px; font-size: 9px; color: #6b7280; text-align: right; }
+
+@page { size: A4 landscape; margin: 10mm 10mm 12mm; }
+@media print {
+    #jv-print .jv-sheet * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    #jv-print .jv-table th { background: var(--cx-navy) !important; color: #fff !important; }
+    #jv-print .jv-table tbody tr:nth-child(even) td { background: #f7f9fc !important; }
+    #jv-print .jv-table tfoot td { background: #eef2f8 !important; }
+    #jv-print .jv-soc, #jv-print .jv-sheet-titre h1 { color: var(--cx-navy) !important; }
+}

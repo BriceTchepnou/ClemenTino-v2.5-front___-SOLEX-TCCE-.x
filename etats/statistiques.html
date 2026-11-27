@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>États · Statistiques - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte commune + États ===== -->
+    <link rel="stylesheet" href="../commercial/assets/cx.css">
+    <link rel="stylesheet" href="assets/etats.css">
+</head>
+<body class="cx-app" data-module="etats" data-page="e-statistiques">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">États</a> · Qualité &amp; finances</div>
+            <h1 class="cx-title">Statistiques <small>tableau de bord synthétique</small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-imprimer"><i class="fa fa-print"></i> Imprimer</button>
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-csv"><i class="fa fa-file-excel-o"></i> Exporter (CSV)</button>
+            <button type="button" class="cx-btn cx-btn-primary" id="btn-pdf"><i class="fa fa-file-pdf-o"></i> Télécharger PDF</button>
+        </div>
+    </div>
+
+    <div id="ex-filtres"></div>
+
+    <div class="cx-kpis" id="st-kpis"></div>
+
+    <div class="cx-card">
+        <div class="cx-card-head"><div><h3 class="cx-card-title">Chiffre d'affaires mensuel · 12 mois glissants</h3><p class="cx-card-sub" id="st-12m-sub"></p></div></div>
+        <div class="cx-card-body" id="st-12m"></div>
+    </div>
+
+    <div class="ex-grid">
+        <div class="cx-card">
+            <div class="cx-card-head"><div><h3 class="cx-card-title">Répartition par service</h3><p class="cx-card-sub">CA HT de la période</p></div></div>
+            <div class="cx-card-body" id="st-services"></div>
+        </div>
+        <div class="cx-card">
+            <div class="cx-card-head"><div><h3 class="cx-card-title">Comptant ou en compte</h3><p class="cx-card-sub">CA HT de la période</p></div></div>
+            <div class="cx-card-body" id="st-types"></div>
+        </div>
+    </div>
+
+    <div class="ex-grid ex-grid-3">
+        <div class="cx-card">
+            <div class="cx-card-head"><div><h3 class="cx-card-title">Top clients en compte</h3><p class="cx-card-sub">CA HT</p></div></div>
+            <div class="cx-card-body" id="st-top-clients"></div>
+        </div>
+        <div class="cx-card">
+            <div class="cx-card-head"><div><h3 class="cx-card-title">Top agences</h3><p class="cx-card-sub">CA HT, agence de départ</p></div></div>
+            <div class="cx-card-body" id="st-top-agences"></div>
+        </div>
+        <div class="cx-card">
+            <div class="cx-card-head"><div><h3 class="cx-card-title">Top trajets</h3><p class="cx-card-sub">CA HT</p></div></div>
+            <div class="cx-card-body" id="st-top-trajets"></div>
+        </div>
+    </div>
+
+    <div class="cx-card">
+        <div class="cx-card-head"><div><h3 class="cx-card-title">Croissance mensuelle</h3><p class="cx-card-sub">Évolution d'un mois sur l'autre et par rapport au même mois de l'année précédente</p></div></div>
+        <div class="cx-card-body cx-flush" id="st-croissance"></div>
+    </div>
+
+    <p class="ex-todo">TODO API : GET /etats/statistiques/kpi · /etats/statistiques/mensuel · /etats/statistiques/top (voir statistiques.js)</p>
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur (environ 3 mois d'historique : les mois plus anciens et N-1 sont vides)</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="../commercial/assets/cx-core.js"></script>
+<script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-tarifs.js"></script>
+<script src="../commercial/assets/cx-demo-exploitation.js"></script>
+<script>window.CX_BASE = "../commercial/";</script>
+<script src="../commercial/assets/cx-shell.js"></script>
+<script src="../commercial/assets/cx-pdf.js"></script>
+<script src="../guichet/assets/guichet-commun.js"></script>
+<script src="assets/etats-commun.js"></script>
+<script src="assets/statistiques.js"></script>
+</body>
+</html>

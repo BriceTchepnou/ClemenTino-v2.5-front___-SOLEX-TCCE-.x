@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>Opérations · Manifeste de bordereau - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte commune (module Commercial) + Opérations ===== -->
+    <link rel="stylesheet" href="../commercial/assets/cx.css">
+    <link rel="stylesheet" href="assets/ops.css">
+</head>
+<body class="cx-app" data-module="operations" data-page="o-bordereau">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main" style="max-width:1000px">
+    <div class="cx-page-head cx-no-print">
+        <div>
+            <div class="cx-crumb"><a href="bordereaux.html">Bordereaux</a> · Manifeste</div>
+            <h1 class="cx-title">Bordereau <span class="cx-mono" id="l-numero"></span> <span id="l-statut"></span></h1>
+        </div>
+        <div class="cx-page-actions" id="actions">
+            <a class="cx-btn cx-btn-ghost" href="bordereaux.html"><i class="fa fa-arrow-left"></i> Retour</a>
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-print"><i class="fa fa-print"></i> Imprimer</button>
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-pdf"><i class="fa fa-file-pdf-o"></i> Télécharger en PDF</button>
+            <button type="button" class="cx-btn cx-btn-primary cx-hidden" id="btn-partir"><i class="fa fa-road"></i> Faire partir</button>
+            <a class="cx-btn cx-btn-primary cx-hidden" id="btn-recevoir"><i class="fa fa-check-square-o"></i> Réceptionner</a>
+        </div>
+    </div>
+
+    <div id="manifeste"></div>
+
+    <div class="cx-card cx-no-print" id="bloc-historique">
+        <div class="cx-card-head"><span class="cx-step"><i class="fa fa-history"></i></span><div><h3 class="cx-card-title">Historique du bordereau</h3></div></div>
+        <div class="cx-card-body"><ul class="cx-timeline" id="historique"></ul></div>
+    </div>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="../commercial/assets/cx-core.js"></script>
+<script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-tarifs.js"></script>
+<script src="../commercial/assets/cx-demo-exploitation.js"></script>
+<script src="../commercial/assets/cx-pdf.js"></script>
+<script src="../guichet/assets/guichet-commun.js"></script>
+<script src="../guichet/assets/recu.js"></script>
+<script src="assets/ops-commun.js"></script>
+<script>window.CX_BASE = "../commercial/";</script>
+<script src="../commercial/assets/cx-shell.js"></script>
+<script src="assets/pages/bordereau.js"></script>
+</body>
+</html>

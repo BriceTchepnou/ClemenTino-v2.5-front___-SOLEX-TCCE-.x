@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>Opérations · Dégroupage (arrivées) - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte commune (module Commercial) + Opérations ===== -->
+    <link rel="stylesheet" href="../commercial/assets/cx.css">
+    <link rel="stylesheet" href="assets/ops.css">
+</head>
+<body class="cx-app" data-module="operations" data-page="o-degroupage">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb">Opérations · Flux des colis</div>
+            <h1 class="cx-title">Liste des expéditions entrantes <small>dégroupage</small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <div id="ox-agence-slot"></div>
+            <a class="cx-btn cx-btn-ghost" href="bordereaux.html?sens=ARR"><i class="fa fa-list-alt"></i> Bordereaux</a>
+        </div>
+    </div>
+
+    <div class="cx-card">
+        <div class="cx-toolbar">
+            <div class="cx-field">
+                <label class="cx-label" for="f-ville">Ville de provenance</label>
+                <select class="form-control" id="f-ville"></select>
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="f-du">Du</label>
+                <input type="date" class="form-control" id="f-du">
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="f-au">Au</label>
+                <input type="date" class="form-control" id="f-au">
+            </div>
+            <div class="cx-field cx-grow">
+                <label class="cx-label" for="q-lt">Rechercher par N° de LT ou N° de bordereau</label>
+                <div class="ox-flex">
+                    <div class="cx-search ox-grow"><i class="fa fa-search"></i><input type="search" class="form-control" id="q-lt" placeholder="RT-2611-00001 ou BRD-261127-001"></div>
+                    <button type="button" class="cx-btn cx-btn-dark" id="btn-q-lt">Rechercher</button>
+                </div>
+            </div>
+        </div>
+        <div class="cx-tabs" id="onglets" role="tablist">
+            <a data-tab="attendus" class="active" role="tab"><i class="fa fa-truck"></i> Bordereaux attendus <span class="cx-count" id="n-attendus">0</span></a>
+            <a data-tab="agence" role="tab">Expéditions à mettre en agence <span class="cx-count" id="n-agence">0</span></a>
+            <a data-tab="transit" role="tab">À réexpédier (transit) <span class="cx-count" id="n-transit">0</span></a>
+            <a data-tab="inter" role="tab">À transmettre au partenaire international <span class="cx-count" id="n-inter">0</span></a>
+        </div>
+
+        <!-- Onglet : bordereaux attendus + pointage -->
+        <div class="cx-card-body" id="vue-attendus">
+            <div class="ox-cards" id="attendus"></div>
+
+            <div id="pointage" class="cx-hidden ox-mt">
+                <div class="cx-block">
+                    <div class="ox-pointage-head">
+                        <div>
+                            <div class="cx-block-title" style="margin-bottom:2px">Pointage du bordereau</div>
+                            <div><b class="cx-mono" id="pt-numero"></b> <span id="pt-statut"></span></div>
+                            <div class="cx-cell-sub" id="pt-info"></div>
+                        </div>
+                        <div class="ox-progress"><div class="cx-bar green"><i id="pt-bar" style="width:0"></i></div><small id="pt-compte"></small></div>
+                        <button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" id="btn-pt-fermer"><i class="fa fa-times"></i> Fermer</button>
+                    </div>
+                    <div class="ox-scan ox-mt" style="margin-bottom:10px">
+                        <i class="fa fa-barcode"></i>
+                        <div><b>Scanner chaque colis reçu</b><small>Douchette ou saisie du n° de LT puis Entrée</small></div>
+                        <input type="text" class="form-control" id="pt-scan" placeholder="N° de LT" autocomplete="off" aria-label="N° de LT reçu">
+                        <span class="ox-scan-res" id="pt-scan-res" aria-live="polite"></span>
+                    </div>
+                    <div class="ox-flex" style="margin-bottom:8px">
+                        <button type="button" class="cx-btn cx-btn-ghost cx-btn-xs" id="btn-pt-tout"><i class="fa fa-check-square-o"></i> Tout cocher</button>
+                        <button type="button" class="cx-btn cx-btn-ghost cx-btn-xs" id="btn-pt-rien"><i class="fa fa-square-o"></i> Tout décocher</button>
+                        <span class="ox-grow"></span>
+                        <label class="cx-switch" style="margin:0"><input type="checkbox" id="pt-orienter" checked><span class="cx-switch-track"></span>
+                            <span class="cx-switch-text"><b>Orienter à la réception</b> <small>retrait → en agence · domicile → à livrer · autre destination → à réexpédier</small></span></label>
+                    </div>
+                    <div class="cx-table-wrap"><table class="cx-table" id="pt-table">
+                        <thead><tr><th class="cx-col-check">Reçu</th><th>N° LT</th><th>Expéditeur</th><th>Destinataire</th><th>Destination finale</th><th>Contenu</th><th class="num">Colis</th><th>Remise</th><th>Pointage</th></tr></thead>
+                        <tbody></tbody>
+                    </table></div>
+                    <div class="cx-field ox-mt" style="margin-bottom:0">
+                        <label class="cx-label" for="pt-obs">Observations (état du scellé, avaries…)</label>
+                        <input type="text" class="form-control" id="pt-obs" maxlength="200">
+                    </div>
+                    <div class="ox-flex ox-mt" style="justify-content:flex-end">
+                        <button type="button" class="cx-btn cx-btn-ghost" id="btn-pt-save"><i class="fa fa-save"></i> Enregistrer le pointage</button>
+                        <button type="button" class="cx-btn cx-btn-success" id="btn-pt-valider"><i class="fa fa-check"></i> Valider la réception</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onglets : listes d'expéditions -->
+        <div id="vue-liste" class="cx-hidden">
+            <div class="cx-card-body" style="padding-bottom:0"><div class="cx-note cx-note-info" id="liste-aide" style="margin-top:0"></div></div>
+            <div id="dt-liste"></div>
+            <div class="cx-card-body">
+                <div class="cx-selbar cx-hidden" id="selbar">
+                    <b id="sel-n"></b>
+                    <span class="ox-grow"></span>
+                    <button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" data-act="reorienter"><i class="fa fa-random"></i> Réorienter les LT</button>
+                    <button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" data-act="mettre" data-tabs="agence"><i class="fa fa-inbox"></i> Mettre en agence</button>
+                    <button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" data-act="livre" data-tabs="agence"><i class="fa fa-handshake-o"></i> Livré en agence</button>
+                    <a class="cx-btn cx-btn-ghost cx-btn-sm" href="groupage.html" data-tabs="transit"><i class="fa fa-cubes"></i> Vers le groupage</a>
+                    <button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" data-act="partenaire" data-tabs="inter"><i class="fa fa-plane"></i> Transmettre au partenaire</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="../commercial/assets/cx-core.js"></script>
+<script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-tarifs.js"></script>
+<script src="../commercial/assets/cx-demo-exploitation.js"></script>
+<script src="../guichet/assets/guichet-commun.js"></script>
+<script src="assets/ops-commun.js"></script>
+<script>window.CX_BASE = "../commercial/";</script>
+<script src="../commercial/assets/cx-shell.js"></script>
+<script src="assets/pages/degroupage.js"></script>
+</body>
+</html>

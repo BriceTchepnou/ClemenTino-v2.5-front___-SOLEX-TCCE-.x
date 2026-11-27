@@ -47,7 +47,16 @@ CX.MENU_COMMERCIAL = [
         id: "facturation", titre: "Facturation", icon: "fa-file-text-o", home: "factures-suivi.html",
         items: [
             { page: "facture-emettre", href: "facture-emettre.html", label: "Émettre une facture", desc: "Facturer les expéditions des clients en compte" },
-            { page: "factures-suivi", href: "factures-suivi.html", label: "Suivi des factures", desc: "Encaissements, relances, échéances" }
+            { page: "factures-suivi", href: "factures-suivi.html", label: "Suivi des factures", desc: "Encaissements, relances, échéances" },
+            { page: "journal-vente", href: "journal-vente.html", label: "Journal de vente", desc: "Factures de la période, export PDF / Excel / Sage" }
+        ]
+    },
+    {
+        id: "apporteurs", titre: "Apporteurs d'affaires", icon: "fa-handshake-o", home: "apporteurs-liste.html",
+        items: [
+            { page: "apporteurs-liste", href: "apporteurs-liste.html", label: "Apporteurs d'affaires", desc: "Commerciaux et partenaires, clients apportés" },
+            { page: "apporteur-form", href: "apporteur-form.html", label: "Nouvel apporteur", desc: "Identité, affectation, taux de commission" },
+            { page: "commissions", href: "commissions.html", label: "Commissions", desc: "Calcul et paiement des commissions" }
         ]
     },
     {
@@ -59,7 +68,84 @@ CX.MENU_COMMERCIAL = [
 ];
 
 /* Pages « filles » rattachées à une rubrique pour le surlignage */
+/* Module GUICHET (dossier ../guichet/) : liens relatifs au dossier commercial/,
+   comme le reste du menu (préfixés par CX_BASE sur les pages hors commercial/). */
+CX.MENU_GUICHET = [
+    {
+        id: "g-saisie", titre: "Expéditions", icon: "fa-cube", home: "../guichet/expedition-form.html",
+        items: [
+            { page: "g-expedition-form", href: "../guichet/expedition-form.html", label: "Nouvelle expédition", desc: "Saisie au comptoir, reçu WhatsApp" },
+            { page: "g-expeditions-liste", href: "../guichet/expeditions-liste.html", label: "Historique des saisies", desc: "Toutes les expéditions saisies, réimpression, annulation" }
+        ]
+    }
+];
+
+/* Module OPÉRATIONS (dossier ../operations/) */
+CX.MENU_OPERATIONS = [
+    {
+        id: "o-flux", titre: "Flux des colis", icon: "fa-exchange", home: "../operations/index.html",
+        items: [
+            { page: "o-dashboard", href: "../operations/index.html", label: "Tableau de bord exploitation", desc: "Colis à traiter par étape, retards" },
+            { page: "o-groupage", href: "../operations/groupage.html", label: "Groupage (départs)", desc: "Constituer les bordereaux de départ" },
+            { page: "o-degroupage", href: "../operations/degroupage.html", label: "Dégroupage (arrivées)", desc: "Réceptionner et pointer les colis entrants" },
+            { page: "o-instance", href: "../operations/instance.html", label: "En agence (en instance)", desc: "Retraits, avis, remise au destinataire" },
+            { page: "o-livraisons", href: "../operations/livraisons.html", label: "Livraisons à domicile", desc: "Tournées, livreurs, preuves de livraison" }
+        ]
+    },
+    {
+        id: "o-lt", titre: "Lettres de transport", icon: "fa-file-o", home: "../operations/lettres-voiture.html",
+        items: [
+            { page: "o-lettres", href: "../operations/lettres-voiture.html", label: "Gestion des lettres de voiture", desc: "Rechercher, réorienter, corriger une LT" },
+            { page: "o-bordereaux", href: "../operations/bordereaux.html", label: "Bordereaux", desc: "Tous les bordereaux et manifestes" },
+            { page: "o-tracking", href: "../operations/tracking.html", label: "Tracking", desc: "Suivre un colis étape par étape" }
+        ]
+    }
+];
+
+/* Module ÉTATS (dossier ../etats/) */
+CX.MENU_ETATS = [
+    {
+        id: "e-activite", titre: "Activité", icon: "fa-bar-chart", home: "../etats/index.html",
+        items: [
+            { page: "e-index", href: "../etats/index.html", label: "Tous les états", desc: "Catalogue des états et statistiques" },
+            { page: "e-ca", href: "../etats/chiffre-affaires.html", label: "Chiffre d'affaires", desc: "Par agence, client, produit, apporteur" },
+            { page: "e-journal", href: "../etats/journal-expeditions.html", label: "Journal des expéditions", desc: "Toutes les expéditions de la période" },
+            { page: "e-production", href: "../etats/production.html", label: "Production", desc: "Saisies par agence et par guichetier" },
+            { page: "e-volumique", href: "../etats/volumique.html", label: "Volumique", desc: "Colis, poids, trajets" }
+        ]
+    },
+    {
+        id: "e-qualite", titre: "Qualité & finances", icon: "fa-line-chart", home: "../etats/livraisons.html",
+        items: [
+            { page: "e-livraisons", href: "../etats/livraisons.html", label: "Livraisons & performance", desc: "Délais, taux de livraison, retards" },
+            { page: "e-tresorerie", href: "../etats/tresorerie.html", label: "Excédent de trésorerie", desc: "Encaissements comptant et versements" },
+            { page: "e-statistiques", href: "../etats/statistiques.html", label: "Statistiques", desc: "Tendances et comparaisons" }
+        ]
+    }
+];
+
+/* Registre des modules de l'en-tête : <body data-module="..."> désigne le module actif
+   (commercial par défaut). Les liens sont relatifs au dossier commercial/. */
+CX.MODULES = [
+    { id: "guichet", label: "Guichet", home: "../guichet/expedition-form.html", menu: "MENU_GUICHET", petit: true },
+    { id: "comptes", label: "Comptes" },
+    { id: "commercial", label: "Commercial", home: "index.html", menu: "MENU_COMMERCIAL" },
+    { id: "operations", label: "Opérations", home: "../operations/index.html", menu: "MENU_OPERATIONS" },
+    { id: "tracking", label: "Tracking", home: "../operations/tracking.html" },
+    { id: "etats", label: "États", home: "../etats/index.html", menu: "MENU_ETATS" },
+    { id: "comptabilite", label: "Comptabilité" },
+    { id: "controle", label: "Contrôle" },
+    { id: "clientsweb", label: "Clients web" },
+    { id: "sg", label: "Services généraux" }
+];
+
 CX.PAGE_GROUP = {
+    "o-dashboard": "o-dashboard", "o-groupage": "o-groupage", "o-degroupage": "o-degroupage", "o-instance": "o-instance",
+    "o-livraisons": "o-livraisons", "o-lettres": "o-lettres", "o-bordereaux": "o-bordereaux", "o-bordereau": "o-bordereaux", "o-tracking": "o-tracking",
+    "e-index": "e-index", "e-ca": "e-ca", "e-journal": "e-journal", "e-production": "e-production", "e-volumique": "e-volumique",
+    "e-livraisons": "e-livraisons", "e-tresorerie": "e-tresorerie", "e-statistiques": "e-statistiques",
+    "journal-vente": "facturation", "apporteurs-liste": "apporteurs", "apporteur-form": "apporteurs", "commissions": "apporteurs",
+    "g-expedition-form": "g-saisie", "g-expeditions-liste": "g-historique", "g-recu": "g-historique",
     "dashboard": "dashboard",
     "clients-liste": "clients", "client-form": "clients", "client-fiche": "clients", "client-import": "clients",
     "cotations-liste": "cotations", "cotation-form": "cotations", "cotation-document": "cotations",
@@ -86,14 +172,31 @@ CX.shell = {
             "<a class='cx-btn cx-btn-ghost cx-btn-sm' href='facture-emettre.html'><i class='fa fa-plus'></i> Facture</a></div></div>";
     },
 
+    /* Menu déroulant générique d'un module (Commercial garde son méga-menu complet) */
+    moduleMenuHtml: function (menu, current, petit) {
+        return "<div class='cx-mega" + (petit ? " cx-mega-sm" : "") + "'><div class='cx-mega-grid' style='grid-template-columns:repeat(" + (petit ? 1 : menu.length) + ",1fr)'>" +
+            $.map(menu, function (g) {
+                return "<div class='cx-mega-col'><h6><i class='fa " + g.icon + "'></i>" + g.titre + "</h6>" + $.map(g.items, function (it) {
+                    return "<a class='cx-mega-link" + (it.page === current ? " current" : "") + "' href='" + it.href + "'>" + it.label + "<small>" + it.desc + "</small></a>";
+                }).join("") + "</div>";
+            }).join("") + "</div></div>";
+    },
+
+    moduleActif: function () { return $("body").data("module") || "commercial"; },
+
     headerHtml: function (current) {
-        var u = CX.CONFIG.USER;
-        var autres = ["Guichet", "Comptes", "Commercial", "Exploitation", "Suivi", "États", "Comptabilité", "Contrôle", "Clients web", "Services généraux", "Édition"];
-        var nav = $.map(autres, function (m) {
-            if (m === "Commercial") {
-                return "<li class='active cx-has-mega'><a href='index.html'>Commercial <i class='fa fa-angle-down'></i></a>" + CX.shell.megaMenuHtml(current) + "</li>";
+        var u = CX.CONFIG.USER, actif = CX.shell.moduleActif();
+        var nav = $.map(CX.MODULES, function (m) {
+            var cls = m.id === actif ? "active " : "";
+            if (m.id === "commercial") {
+                return "<li class='" + cls + "cx-has-mega'><a href='index.html'>Commercial <i class='fa fa-angle-down'></i></a>" + CX.shell.megaMenuHtml(current) + "</li>";
             }
-            return "<li><a href='#' onclick='return false'>" + m + "</a></li>";
+            if (m.menu) {
+                return "<li class='" + cls + "cx-has-mega'><a href='" + m.home + "'>" + m.label + " <i class='fa fa-angle-down'></i></a>" +
+                    CX.shell.moduleMenuHtml(CX[m.menu], current, m.petit) + "</li>";
+            }
+            if (m.home) return "<li class='" + cls + "'><a href='" + m.home + "'>" + m.label + "</a></li>";
+            return "<li><a href='#' onclick='return false' title='Module hors maquette'>" + m.label + "</a></li>";
         }).join("");
         return "<header class='cx-header'><div class='cx-header-inner'>" +
             "<a class='cx-brand' href='index.html'>ClemenTino<small>2.0</small></a>" +
@@ -105,7 +208,20 @@ CX.shell = {
     },
 
     subnavHtml: function (current) {
-        var group = CX.PAGE_GROUP[current] || "";
+        var group = CX.PAGE_GROUP[current] || "", actif = CX.shell.moduleActif();
+        function lien(id, titre, icon, href) {
+            return "<a href='" + href + "' class='" + (id === group ? "active" : "") + "'><i class='fa " + icon + "'></i>" + titre + "</a>";
+        }
+        if (actif === "guichet") {
+            return "<nav class='cx-subnav'>" + lien("g-saisie", "Nouvelle expédition", "fa-plus-circle", "../guichet/expedition-form.html") +
+                lien("g-historique", "Historique des saisies", "fa-history", "../guichet/expeditions-liste.html") + "</nav>";
+        }
+        if (actif === "operations" || actif === "tracking" || actif === "etats") {
+            var menu = actif === "etats" ? CX.MENU_ETATS : CX.MENU_OPERATIONS;
+            return "<nav class='cx-subnav'>" + $.map(menu, function (g) {
+                return $.map(g.items, function (it) { return lien(it.page, it.label.replace(/ \((départs|arrivées)\)/, ""), g.icon, it.href); }).join("");
+            }).join("") + "</nav>";
+        }
         var links = [{ id: "dashboard", titre: "Tableau de bord", icon: "fa-tachometer", home: "index.html" }].concat(CX.MENU_COMMERCIAL);
         return "<nav class='cx-subnav'>" + $.map(links, function (g) {
             return "<a href='" + g.home + "' class='" + (g.id === group ? "active" : "") + "'><i class='fa " + g.icon + "'></i>" + g.titre + "</a>";

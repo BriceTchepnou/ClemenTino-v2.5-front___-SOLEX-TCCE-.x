@@ -32,7 +32,8 @@ $(function () {
     function contact(c, role) { return $.grep(c.contacts || [], function (x) { return x.role === role; })[0] || {}; }
     function telHref(t) { return "tel:" + String(t || "").replace(/[^\d+]/g, ""); }
     function paye(f) { var s = 0; $.each(f.paiements || [], function (_, p) { s += p.montant; }); return s; }
-    function reste(f) { return f.statut === "ANNULEE" || f.statut === "BROUILLON" ? 0 : Math.max(0, f.montantTTC - paye(f)); }
+    /* reste dû : solde à payer (TTC - acompte IS - acompte) s'il est calculé, sinon TTC */
+    function reste(f) { return f.statut === "ANNULEE" || f.statut === "BROUILLON" ? 0 : Math.max(0, (f.soldeAPayer != null ? f.soldeAPayer : f.montantTTC) - paye(f)); }
     function factureActive(f) { return f.statut !== "ANNULEE" && f.statut !== "BROUILLON"; }
 
     /* =================================================================
@@ -222,11 +223,26 @@ $(function () {
             paires.push(["Plafond de crédit", c.plafondCredit > 0 ? U.money(c.plafondCredit) : "Sans plafond"]);
             paires.push(["Remise accordée", U.fmt(c.remisePct || 0, (c.remisePct || 0) % 1 ? 1 : 0) + " %"]);
             paires.push(["Email de facturation", mail(c.emailFacturation)]);
+            /* Conditions de facturation (CX.REF.conditionsFacturation : valeurs par défaut si absentes) */
+            var k = REF.conditionsFacturation(c), frais = [];
+            if (k.assurance) frais.push("assurance " + U.money(k.assurance));
+            if (k.manutention) frais.push("manutention " + U.money(k.manutention));
+            if (k.emballage) frais.push("emballage " + U.money(k.emballage));
+            paires.push(["N° de compte", "<span class='cx-mono'>" + e(REF.compteClient(c)) + "</span>" + (c.compte ? "" : " <span class='cx-muted'>(attribué automatiquement)</span>")]);
+            paires.push(["TVA", k.avecTva ? "Oui - " + U.fmt(k.tauxTva, 2) + " %" : "<span class='cx-badge cx-badge-orange'>Facturé sans TVA</span>"]);
+            paires.push(["Acompte IS", k.abonnementIs ? "Oui - " + U.fmt(k.tauxIs, 1) + " % retenu à la source" : "Non"]);
+            paires.push(["Frais par facture", frais.length ? e(frais.join(" · ")) : "Aucun"]);
+            paires.push(["Présentation facture", (k.afficherPuMoyen ? "PU moyen affiché" : "Sans PU moyen") + " · sous-totaux : " + e((REF.SOUS_TOTAL[k.sousTotal] || "Aucun").toLowerCase())]);
         }
         if (c.forfait) paires.push(["Montant du forfait", U.money(c.montantForfait) + " HT / période"]);
         paires.push(["Tarification auto.", tarif]);
         paires.push(["Agence de rattachement", a ? e(a.nom + " · " + a.ville) : ""]);
         paires.push(["Commercial", e(c.commercial)]);
+        // TODO API : l'apporteur est renvoyé avec le client (GET /commercial/clients/{id})
+        var ap = c.apporteurId ? $.grep(CX.api.listSync("apporteurs"), function (x) { return String(x.id) === String(c.apporteurId); })[0] : null;
+        paires.push(["Apporteur d'affaires", ap ? "<a href='apporteur-form.html?id=" + ap.id + "'>" + e(ap.prenoms + " " + ap.nom) + "</a> <span class='cx-mono cx-muted'>" + e(ap.code) + "</span> · " +
+            U.fmt(ap.tauxCommission, ap.tauxCommission % 1 ? 1 : 0) + " % " + e(((REF.BASES_COMMISSION[ap.baseCommission] || {}).label || "").toLowerCase()) +
+            (ap.statut !== "ACTIF" ? " " + REF.badge(REF.STATUT_APPORTEUR, ap.statut) : "") : ""]);
         // TODO API : GET /commercial/clients/{id}/fiche (téléchargement du PDF)
         paires.push(["Fiche client", c.ficheClient ? "<a href='#' data-fiche><i class='fa fa-file-pdf-o' style='color:#d14343'></i> " + e(c.ficheClient) + "</a>" : ""]);
         paires.push(["Créé le", U.toFr(c.dateCreation) + (c.creePar ? " par " + e(c.creePar) : "")]);

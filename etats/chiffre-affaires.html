@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>États · Chiffre d'affaires - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte commune + États ===== -->
+    <link rel="stylesheet" href="../commercial/assets/cx.css">
+    <link rel="stylesheet" href="assets/etats.css">
+</head>
+<body class="cx-app" data-module="etats" data-page="e-ca">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">États</a> · Activité</div>
+            <h1 class="cx-title">États de chiffre d'affaires <small id="ca-sous-titre"></small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-imprimer"><i class="fa fa-print"></i> Imprimer</button>
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-csv"><i class="fa fa-file-excel-o"></i> Exporter (CSV)</button>
+            <button type="button" class="cx-btn cx-btn-primary" id="btn-pdf"><i class="fa fa-file-pdf-o"></i> Télécharger PDF</button>
+        </div>
+    </div>
+
+    <!-- Barre de filtres commune (CX.etats.Filtres) -->
+    <div id="ex-filtres"></div>
+
+    <!-- Indicateurs -->
+    <div class="cx-kpis" id="ca-kpis"></div>
+
+    <div class="cx-card ex-tabs-card">
+        <div class="cx-tabs" id="ca-onglets" role="tablist">
+            <a data-tab="etats" class="active" role="tab" aria-controls="ca-panel-etats"><i class="fa fa-table"></i> États</a>
+            <a data-tab="stats" role="tab" aria-controls="ca-panel-stats"><i class="fa fa-bar-chart"></i> Statistiques</a>
+        </div>
+        <div class="cx-toolbar">
+            <div class="cx-field">
+                <span class="cx-label" id="ca-type-lbl">Type d'état</span>
+                <div class="ex-seg" id="ca-type" role="group" aria-labelledby="ca-type-lbl"></div>
+            </div>
+            <div class="cx-field cx-grow"></div>
+            <div class="cx-field"><span class="cx-muted" id="ca-info" style="font-size:12px"></span></div>
+        </div>
+
+        <div class="ex-panel active" id="ca-panel-etats" role="tabpanel">
+            <div id="ca-table"></div>
+        </div>
+
+        <div class="ex-panel" id="ca-panel-stats" role="tabpanel">
+            <div class="cx-card-body">
+                <div class="ex-grid ex-grid-21">
+                    <div class="cx-card">
+                        <div class="cx-card-head"><div><h3 class="cx-card-title">Évolution du chiffre d'affaires HT</h3><p class="cx-card-sub" id="st-evol-sub"></p></div></div>
+                        <div class="cx-card-body" id="st-evol"></div>
+                    </div>
+                    <div class="cx-card">
+                        <div class="cx-card-head"><div><h3 class="cx-card-title">Comptant ou en compte</h3><p class="cx-card-sub">Part du CA HT par type de client</p></div></div>
+                        <div class="cx-card-body" id="st-type"></div>
+                    </div>
+                </div>
+                <div class="ex-grid ex-grid-21">
+                    <div class="cx-card">
+                        <div class="cx-card-head"><div><h3 class="cx-card-title" id="st-top-titre">Top 10</h3><p class="cx-card-sub" id="st-top-sub"></p></div></div>
+                        <div class="cx-card-body" id="st-top"></div>
+                    </div>
+                    <div class="cx-card">
+                        <div class="cx-card-head"><div><h3 class="cx-card-title">Répartition par service</h3><p class="cx-card-sub">CA HT</p></div></div>
+                        <div class="cx-card-body" id="st-service"></div>
+                    </div>
+                </div>
+                <div class="cx-card" id="st-comp-card" style="margin-bottom:0">
+                    <div class="cx-card-head"><div><h3 class="cx-card-title" id="st-comp-titre">Comparaison</h3><p class="cx-card-sub" id="st-comp-sub"></p></div></div>
+                    <div class="cx-card-body" id="st-comp"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="ex-todo">TODO API : GET /etats/chiffre-affaires?source=expeditions|factures&amp;du=&amp;au=&amp;groupe=agence|ville|client|produit|apporteur|mois&amp;geo=&amp;typeClient=&amp;service=&amp;nature=&amp;apporteurs[]=&amp;statut= (agrégats SQL, voir chiffre-affaires.js)</p>
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="../commercial/assets/cx-core.js"></script>
+<script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-tarifs.js"></script>
+<script src="../commercial/assets/cx-demo-exploitation.js"></script>
+<script>window.CX_BASE = "../commercial/";</script>
+<script src="../commercial/assets/cx-shell.js"></script>
+<script src="../commercial/assets/cx-pdf.js"></script>
+<script src="../commercial/assets/pages/facturation.js"></script>
+<script src="../guichet/assets/guichet-commun.js"></script>
+<script src="assets/etats-commun.js"></script>
+<script src="assets/chiffre-affaires.js"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+/* =====================================================================
+   ClemenTino 2.0 - Module GUICHET - reçu de transport A4 (préfixe « gx-r »)
+   ---------------------------------------------------------------------
+   Portage de la maquette « Reçu de transport A4, souche et client » :
+   une feuille A4 (794 × 1122 px = 210 × 297 mm à 96 dpi) avec deux
+   exemplaires identiques (SOUCHE / CLIENT) séparés par « Découper ici ».
+   Rendu par CX.recu.html(expedition) (recu.js).
+   Impression : @page A4 sans marge ; export PDF : mode .cx-pdf-mode.
+   ===================================================================== */
+
+.gx-sheet {
+    position: relative; width: 794px; height: 1122px; box-sizing: border-box; padding: 22px 36px; overflow: hidden;
+    background: #fff; color: #0e1b2e; font-family: "IBM Plex Sans", "Inter", "Segoe UI", Arial, sans-serif;
+    font-size: 12px; line-height: 15px; display: flex; flex-direction: column;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact; text-align: left;
+}
+.gx-sheet *, .gx-sheet *:before, .gx-sheet *:after { box-sizing: border-box; }
+.gx-sheet b, .gx-sheet strong { font-weight: 600; }
+.gx-r-mono { font-family: "IBM Plex Mono", Consolas, "Courier New", monospace; font-weight: 500; }
+.gx-r-cond { font-family: "IBM Plex Sans Condensed", "Arial Narrow", "Inter", sans-serif; font-weight: 600; }
+.gx-r-ell { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gx-sheet .gx-r-copie * { flex-shrink: 0; }   /* les lignes tronquées ne se compriment pas */
+.gx-sheet .gx-r-trajet > div, .gx-sheet .gx-r-id, .gx-sheet .gx-r-tab, .gx-sheet .gx-r-pts i, .gx-sheet .gx-r-cut > i, .gx-sheet .gx-r-fleche i,
+.gx-sheet .gx-r-meta .gx-r-ell, .gx-sheet .gx-r-liv-grid > div > div, .gx-sheet .gx-r-logo > div, .gx-sheet .gx-r-type > div { flex-shrink: 1; min-width: 0; }
+.gx-r-muted { color: #4d5b73; }
+
+/* Découpe entre les deux exemplaires */
+.gx-r-cut { display: flex; align-items: center; gap: 10px; margin: 8px -36px; color: #4d5b73; font-size: 12px; }
+.gx-r-cut > i { flex: 1 1 auto; height: 0; border-top: 1px dashed #4d5b73; }
+.gx-r-cut .fa { font-size: 14px; }
+
+.gx-r-copie { position: relative; display: flex; flex-direction: column; gap: 5px; }
+
+/* En-tête : logo, n°, QR */
+.gx-r-head { display: flex; align-items: center; gap: 14px; height: 66px; }
+.gx-r-logo { flex: 0 0 auto; width: 190px; height: 56px; display: flex; align-items: center; gap: 8px; overflow: hidden; }
+.gx-r-logo img { width: 52px; height: 52px; object-fit: contain; flex: 0 0 52px; }
+.gx-r-logo b { display: block; font-size: 15px; line-height: 17px; font-weight: 700; color: #13306b; letter-spacing: .02em; }
+.gx-r-logo small { display: block; font-size: 10px; line-height: 12px; color: #4d5b73; }
+.gx-r-id { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.gx-r-titre { display: flex; align-items: center; gap: 8px; }
+.gx-r-titre > span:first-child { font-size: 14px; font-weight: 600; letter-spacing: .04em; color: #1f7a33; }
+.gx-r-copie-tag { padding: 1px 8px; border-radius: 999px; background: #0e1b2e; color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .08em; }
+.gx-r-numero { font-size: 22px; line-height: 25px; color: #c8102e; }
+.gx-r-meta { display: flex; gap: 14px; white-space: nowrap; }
+.gx-r-qr { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.gx-r-qr svg { display: block; width: 60px; height: 60px; border: 1px solid #0e1b2e; background: #fff; }
+.gx-r-qr span { font-size: 12px; line-height: 13px; color: #4d5b73; white-space: nowrap; }
+
+/* Bande type d'expédition / trajet / remise */
+.gx-r-bande { display: flex; align-items: stretch; border: 2px solid #0e1b2e; border-radius: 8px; overflow: hidden; height: 50px; }
+.gx-r-type { flex: 0 0 214px; background: #1f7a33; color: #fff; padding: 0 12px; display: flex; align-items: center; gap: 10px; }
+.gx-r-type svg { flex: 0 0 auto; }
+.gx-r-type small { display: block; font-size: 12px; line-height: 13px; letter-spacing: .08em; color: #e2f3e6; }
+.gx-r-type b { display: block; font-size: 19px; line-height: 21px; letter-spacing: .03em; white-space: nowrap; }
+.gx-r-trajet { flex: 1 1 auto; min-width: 0; padding: 0 12px; display: flex; align-items: center; gap: 10px; }
+.gx-r-trajet > div { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+.gx-r-trajet b { font-size: 18px; line-height: 20px; }
+.gx-r-fleche { flex: 0 0 52px !important; flex-direction: row !important; align-items: center; gap: 2px; color: #1f7a33; }
+.gx-r-fleche i { flex: 1 1 auto; height: 0; border-top: 2px dashed #1f7a33; }
+.gx-r-remise { flex: 0 0 140px; border-left: 2px solid #0e1b2e; padding: 0 12px; display: flex; flex-direction: column; justify-content: center; gap: 1px; }
+.gx-r-remise small { font-size: 12px; line-height: 13px; letter-spacing: .08em; color: #4d5b73; }
+.gx-r-remise b { font-size: 14px; line-height: 17px; white-space: nowrap; }
+
+/* Expéditeur / destinataire */
+.gx-r-parties { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid #0e1b2e; border-radius: 8px; overflow: hidden; height: 80px; }
+.gx-r-partie { position: relative; overflow: hidden; padding: 6px 12px; display: flex; flex-direction: column; gap: 2px; }
+.gx-r-partie > * { position: relative; }
+.gx-r-partie svg.gx-r-filigrane { position: absolute; right: -6px; bottom: -14px; opacity: .14; }
+.gx-r-exp { background-color: #f1ecfb; background-image: repeating-linear-gradient(135deg, rgba(91,63,160,.06) 0px, rgba(91,63,160,.06) 6px, transparent 6px, transparent 12px); border-right: 1px solid #0e1b2e; }
+.gx-r-dst { background-color: #f0f2f5; background-image: repeating-linear-gradient(135deg, rgba(14,27,46,.045) 0px, rgba(14,27,46,.045) 6px, transparent 6px, transparent 12px); }
+.gx-r-partie .gx-r-lbl { font-size: 12px; font-weight: 600; letter-spacing: .1em; }
+.gx-r-exp .gx-r-lbl { color: #5b3fa0; }
+.gx-r-dst .gx-r-lbl { color: #4d5b73; }
+.gx-r-partie .gx-r-nom { font-size: 15px; line-height: 18px; font-weight: 600; }
+
+/* Livraison / retrait */
+.gx-r-liv { border: 2px solid #1f7a33; border-radius: 8px; overflow: hidden; background: #fff; }
+.gx-r-liv-titre { background: #1f7a33; color: #fff; padding: 3px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: .08em; }
+.gx-r-liv-titre span + span { font-weight: 500; letter-spacing: .02em; }
+.gx-r-liv-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.3fr) minmax(0, 1fr); background: #f2faf4; }
+.gx-r-liv-grid > div { padding: 4px 10px; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.gx-r-liv-grid > div + div { border-left: 1px solid #1f7a33; }
+.gx-r-liv-grid > div > div { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.gx-r-liv-grid svg { flex: 0 0 auto; }
+.gx-r-liv-grid b { font-size: 15px; line-height: 18px; }
+
+/* Description / arrivée / livraison */
+.gx-r-infos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid #0e1b2e; border-radius: 8px; overflow: hidden; height: 78px; }
+.gx-r-infos > div { padding: 4px 10px; display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
+.gx-r-infos > div:first-child { gap: 0; line-height: 14px; padding-top: 3px; padding-bottom: 3px; }
+.gx-r-infos > div + div { border-left: 1px solid #0e1b2e; }
+.gx-r-infos .gx-r-lbl { font-size: 12px; font-weight: 600; letter-spacing: .08em; color: #4d5b73; white-space: nowrap; }
+.gx-r-pts { display: flex; align-items: flex-end; gap: 4px; }
+.gx-r-pts i { flex: 1 1 auto; height: 12px; border-bottom: 1px dotted #0e1b2e; }
+
+/* Montants */
+.gx-r-montants { display: flex; align-items: stretch; gap: 6px; }
+.gx-r-tab { flex: 1 1 auto; min-width: 0; border: 1px solid #0e1b2e; border-radius: 8px; overflow: hidden; }
+.gx-r-tab > div { display: grid; grid-template-columns: 112px repeat(4, minmax(0, 1fr)); }
+.gx-r-tab > div > span { padding: 2px 6px; }
+.gx-r-tab > div > span + span { border-left: 1px solid #0e1b2e; }
+.gx-r-tab .gx-r-th { background: #eef1f6; border-bottom: 1px solid #0e1b2e; font-weight: 600; text-align: center; }
+.gx-r-tab .gx-r-chiffres { border-bottom: 1px solid #0e1b2e; text-align: right; font-variant-numeric: tabular-nums; }
+.gx-r-tab .gx-r-chiffres > span:first-child { text-align: left; }
+.gx-r-tab .gx-r-lettres { grid-template-columns: 112px minmax(0, 1fr); }
+.gx-r-tab .gx-r-lettres > span + span { font-weight: 600; }
+.gx-r-total { flex: 0 0 150px; border-radius: 8px; background: #0e1b2e; color: #fff; padding: 6px 12px; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 2px; }
+.gx-r-total small { font-size: 12px; letter-spacing: .08em; color: #c9d8f0; }
+.gx-r-total b { font-size: 24px; line-height: 26px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.gx-r-total b span { font-size: 13px; }
+
+/* Signatures */
+.gx-r-sign { display: grid; grid-template-columns: 206px repeat(3, minmax(0, 1fr)); border: 1px solid #0e1b2e; border-radius: 8px; overflow: hidden; height: 50px; }
+.gx-r-sign > div { padding: 3px 8px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+.gx-r-sign > div + div { border-left: 1px solid #0e1b2e; }
+.gx-r-sign > div > b { font-weight: 600; }
+.gx-r-services { background: #f7f9fc; text-align: left !important; white-space: nowrap; gap: 0 !important; }
+.gx-r-pied { font-size: 12px; line-height: 14px; color: #4d5b73; text-align: center; }
+
+/* Filigrane « ANNULÉE » (réimpression d'une expédition annulée) */
+.gx-r-annule {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-28deg); z-index: 5;
+    font-size: 120px; font-weight: 800; letter-spacing: 12px; color: rgba(200, 16, 46, .14); white-space: nowrap; pointer-events: none;
+}
+
+/* Export PDF direct (CX.pdf) : la feuille est clonée hors écran à 794 px ;
+   aucune media query ne doit modifier sa disposition. */
+.gx-sheet.cx-pdf-mode { width: 794px !important; height: 1120px !important; margin: 0 !important; box-shadow: none !important; border: 0 !important; }
+
+/* =====================================================================
+   Page recu.html
+   ===================================================================== */
+.gx-recu-main { max-width: 1000px; }
+.gx-recu-page { background: #e3e8f0; border-radius: 14px; padding: 24px; overflow-x: auto; }
+.gx-recu-page .gx-sheet { margin: 0 auto; box-shadow: 0 12px 32px rgba(14,27,46,.14); }
+
+/* =====================================================================
+   Impression : une page A4 sans marge, uniquement la feuille
+   ===================================================================== */
+@page gxrecu { size: A4; margin: 0; }
+@media print {
+    html, body.cx-app { background: #fff !important; margin: 0 !important; padding: 0 !important; width: auto !important; min-width: 0 !important; }
+    body.cx-app .cx-main { max-width: none !important; width: auto !important; padding: 0 !important; margin: 0 !important; }
+    .gx-vue-recu:not(.cx-hidden) { display: block !important; }
+    .gx-recu-zone, .gx-recu-page { background: #fff !important; padding: 0 !important; border-radius: 0 !important; overflow: visible !important; }
+    .gx-sheet { page: gxrecu; width: 210mm !important; height: 296mm !important; margin: 0 !important; box-shadow: none !important; page-break-after: avoid; break-after: avoid; }
+    /* Bootstrap 3 (print) force « * { background: transparent !important; color: #000 !important } » :
+       on rétablit les couleurs de la feuille. */
+    .gx-sheet { color: #0e1b2e !important; background: #fff !important; }
+    .gx-sheet .gx-r-titre > span:first-child { color: #1f7a33 !important; }
+    .gx-sheet .gx-r-copie-tag, .gx-sheet .gx-r-total { background: #0e1b2e !important; color: #fff !important; }
+    .gx-sheet .gx-r-total small { color: #c9d8f0 !important; }
+    .gx-sheet .gx-r-total b, .gx-sheet .gx-r-total b span { color: #fff !important; }
+    .gx-sheet .gx-r-numero { color: #c8102e !important; }
+    .gx-sheet .gx-r-type, .gx-sheet .gx-r-liv-titre { background: #1f7a33 !important; color: #fff !important; }
+    .gx-sheet .gx-r-type b, .gx-sheet .gx-r-liv-titre span { color: #fff !important; }
+    .gx-sheet .gx-r-type small { color: #e2f3e6 !important; }
+    .gx-sheet .gx-r-fleche { color: #1f7a33 !important; }
+    .gx-sheet .gx-r-exp { background-color: #f1ecfb !important; background-image: repeating-linear-gradient(135deg, rgba(91,63,160,.06) 0px, rgba(91,63,160,.06) 6px, transparent 6px, transparent 12px) !important; }
+    .gx-sheet .gx-r-dst { background-color: #f0f2f5 !important; background-image: repeating-linear-gradient(135deg, rgba(14,27,46,.045) 0px, rgba(14,27,46,.045) 6px, transparent 6px, transparent 12px) !important; }
+    .gx-sheet .gx-r-exp .gx-r-lbl { color: #5b3fa0 !important; }
+    .gx-sheet .gx-r-liv-grid { background: #f2faf4 !important; }
+    .gx-sheet .gx-r-tab .gx-r-th { background: #eef1f6 !important; }
+    .gx-sheet .gx-r-services { background: #f7f9fc !important; }
+    .gx-sheet .gx-r-muted, .gx-sheet .gx-r-lbl, .gx-sheet .gx-r-pied, .gx-sheet .gx-r-qr span, .gx-sheet .gx-r-cut, .gx-sheet .gx-r-remise small { color: #4d5b73 !important; }
+    .gx-sheet .gx-r-logo b { color: #13306b !important; }
+    .gx-sheet .gx-r-annule { color: rgba(200, 16, 46, .14) !important; }
+    .gx-sheet .gx-r-qr svg { background: #fff !important; }
+}

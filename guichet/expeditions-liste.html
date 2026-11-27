@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Guichet · Historique des saisies - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte commune (module Commercial) + Guichet ===== -->
+    <link rel="stylesheet" href="../commercial/assets/cx.css">
+    <link rel="stylesheet" href="assets/guichet.css">
+</head>
+<body class="cx-app" data-module="guichet" data-page="g-expeditions-liste">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb">Guichet · Expéditions</div>
+            <h1 class="cx-title">Historique des saisies <small id="l-count"></small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-refresh"><i class="fa fa-refresh"></i> Rafraîchir</button>
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-export"><i class="fa fa-download"></i> Exporter (CSV)</button>
+            <a class="cx-btn cx-btn-new" href="expedition-form.html"><i class="fa fa-plus"></i> Nouvelle expédition</a>
+        </div>
+    </div>
+
+    <!-- Indicateurs du jour -->
+    <div class="cx-kpis" id="kpis"></div>
+
+    <div class="gx-hist-layout">
+        <div class="cx-card" style="margin-bottom:0">
+            <!-- Filtres -->
+            <div class="cx-toolbar" id="filtres">
+                <div class="cx-field">
+                    <span class="cx-label">Période</span>
+                    <div class="gx-periodes" id="f-raccourcis">
+                        <button type="button" data-p="jour">Aujourd'hui</button>
+                        <button type="button" data-p="hier">Hier</button>
+                        <button type="button" data-p="7j">7 jours</button>
+                        <button type="button" data-p="mois">Ce mois</button>
+                        <button type="button" data-p="tout">Tout</button>
+                    </div>
+                </div>
+                <div class="cx-field">
+                    <label class="cx-label" for="f-du">Du</label>
+                    <input type="date" class="form-control" id="f-du">
+                </div>
+                <div class="cx-field">
+                    <label class="cx-label" for="f-au">Au</label>
+                    <input type="date" class="form-control" id="f-au">
+                </div>
+                <div class="cx-field">
+                    <label class="cx-label" for="f-bureau">Bureau de départ</label>
+                    <select class="form-control" id="f-bureau"></select>
+                </div>
+                <div class="cx-field">
+                    <label class="cx-label" for="f-type">Type de client</label>
+                    <select class="form-control" id="f-type">
+                        <option value="">Tous</option>
+                        <option value="PARTICULIER">Particulier (comptant)</option>
+                        <option value="COMPTE">En compte (NATEX)</option>
+                    </select>
+                </div>
+                <div class="cx-field gx-client-filtre">
+                    <label class="cx-label" for="f-client">Client en compte</label>
+                    <select class="form-control" id="f-client"><option value=""></option></select>
+                </div>
+                <div class="cx-field">
+                    <label class="cx-label" for="f-statut">Statut</label>
+                    <select class="form-control" id="f-statut">
+                        <option value="">Tous</option>
+                        <option value="EN_TRANSIT">En transit</option>
+                        <option value="LIVREE">Livrée</option>
+                        <option value="ANNULEE">Annulée</option>
+                    </select>
+                </div>
+                <div class="cx-field">
+                    <label class="cx-label" for="f-paiement">Paiement</label>
+                    <select class="form-control" id="f-paiement"></select>
+                </div>
+                <div class="cx-field cx-grow">
+                    <label class="cx-label" for="q">Recherche</label>
+                    <div class="cx-search">
+                        <i class="fa fa-search"></i>
+                        <input type="search" class="form-control" id="q" placeholder="N° de LT, n° manuel, nom, téléphone…">
+                    </div>
+                </div>
+                <div class="cx-field">
+                    <button type="button" class="cx-btn cx-btn-link cx-btn-sm" id="btn-reset"><i class="fa fa-times"></i> Effacer les filtres</button>
+                </div>
+            </div>
+
+            <!-- Onglets par statut -->
+            <div class="cx-tabs" id="onglets" role="tablist">
+                <a data-tab="" class="active" role="tab">Toutes <span class="cx-count" id="n-tout">0</span></a>
+                <a data-tab="EN_TRANSIT" role="tab">En transit <span class="cx-count" id="n-EN_TRANSIT">0</span></a>
+                <a data-tab="LIVREE" role="tab">Livrées <span class="cx-count" id="n-LIVREE">0</span></a>
+                <a data-tab="ANNULEE" role="tab">Annulées <span class="cx-count" id="n-ANNULEE">0</span></a>
+            </div>
+
+            <!-- Tableau (CX.DataTable) -->
+            <div id="dt-exp"></div>
+        </div>
+
+        <!-- Caisse du jour du guichetier connecté -->
+        <aside class="cx-card gx-caisse" id="gx-caisse">
+            <div class="cx-card-head">
+                <span class="cx-step"><i class="fa fa-money"></i></span>
+                <div>
+                    <h3 class="cx-card-title">Caisse du jour</h3>
+                    <p class="cx-card-sub" id="caisse-sub"></p>
+                </div>
+            </div>
+            <div class="cx-card-body" id="caisse-body"></div>
+        </aside>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur · les expéditions des clients en compte du jeu de démo apparaissent aussi</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="../commercial/assets/cx-core.js"></script>
+<script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-tarifs.js"></script>
+<script src="../commercial/assets/cx-demo-exploitation.js"></script>
+<script>window.CX_BASE = "../commercial/";</script>
+<script src="../commercial/assets/cx-shell.js"></script>
+<script src="../maquettes-carnets/assets/carnets-common.js"></script>
+<script src="assets/guichet-commun.js"></script>
+<script src="assets/expeditions-liste.js"></script>
+</body>
+</html>

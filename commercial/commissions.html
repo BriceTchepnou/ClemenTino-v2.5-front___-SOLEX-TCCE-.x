@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Commissions des apporteurs - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/apporteurs.css">
+</head>
+<body class="cx-app" data-page="commissions">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main cx-no-print">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> › <a href="apporteurs-liste.html">Apporteurs d'affaires</a> › Commissions</div>
+            <h1 class="cx-title">Commissions des apporteurs <small id="h-periode"></small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <a class="cx-btn cx-btn-ghost" href="apporteurs-liste.html"><i class="fa fa-handshake-o"></i> Apporteurs</a>
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-csv"><i class="fa fa-file-excel-o"></i> Exporter (CSV)</button>
+            <button type="button" class="cx-btn cx-btn-primary" id="btn-imprimer"><i class="fa fa-print"></i> État imprimable</button>
+        </div>
+    </div>
+
+    <div class="cx-card">
+        <div class="cx-toolbar cm-filtres">
+            <div class="cx-field">
+                <label class="cx-label" for="f-raccourci">Période</label>
+                <select id="f-raccourci" class="form-control">
+                    <option value="MOIS" selected>Mois en cours</option>
+                    <option value="MOIS_PREC">Mois précédent</option>
+                    <option value="TRIMESTRE">Trimestre en cours</option>
+                    <option value="ANNEE">Année en cours</option>
+                    <option value="PERSO">Personnalisée</option>
+                </select>
+            </div>
+            <div class="cx-field"><label class="cx-label" for="f-du">Du</label><input type="date" id="f-du" class="form-control"></div>
+            <div class="cx-field"><label class="cx-label" for="f-au">Au</label><input type="date" id="f-au" class="form-control"></div>
+            <div class="cx-field cx-grow cm-apporteur">
+                <label class="cx-label" for="f-apporteur">Apporteur</label>
+                <select id="f-apporteur" class="form-control" style="width:100%"></select>
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="f-statut">Statut</label>
+                <select id="f-statut" class="form-control">
+                    <option value="">Tous</option>
+                    <option value="A_PAYER">À payer</option>
+                    <option value="PAYEE">Payées</option>
+                </select>
+            </div>
+            <div class="cx-field">
+                <label class="cx-switch" style="height:36px">
+                    <input type="checkbox" id="f-zero"><span class="cx-switch-track"></span>
+                    <span class="cx-switch-text"><b>Sans commission</b><small>Afficher aussi les montants nuls</small></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="cx-kpis" id="kpis"></div>
+
+    <div class="cx-card">
+        <div class="cx-card-head">
+            <div>
+                <h3 class="cx-card-title">Commissions par apporteur</h3>
+                <p class="cx-card-sub">Calculées sur les factures des clients apportés (émises ou encaissées selon la base de l'apporteur). Cliquez sur une ligne pour le détail par client.</p>
+            </div>
+        </div>
+        <div id="dt"></div>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur.</p>
+</main>
+
+<!-- État imprimable (généré à la demande) -->
+<div class="cx-print-only" id="cm-print"></div>
+
+<!-- Modale : marquer payée -->
+<div class="modal fade" id="m-payer" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="max-width:520px"><div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-check-circle"></i>Marquer la commission payée</h4>
+        </div>
+        <div class="modal-body">
+            <div class="cx-block" style="margin-bottom:14px">
+                <div class="cx-sum-line"><span>Apporteur</span><b id="mp-apporteur"></b></div>
+                <div class="cx-sum-line"><span>Période</span><b id="mp-periode"></b></div>
+                <div class="cx-sum-line"><span>Base</span><b id="mp-base"></b></div>
+                <div class="cx-sum-line"><span>Commission</span><b id="mp-montant" style="color:var(--cx-green)"></b></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 cx-field"><label class="cx-label req" for="mp-date">Date du paiement</label><input type="date" class="form-control" id="mp-date"></div>
+                <div class="col-sm-6 cx-field"><label class="cx-label req" for="mp-mode">Mode de paiement</label><select class="form-control" id="mp-mode"></select></div>
+                <div class="col-sm-12 cx-field" style="margin-bottom:0"><label class="cx-label" for="mp-reference">Référence <span class="cx-opt">(n° de virement, de pièce de caisse…)</span></label><input type="text" class="form-control" id="mp-reference" maxlength="60"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="cx-btn cx-btn-ghost" data-dismiss="modal">Annuler</button>
+            <button type="button" class="cx-btn cx-btn-success" id="mp-ok"><i class="fa fa-check"></i> Marquer payée</button>
+        </div>
+    </div></div>
+</div>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/pages/exports.js"></script>
+<script src="assets/pages/facturation.js"></script>
+<script src="assets/pages/apporteurs.js"></script>
+<script src="assets/pages/commissions.js"></script>
+</body>
+</html>

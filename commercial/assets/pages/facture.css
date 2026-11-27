@@ -152,6 +152,36 @@
 .fx-sheet.cx-pdf-mode .fx-cachet-zone { height: 22mm; }
 
 /* =====================================================================
+   Options de la facture (panneau non imprimé) + rendu des options
+   ===================================================================== */
+.fo-panel { max-width: 210mm; margin: 0 auto 16px; }
+.fo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 28px; }
+.fo-col { min-width: 0; }
+.fo-col .cx-field { margin-bottom: 10px; }
+.fo-sw { display: flex; margin-bottom: 10px; }
+.fo-sw .cx-switch-text b { font-size: 12.5px; }
+.fo-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.fo-line .cx-switch-text b { font-size: 12.5px; }
+.fo-taux { width: 86px; flex: 0 0 86px; }
+.fo-mt { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; font-size: 12.5px; }
+.fo-mt label { margin: 0; font-weight: 600; color: var(--cx-ink); }
+.fo-mt .form-control { width: 110px; text-align: right; }
+.fo-col .input-group .form-control { text-align: right; }
+.fo-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; border-top: 1px solid var(--cx-line-2); margin-top: 6px; padding-top: 12px; }
+.fo-spacer { flex: 1; }
+@media screen and (max-width: 860px) { .fo-grid { grid-template-columns: 1fr 1fr; } }
+
+/* Sous-totaux par ville (lignes de groupe dans le tableau des expéditions) */
+.fx-lignes tbody#fx-lignes tr.fx-groupe td {
+    background: #e8eef8; color: var(--cx-navy); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .3px;
+    border-bottom: 1px solid #cdd8ea; padding-top: 6px;
+}
+.fx-lignes tbody#fx-lignes tr.fx-groupe-total td { background: #f3f6fb; font-weight: 700; border-bottom: 1px solid #cdd8ea; }
+/* Lignes de retenue (acompte IS, acompte) et solde à payer */
+.fx-totaux .fx-row-retenue th, .fx-totaux .fx-row-retenue td { color: #4b5563; font-style: italic; }
+.fx-totaux .fx-row-solde th, .fx-totaux .fx-row-solde td { font-weight: 800; font-size: 13px; color: var(--cx-navy); border-top: 2px solid var(--cx-navy) !important; }
+
+/* =====================================================================
    Impression
    ===================================================================== */
 @page {
@@ -197,6 +227,10 @@
     .fx-sheet .fx-totaux .fx-ttc th, .fx-sheet .fx-totaux .fx-ttc td { background: var(--cx-navy) !important; color: #fff !important; }
     .fx-sheet .fx-totaux .fx-row-reste th, .fx-sheet .fx-totaux .fx-row-reste td { color: #b42318 !important; }
     .fx-sheet .fx-acquittee { color: #17784a !important; }
+    .fx-sheet tbody#fx-lignes tr.fx-groupe td { background: #e8eef8 !important; color: var(--cx-navy) !important; }
+    .fx-sheet tbody#fx-lignes tr.fx-groupe-total td { background: #f3f6fb !important; }
+    .fx-sheet .fx-totaux .fx-row-solde th, .fx-sheet .fx-totaux .fx-row-solde td { color: var(--cx-navy) !important; }
+    .fx-sheet .fx-totaux .fx-row-retenue th, .fx-sheet .fx-totaux .fx-row-retenue td { color: #4b5563 !important; }
     .fx-sheet .fx-small, .fx-sheet .fx-sub, .fx-sheet .fx-soc-coord, .fx-sheet .fx-logo-slogan,
     .fx-sheet .fx-meta th, .fx-sheet .fx-devise, .fx-sheet .fx-pied { color: #4b5563 !important; }
     .fx-sheet .fx-cachet-zone { color: #9aa6bd !important; }

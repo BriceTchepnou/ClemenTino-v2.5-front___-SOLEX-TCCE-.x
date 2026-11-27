@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commercial · Journal de vente - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte du module Commercial ===== -->
+    <link rel="stylesheet" href="assets/cx.css">
+    <link rel="stylesheet" href="assets/pages/journal-vente.css">
+</head>
+<body class="cx-app" data-page="journal-vente">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main cx-no-print">
+
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb"><a href="index.html">Commercial</a> › <a href="factures-suivi.html">Facturation</a> › Journal de vente</div>
+            <h1 class="cx-title">Journal de vente <small id="h-periode"></small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <a class="cx-btn cx-btn-ghost" href="factures-suivi.html"><i class="fa fa-list"></i> Suivi des factures</a>
+            <a class="cx-btn cx-btn-new" href="facture-emettre.html"><i class="fa fa-plus"></i> Nouvelle facture</a>
+        </div>
+    </div>
+
+    <!-- ===== Filtres ===== -->
+    <div class="cx-card">
+        <div class="cx-toolbar jv-filtres">
+            <div class="cx-field">
+                <label class="cx-label" for="f-raccourci">Période</label>
+                <select id="f-raccourci" class="form-control">
+                    <option value="MOIS">Mois en cours</option>
+                    <option value="MOIS_PREC">Mois précédent</option>
+                    <option value="TRIMESTRE">Trimestre en cours</option>
+                    <option value="ANNEE">Année en cours</option>
+                    <option value="12MOIS" selected>12 derniers mois</option>
+                    <option value="PERSO">Personnalisée</option>
+                </select>
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="f-du">Du</label>
+                <input type="date" id="f-du" class="form-control">
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="f-au">Au</label>
+                <input type="date" id="f-au" class="form-control">
+            </div>
+            <div class="cx-field cx-grow jv-clients">
+                <label class="cx-label" for="f-clients">Clients</label>
+                <select id="f-clients" class="form-control" multiple style="width:100%"></select>
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="f-statut">Statut</label>
+                <select id="f-statut" class="form-control">
+                    <option value="ACTIVES">Émises (hors annulées)</option>
+                    <option value="IMPAYEES">Non soldées</option>
+                    <option value="PAYEE">Payées</option>
+                    <option value="EMISE">Émises, non envoyées</option>
+                    <option value="ENVOYEE">Envoyées</option>
+                    <option value="PARTIELLE">Partiellement payées</option>
+                    <option value="TOUTES">Toutes, annulées comprises</option>
+                </select>
+            </div>
+            <div class="cx-field">
+                <label class="cx-label" for="f-agence">Agence</label>
+                <select id="f-agence" class="form-control"><option value="">Toutes les agences</option></select>
+            </div>
+            <div class="cx-field jv-boutons">
+                <button type="button" class="cx-btn cx-btn-primary" id="btn-afficher"><i class="fa fa-search"></i> Afficher</button>
+                <button type="button" class="cx-btn cx-btn-ghost" id="btn-reinit" title="Réinitialiser les filtres" data-toggle="tooltip"><i class="fa fa-undo"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Indicateurs (période et filtres appliqués) ===== -->
+    <div class="cx-kpis" id="kpis"></div>
+
+    <!-- ===== Journal ===== -->
+    <div class="cx-card">
+        <div class="cx-toolbar">
+            <div class="cx-field cx-grow cx-search">
+                <label class="cx-label" for="q">Recherche</label>
+                <i class="fa fa-search" style="top:auto;bottom:11px;transform:none"></i>
+                <input type="text" id="q" class="form-control" placeholder="N° de facture, client, n° de compte…">
+            </div>
+            <div class="cx-field jv-exports">
+                <button type="button" class="cx-btn cx-btn-ghost" id="btn-pdf"><i class="fa fa-file-pdf-o"></i> Télécharger en PDF</button>
+                <button type="button" class="cx-btn cx-btn-ghost" id="btn-excel"><i class="fa fa-file-excel-o"></i> Télécharger en Excel</button>
+                <button type="button" class="cx-btn cx-btn-dark" id="btn-sage"><i class="fa fa-exchange"></i> Exporter pour Sage</button>
+                <button type="button" class="cx-btn cx-btn-ghost cx-btn-icon" id="btn-imprimer" title="Imprimer" data-toggle="tooltip"><i class="fa fa-print"></i></button>
+            </div>
+        </div>
+        <div id="dt"></div>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur.</p>
+</main>
+
+<!-- Version imprimable (A4 paysage) : générée à la demande par journal-vente.js -->
+<div class="cx-print-only" id="jv-print"></div>
+
+<!-- =============================================================
+     Modale : export Sage (paramètres, aperçu des écritures, contrôle)
+     ============================================================= -->
+<div class="modal fade" id="m-sage" tabindex="-1" role="dialog">
+    <div class="modal-dialog jv-modal-sage"><div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title"><i class="fa fa-exchange"></i>Export des écritures de vente pour Sage</h4>
+        </div>
+        <div class="modal-body">
+            <div class="cx-note cx-note-info" style="margin-top:0" id="sg-resume"></div>
+
+            <!-- Paramètres Sage -->
+            <div class="jv-params">
+                <a class="jv-params-head" id="sg-toggle"><i class="fa fa-cog"></i> Paramètres Sage <span class="cx-muted" id="sg-params-resume"></span><i class="fa fa-chevron-down jv-chev"></i></a>
+                <div class="jv-params-body cx-hidden" id="sg-params">
+                    <div class="row">
+                        <div class="col-sm-3 cx-field"><label class="cx-label" for="sg-journal">Code journal</label><input type="text" class="form-control input-sm cx-mono" id="sg-journal" data-p="journal" maxlength="6"></div>
+                        <div class="col-sm-3 cx-field"><label class="cx-label" for="sg-compteVente">Compte de ventes (706)</label><input type="text" class="form-control input-sm cx-mono" id="sg-compteVente" data-p="compteVente" maxlength="13"></div>
+                        <div class="col-sm-3 cx-field"><label class="cx-label" for="sg-compteTva">Compte TVA collectée</label><input type="text" class="form-control input-sm cx-mono" id="sg-compteTva" data-p="compteTva" maxlength="13"></div>
+                        <div class="col-sm-3 cx-field"><label class="cx-label" for="sg-compteIs">Compte acompte IS</label><input type="text" class="form-control input-sm cx-mono" id="sg-compteIs" data-p="compteIs" maxlength="13"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3 cx-field">
+                            <label class="cx-label" for="sg-modeTiers">Comptes clients</label>
+                            <select class="form-control input-sm" id="sg-modeTiers" data-p="modeTiers">
+                                <option value="INDIVIDUEL">Compte 411 du client</option>
+                                <option value="COLLECTIF">Collectif + compte tiers</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3 cx-field"><label class="cx-label" for="sg-compteCollectif">Compte collectif clients</label><input type="text" class="form-control input-sm cx-mono" id="sg-compteCollectif" data-p="compteCollectif" maxlength="13"></div>
+                        <div class="col-sm-3 cx-field">
+                            <label class="cx-label" for="sg-separateur">Séparateur</label>
+                            <select class="form-control input-sm" id="sg-separateur" data-p="separateur">
+                                <option value=";">Point-virgule ( ; )</option>
+                                <option value="TAB">Tabulation</option>
+                                <option value=",">Virgule ( , )</option>
+                                <option value="|">Barre verticale ( | )</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3 cx-field">
+                            <label class="cx-label" for="sg-formatDate">Format de date</label>
+                            <select class="form-control input-sm" id="sg-formatDate" data-p="formatDate">
+                                <option value="JJMMAA">JJMMAA (271126)</option>
+                                <option value="JJ/MM/AAAA">JJ/MM/AAAA</option>
+                                <option value="AAAAMMJJ">AAAAMMJJ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3 cx-field">
+                            <label class="cx-label" for="sg-decimales">Montants</label>
+                            <select class="form-control input-sm" id="sg-decimales" data-p="decimales">
+                                <option value="0">Entiers (1250000)</option>
+                                <option value="2">2 décimales (1250000,00)</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3 cx-field">
+                            <label class="cx-label" for="sg-encodage">Encodage</label>
+                            <select class="form-control input-sm" id="sg-encodage" data-p="encodage">
+                                <option value="ANSI">ANSI (Windows-1252)</option>
+                                <option value="UTF8">UTF-8</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 cx-field jv-checks">
+                            <label class="cx-switch"><input type="checkbox" id="sg-ventilerIs" data-p="ventilerIs"><span class="cx-switch-track"></span><span class="cx-switch-text"><b>Ventiler l'acompte IS</b><small>Débit du compte IS, le client est débité du TTC - IS</small></span></label>
+                            <label class="cx-switch"><input type="checkbox" id="sg-entete" data-p="entete"><span class="cx-switch-track"></span><span class="cx-switch-text"><b>Ligne d'en-tête</b><small>Noms des colonnes en 1re ligne</small></span></label>
+                        </div>
+                    </div>
+                    <div class="jv-params-foot">
+                        <span class="cx-help">Colonnes : journal, date, n° de pièce, compte général, compte tiers, libellé (35 car.), débit, crédit, échéance. Comptes à valider avec la comptabilité.</span>
+                        <button type="button" class="cx-btn cx-btn-link cx-btn-xs" id="sg-defaut"><i class="fa fa-undo"></i> Valeurs par défaut</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contrôle d'équilibre + aperçu -->
+            <div id="sg-controle"></div>
+            <div class="jv-apercu">
+                <table class="cx-table jv-ecritures">
+                    <thead><tr><th>Jal</th><th>Date</th><th>Pièce</th><th>Compte</th><th>Tiers</th><th>Libellé</th><th class="num">Débit</th><th class="num">Crédit</th></tr></thead>
+                    <tbody id="sg-lignes"></tbody>
+                    <tfoot id="sg-totaux"></tfoot>
+                </table>
+            </div>
+            <div class="jv-fichier">
+                <div class="cx-label">Aperçu du fichier <span class="cx-opt" id="sg-fichier-nom"></span></div>
+                <pre id="sg-fichier"></pre>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="cx-btn cx-btn-ghost" data-dismiss="modal">Fermer</button>
+            <button type="button" class="cx-btn cx-btn-primary" id="sg-telecharger"><i class="fa fa-download"></i> Télécharger le fichier Sage</button>
+        </div>
+    </div></div>
+</div>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="assets/cx-core.js"></script>
+<script src="assets/cx-data.js"></script>
+<script src="assets/cx-shell.js"></script>
+<script src="assets/cx-pdf.js"></script>
+<script src="assets/pages/exports.js"></script>
+<script src="assets/pages/facturation.js"></script>
+<script src="assets/pages/journal-vente.js"></script>
+</body>
+</html>

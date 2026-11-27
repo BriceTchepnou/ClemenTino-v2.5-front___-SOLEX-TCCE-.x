@@ -90,6 +90,7 @@ $(function () {
         //            (renvoie les expéditions NON facturées des clients en compte ; le tri facturer / régulariser peut rester côté JS)
         CX.api.list("expeditions", function (e) {
             if (!clients[e.clientId] || e.factureId) return false;
+            if (e.statut === "ANNULEE") return false;   // annulée au guichet : ni facturable, ni à régulariser
             if (f.client && String(e.clientId) !== String(f.client)) return false;
             if (f.du && e.dateExp < f.du) return false;
             if (f.au && e.dateExp > f.au) return false;

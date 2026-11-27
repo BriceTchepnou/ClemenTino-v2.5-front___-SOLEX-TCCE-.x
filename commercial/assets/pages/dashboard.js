@@ -6,7 +6,9 @@ $(function () {
 
     function resteAPayer(f) {
         var paye = 0; $.each(f.paiements || [], function (_, p) { paye += p.montant; });
-        return Math.max(0, f.montantTTC - paye);
+        /* solde à payer (TTC − acompte IS − acompte) quand les options de facturation l'ont calculé */
+        var du = f.soldeAPayer != null ? f.soldeAPayer : f.montantTTC;
+        return Math.max(0, du - paye);
     }
 
     $.when(

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>Opérations · Groupage (départs) - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <!-- ===== Charte commune (module Commercial) + Opérations ===== -->
+    <link rel="stylesheet" href="../commercial/assets/cx.css">
+    <link rel="stylesheet" href="assets/ops.css">
+</head>
+<body class="cx-app" data-module="operations" data-page="o-groupage">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb">Opérations · Flux des colis</div>
+            <h1 class="cx-title">Groupage <small>départs de l'agence</small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <div id="ox-agence-slot"></div>
+            <a class="cx-btn cx-btn-ghost" href="bordereaux.html"><i class="fa fa-list-alt"></i> Bordereaux</a>
+        </div>
+    </div>
+
+    <!-- Saisie rapide (douchette) -->
+    <div class="ox-scan">
+        <i class="fa fa-barcode"></i>
+        <div><b>Scanner ou saisir un n° de LT</b><small>Douchette ou clavier puis Entrée : le colis est ajouté à la sélection</small></div>
+        <input type="text" class="form-control" id="scan" placeholder="RT-2611-00001" autocomplete="off" aria-label="N° de LT à ajouter à la sélection">
+        <span class="ox-scan-res" id="scan-res" aria-live="polite"></span>
+    </div>
+
+    <div class="cx-layout">
+        <div>
+            <div class="cx-card">
+                <div class="cx-tabs" id="onglets" role="tablist">
+                    <a data-tab="grouper" class="active" role="tab">À grouper <span class="cx-count" id="n-grouper">0</span></a>
+                    <a data-tab="locaux" role="tab">Locaux, même agence <span class="cx-count" id="n-locaux">0</span></a>
+                </div>
+                <div class="cx-toolbar">
+                    <div class="cx-field">
+                        <label class="cx-label" for="f-dest">Destination</label>
+                        <select class="form-control" id="f-dest"></select>
+                    </div>
+                    <div class="cx-field">
+                        <label class="cx-label" for="f-mode">Remise</label>
+                        <select class="form-control" id="f-mode">
+                            <option value="">Toutes</option><option value="BUREAU">Retrait en agence</option><option value="DOMICILE">Domicile</option>
+                        </select>
+                    </div>
+                    <div class="cx-field cx-grow">
+                        <label class="cx-label" for="q">Recherche</label>
+                        <div class="cx-search"><i class="fa fa-search"></i><input type="search" class="form-control" id="q" placeholder="N° LT, nom, téléphone, contenu…"></div>
+                    </div>
+                </div>
+                <div class="cx-card-body">
+                    <div class="ox-groupes" id="groupes"></div>
+                </div>
+            </div>
+        </div>
+
+        <aside class="cx-aside">
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step"><i class="fa fa-check-square-o"></i></span>
+                    <div><h3 class="cx-card-title">Sélection</h3><p class="cx-card-sub" id="sel-sub">Aucun colis sélectionné</p></div>
+                </div>
+                <div class="cx-card-body">
+                    <div id="sel-resume"></div>
+                    <div id="sel-grouper">
+                        <button type="button" class="cx-btn cx-btn-primary cx-btn-block" id="btn-creer" disabled><i class="fa fa-plus"></i> Créer le bordereau</button>
+                        <div class="cx-field ox-mt" id="bloc-ajouter">
+                            <label class="cx-label" for="sel-bordereau">ou ajouter à un bordereau en préparation</label>
+                            <div class="ox-flex"><select class="form-control ox-grow" id="sel-bordereau"></select>
+                                <button type="button" class="cx-btn cx-btn-ghost" id="btn-ajouter" disabled><i class="fa fa-plus"></i> Ajouter</button></div>
+                        </div>
+                    </div>
+                    <div id="sel-locaux" class="cx-hidden">
+                        <button type="button" class="cx-btn cx-btn-primary cx-btn-block" id="btn-orienter" disabled><i class="fa fa-inbox"></i> Mettre en agence / à livrer</button>
+                        <p class="cx-help">Colis à destination de l'agence elle-même : retrait → « En agence », domicile → file « À livrer ».</p>
+                    </div>
+                    <button type="button" class="cx-btn cx-btn-link cx-btn-sm" id="btn-vider"><i class="fa fa-times"></i> Vider la sélection</button>
+                </div>
+            </div>
+            <div class="cx-card">
+                <div class="cx-card-head">
+                    <span class="cx-step"><i class="fa fa-truck"></i></span>
+                    <div><h3 class="cx-card-title">Bordereaux en préparation</h3><p class="cx-card-sub">Au départ de l'agence</p></div>
+                </div>
+                <div class="cx-card-body"><div id="prepa"></div></div>
+            </div>
+        </aside>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="../commercial/assets/cx-core.js"></script>
+<script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-tarifs.js"></script>
+<script src="../commercial/assets/cx-demo-exploitation.js"></script>
+<script src="../guichet/assets/guichet-commun.js"></script>
+<script src="assets/ops-commun.js"></script>
+<script>window.CX_BASE = "../commercial/";</script>
+<script src="../commercial/assets/cx-shell.js"></script>
+<script src="assets/pages/groupage.js"></script>
+</body>
+</html>

@@ -34,6 +34,10 @@ $(function () {
     var COMMERCIAUX = ["Support KuTiWa", "M. NJOYA Ibrahim", "Mme EBOGO Christelle", "M. TCHAMBA Hervé"];
     var FICHE_MAX_OCTETS = 5 * 1024 * 1024;
     var GROUPES = CX.api.listSync ? CX.api.listSync("groupesClients") : [];   // groupes de clients (tarification)
+    // TODO API : GET /commercial/apporteurs?statut=ACTIF (ou injection Twig)
+    var APPORTEURS = CX.api.listSync ? CX.api.listSync("apporteurs") : [];    // apporteurs d'affaires
+    /* Champs « conditions de facturation » (voir CX.REF.conditionsFacturation) */
+    var CHAMPS_CONDITIONS = ["avecTva", "tauxTva", "abonnementIs", "tauxIs", "assurance", "manutention", "emballage", "afficherPuMoyen", "sousTotal"];
 
     var state = {
         client: null,      // client chargé (modification)
@@ -117,6 +121,18 @@ $(function () {
         // TODO API : GET /commercial/groupes-clients
         $("#groupeIds").html($.map(GROUPES, function (g) { return "<option value='" + g.id + "'>" + U.esc(g.nom) + "</option>"; }).join(""))
             .select2({ width: "100%", placeholder: "Aucun groupe", closeOnSelect: false });
+        remplirApporteurs(null);
+        $("#apporteurId").select2({ width: "100%", allowClear: true, placeholder: "Aucun apporteur",
+            language: { noResults: function () { return "Aucun apporteur trouvé"; } } });
+    }
+
+    /* Apporteurs actifs (+ l'apporteur actuel du client, même suspendu) */
+    function remplirApporteurs(actuelId) {
+        var liste = $.grep(APPORTEURS, function (a) { return a.statut === "ACTIF" || String(a.id) === String(actuelId); });
+        liste.sort(function (a, b) { return (a.nom + a.prenoms) > (b.nom + b.prenoms) ? 1 : -1; });
+        $("#apporteurId").html("<option value=''></option>" + $.map(liste, function (a) {
+            return "<option value='" + a.id + "'>" + U.esc(a.code + " · " + a.nom + " " + a.prenoms + (a.statut !== "ACTIF" ? " (suspendu)" : "")) + "</option>";
+        }).join(""));
     }
 
     function remplirCommerciaux(actuel) {
@@ -134,7 +150,9 @@ $(function () {
         return $.extend(o, {
             typeCompte: "COMPTANT", tarifPortee: "TOUTES", tarifAuto: false, tarifAgences: [], groupeIds: [],
             periodicite: "MENSUELLE", delaiPaiement: CX.CONFIG.DELAI_PAIEMENT_JOURS, remisePct: 0,
-            ville: USER.ville, commercial: USER.nom,
+            ville: USER.ville, commercial: USER.nom, apporteurId: "", compte: "",
+            avecTva: true, tauxTva: CX.CONFIG.TVA, abonnementIs: false, tauxIs: CX.REF.TAUX_IS,
+            assurance: "", manutention: "", emballage: "", afficherPuMoyen: false, sousTotal: "AUCUN",
             agenceId: (function () {
                 var a = $.grep(REF.AGENCES, function (x) { return x.ville === USER.ville && x.nom === USER.agence; })[0];
                 return a ? String(a.id) : "";
@@ -157,6 +175,12 @@ $(function () {
         o.groupeIds = $.map($.grep(GROUPES, function (g) { return $.inArray(Number(c.id), $.map(g.clientIds || [], Number)) >= 0; }), function (g) { return String(g.id); });
         if (!c.plafondCredit) o.plafondCredit = "";
         if (!c.montantForfait) o.montantForfait = "";
+        /* Conditions de facturation (valeurs par défaut si absentes) + apporteur + n° de compte */
+        var k = CX.REF.conditionsFacturation(c);
+        $.each(CHAMPS_CONDITIONS, function (_, f) { o[f] = k[f]; });
+        $.each(["assurance", "manutention", "emballage"], function (_, f) { if (!o[f]) o[f] = ""; });
+        o.compte = c.compte || "";
+        o.apporteurId = c.apporteurId ? String(c.apporteurId) : "";
         $.each(ROLES, function (_, r) {
             var ct = $.grep(c.contacts || [], function (x) { return x.role === r; })[0] || {};
             $.each(CHAMPS_CONTACT[r], function (_, f) { o[r + "_" + f] = ct[f] || ""; });
@@ -208,7 +232,20 @@ $(function () {
             tarifAgences: raw.tarifAuto && raw.tarifPortee === "CERTAINES" ? $.map(raw.tarifAgences || [], function (id) { return Number(id); }) : [],
             agenceId: raw.agenceId ? Number(raw.agenceId) : null,
             commercial: raw.commercial || "",
-            ficheClient: state.fiche
+            ficheClient: state.fiche,
+            /* N° de compte (vide = 411 + id, calculé) et apporteur d'affaires */
+            compte: t("compte") || null,
+            apporteurId: raw.apporteurId ? Number(raw.apporteurId) : null,
+            /* Conditions de facturation (reprises par CX.fac à chaque facture) */
+            avecTva: !!raw.avecTva,
+            tauxTva: raw.tauxTva === "" ? CX.CONFIG.TVA : U.num(raw.tauxTva),
+            abonnementIs: !!raw.abonnementIs,
+            tauxIs: raw.tauxIs === "" ? CX.REF.TAUX_IS : U.num(raw.tauxIs),
+            assurance: U.round(U.num(raw.assurance)),
+            manutention: U.round(U.num(raw.manutention)),
+            emballage: U.round(U.num(raw.emballage)),
+            afficherPuMoyen: !!raw.afficherPuMoyen,
+            sousTotal: raw.sousTotal || "AUCUN"
         });
         return base;
     }
@@ -253,6 +290,16 @@ $(function () {
             if (U.num(raw.plafondCredit) < 0) err("plafondCredit", "Le plafond ne peut pas être négatif.");
         }
         if (type === "FORFAIT" && U.num(raw.montantForfait) <= 0) err("montantForfait", "Indiquez le montant du forfait.");
+        /* Conditions de facturation */
+        var compte = $.trim(raw.compte || "");
+        if (compte && !/^411\d{5}$/.test(compte)) err("compte", "N° de compte invalide : 411 suivi de 5 chiffres (ex. 41100012).");
+        else if (compte) {
+            var autre = $.grep(state.clients, function (x) { return x.id != editId && CX.REF.compteClient(x) === compte; })[0];
+            if (autre) err("compte", "Ce n° de compte est déjà attribué à " + autre.raisonSociale + ".");
+        }
+        if (raw.avecTva && (U.num(raw.tauxTva) <= 0 || U.num(raw.tauxTva) > 100)) err("tauxTva", "Taux de TVA entre 0 et 100 %.");
+        if (raw.abonnementIs && (U.num(raw.tauxIs) <= 0 || U.num(raw.tauxIs) > 100)) err("tauxIs", "Taux d'acompte IS entre 0 et 100 %.");
+        $.each(["assurance", "manutention", "emballage"], function (_, f) { if (U.num(raw[f]) < 0) err(f, "Montant négatif impossible."); });
         if (raw.tarifAuto && raw.tarifPortee === "CERTAINES" && !(raw.tarifAgences || []).length) {
             err("tarifAgences", "Choisissez au moins une agence, ou appliquez le tarif à toutes les agences.");
         }
@@ -282,6 +329,11 @@ $(function () {
         var type = typeCourant(), enCompte = estEnCompte(type);
         $("#bloc-compte").toggleClass("cx-hidden", !enCompte);
         $("#bloc-forfait").toggleClass("cx-hidden", type !== "FORFAIT");
+        $("#bloc-conditions").toggleClass("cx-hidden", !enCompte);
+        $("#tauxTva").prop("disabled", !$("#avecTva").is(":checked"));
+        $("#tauxIs").prop("disabled", !$("#abonnementIs").is(":checked"));
+        /* N° de compte proposé (411 + id) en modification */
+        $("#compte").attr("placeholder", state.client ? CX.REF.compteClient({ id: state.client.id }) : "411xxxxx");
         var auto = $("#tarifAuto").is(":checked");
         $("#bloc-tarif").toggleClass("cx-hidden", !auto);
         $("#bloc-tarif-agences").toggleClass("cx-hidden", !auto || $form.find("[name='tarifPortee']:checked").val() !== "CERTAINES");
@@ -314,6 +366,10 @@ $(function () {
         if (enCompte && U.num(raw.remisePct) > 0) tags.push("<span>Remise " + U.fmt(U.num(raw.remisePct), U.num(raw.remisePct) % 1 ? 1 : 0) + " %</span>");
         if (type === "FORFAIT" && U.num(raw.montantForfait) > 0) tags.push("<span>" + U.money(U.num(raw.montantForfait)) + " / période</span>");
         if (raw.tarifAuto) tags.push("<span><i class='fa fa-bolt'></i> Tarif auto</span>");
+        if (enCompte && raw.abonnementIs) tags.push("<span>Acompte IS " + U.fmt(U.num(raw.tauxIs), 1) + " %</span>");
+        if (enCompte && !raw.avecTva) tags.push("<span>Sans TVA</span>");
+        var ap = raw.apporteurId ? $.grep(APPORTEURS, function (a) { return String(a.id) === String(raw.apporteurId); })[0] : null;
+        if (ap) tags.push("<span><i class='fa fa-handshake-o'></i> " + U.esc(ap.prenoms + " " + ap.nom) + "</span>");
         $("#ap-tags").html(tags.join(""));
 
         /* Liste de contrôle */
@@ -411,6 +467,7 @@ $(function () {
         var data = c ? versFormulaire(c) : valeursVides();
         state.original = c ? $.extend({}, data) : {};
         remplirCommerciaux(data.commercial);
+        remplirApporteurs(data.apporteurId);
         U.fillForm($form, data);
         $form.find("select").trigger("change.select2");
         state.fiche = c && c.ficheClient ? c.ficheClient : null;
@@ -534,7 +591,7 @@ $(function () {
        ================================================================= */
     var apercuDiffere = U.debounce(rafraichirApercu, 120);
     $form.on("input change", "input, select, textarea", function () { marquerModifie(); apercuDiffere(); });
-    $form.on("change", "[name='typeCompte'], [name='tarifPortee'], #tarifAuto", appliquerAffichage);
+    $form.on("change", "[name='typeCompte'], [name='tarifPortee'], #tarifAuto, #avecTva, #abonnementIs", appliquerAffichage);
 
     /* Passage en compte : pré-remplissage des conditions par défaut */
     $form.on("change", "[name='typeCompte']", function () {
