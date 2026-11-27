@@ -226,3 +226,25 @@ Pour visualiser les écrans avec des données, un jeu complémentaire couvrant *
 - `guichet-commun.js` → pré-enregistrements validé, annulé et dépôts annoncés pour les jours à venir (meta `demoPreenregistrements2`).
 
 Fichiers de démonstration uniquement : à ne pas reprendre en production.
+
+## Multi-entreprise (charte, logo, coordonnées)
+
+Sélecteur (drop-up) à droite du pied de page : **Solex Express** (bleu / jaune), **Touristique Logistique** (TL · TCCE · Touristique, vert) et **Autre entreprise…** (raison sociale, couleurs, logo, coordonnées saisis dans le navigateur, pour présenter le logiciel à un autre client).
+
+- Registre `CX.SOCIETES` et module `CX.societe` dans `cx-core.js` : `liste()`, `code()`, `choisir(code)`, `logoUrl()`, `perso()`, `enregistrerPerso(o)`. Choix mémorisé dans `localStorage` (`cx_societe`, `cx_societe_perso`).
+- `CX.CONFIG.SOCIETE` = entreprise courante : toutes les pages et documents (factures, cotations, reçus, bordereaux, fiches de livraison, journal de vente, commissions, états, PDF) reprennent son nom, son logo et ses coordonnées.
+- Charte : variables CSS `--cx-navy`, `--cx-navy-top`, `--cx-navy-2`, `--cx-navy-3`, `--cx-blue-soft`, `--cx-accent`, `--cx-footer-text` injectées dans `<style id="cx-theme">` ; les couleurs codées en dur des CSS (opérations, états, guichet, reçu, carnets) passent par ces variables.
+- Logos : `commercial/assets/img/societes/` (`solex-banniere.png` pour l'en-tête et les documents, `solex-logo.png` comme icône, `touristique-logo.png`).
+- **Intégration Symfony** : la société vient du tenant de l'utilisateur connecté (paramètres société en base, `GET /parametres/societe`) ; le sélecteur est réservé à la démonstration. Les données de démonstration sont communes aux entreprises.
+
+## Vues multiples (`cx-vues.js`)
+
+Composant `CX.vues` : `Selecteur` (boutons de vue mémorisés), rendus `cartes`, `kanban`, `calendrier` (mois), `gantt` (frise heures ou jours) et `brancher(dt, options)` qui ajoute ces vues à un `CX.DataTable` existant (mêmes lignes filtrées et triées que le tableau).
+
+| Écran | Vues |
+|---|---|
+| Opérations › Tournées de livraison | Planning de la semaine, cartes du jour, Kanban par statut, calendrier du mois, Gantt de la journée (une ligne par livreur), liste |
+| Opérations › Livraison de colis | Par onglet (tableaux + actions groupées) ou Kanban du flux : en agence → à remettre au coursier → chez le livreur → livrées (7 jours) |
+| Opérations › Bordereaux d'expédition | Tableau, cartes, Kanban par statut, calendrier des départs, Gantt départ → arrivée par direction |
+| Commercial › Cotations | Tableau, cartes, Kanban du circuit (enregistrée → acceptée / rejetée) |
+| Guichet › Historique des saisies | Tableau, cartes, Kanban par étape du colis, calendrier des saisies |

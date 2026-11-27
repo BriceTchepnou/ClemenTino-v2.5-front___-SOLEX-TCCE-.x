@@ -75,7 +75,7 @@ $(function () {
     /* Feuille de route (aperçu + impression + PDF) */
     function feuilleHtml(t) {
         var lignes = $.map(t.expeditionIds, function (id) { return parId(id) || null; });
-        return "<div class='ox-sheet' id='feuille-sheet'><div class='ox-sh-head'><div class='ox-sh-soc'><b>" + U.esc(S.nom) + "</b><span>" + U.esc(O.agenceLib(t.agenceId)) + " · " + U.esc(S.tel || "") + "</span></div>" +
+        return "<div class='ox-sheet' id='feuille-sheet'><div class='ox-sh-head'><div class='ox-sh-logo'>" + (CX.societe.logoUrl() ? "<img src='" + U.esc(CX.societe.logoUrl()) + "' alt=''>" : "") + "<div class='ox-sh-soc'><b>" + U.esc(S.nom) + "</b><span>" + U.esc(O.agenceLib(t.agenceId)) + " · " + U.esc(S.tel || "") + "</span></div></div>" +
             "<div class='ox-sh-titre'><h1>FICHE DE LIVRAISON</h1><div class='ox-sh-num'>" + U.esc(t.numero) + "</div><div style='font-size:10px'>" + U.esc(U.toFrLong(t.date)) + " · départ " + U.esc(t.heure || "") + "</div></div></div>" +
             "<div class='ox-sh-infos ox-sh-5'><div><small>Livreur</small><b>" + U.esc(t.livreurNom) + "</b></div><div><small>Tournée</small><b>" + U.esc(t.planningId && plannings[t.planningId] ? plannings[t.planningId].numero + " · " + O.zoneLib(plannings[t.planningId].zone, true) : t.type === "EXPRESS" ? "Express" : "—") + "</b></div><div><small>Véhicule</small><b>" + U.esc((t.vehicule || "") + (t.matricule ? " " + t.matricule : "") || "—") + "</b></div>" +
             "<div><small>Colis</small><b>" + lignes.length + "</b></div><div><small>Statut</small><b>" + U.esc(O.STATUT_TOURNEE[t.statut].label) + "</b></div></div>" +

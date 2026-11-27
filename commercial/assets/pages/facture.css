@@ -129,8 +129,8 @@
 }
 
 /* Logo image (CX.CONFIG.SOCIETE.logo) */
-.fx-logo-mark.fx-logo-img { background: transparent; border-radius: 0; width: 52px; height: 52px; }
-.fx-logo-mark.fx-logo-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.fx-logo-mark.fx-logo-img { background: transparent; border-radius: 0; width: auto; height: 60px; max-width: 150px; }
+.fx-logo-mark.fx-logo-img img { width: auto; max-width: 150px; height: 100%; object-fit: contain; display: block; }
 
 /* =====================================================================
    Export PDF direct (CX.pdf) : la feuille est clonée hors écran en 794 px

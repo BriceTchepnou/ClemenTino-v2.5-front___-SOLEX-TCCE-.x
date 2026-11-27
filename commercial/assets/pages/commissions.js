@@ -242,7 +242,7 @@ $(function () {
                     return d.base ? "<tr class='cm-sous'><td></td><td>" + U.esc(d.client) + "</td><td>" + (d.factureIds || []).length + " facture(s)</td><td class='num'>" + U.fmt(d.base) + "</td><td></td><td class='num'>" + U.fmt(d.commission) + "</td><td></td></tr>" : "";
                 }).join("");
         }).join("");
-        $("#cm-print").html("<div class='cm-sheet'><div class='cm-sheet-head'><div><b>" + U.esc(S.nom) + "</b><div>" + U.esc(S.adresse) + "</div></div>" +
+        $("#cm-print").html("<div class='cm-sheet'><div class='cm-sheet-head'><div>" + (S.logo ? "<img src='" + U.esc(CX.societe.logoUrl()) + "' alt='' style='height:40px;display:block;margin-bottom:4px'>" : "") + "<b>" + U.esc(S.nom) + "</b><div>" + U.esc(S.adresse) + "</div></div>" +
             "<div style='text-align:right'><h1>ÉTAT DES COMMISSIONS</h1><div>Apporteurs d'affaires · " + U.esc(libPeriode()) + "</div></div></div>" +
             "<table><thead><tr><th>Code</th><th>Apporteur / client</th><th>Base</th><th class='num'>Montant de base</th><th class='num'>Taux</th><th class='num'>Commission</th><th>Statut</th></tr></thead>" +
             "<tbody>" + (corps || "<tr><td colspan='7'>Aucune commission sur la période.</td></tr>") + "</tbody>" +

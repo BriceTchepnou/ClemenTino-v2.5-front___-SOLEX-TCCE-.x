@@ -13,18 +13,48 @@
 var CX = window.CX || {};
 window.CX = CX;
 
-CX.CONFIG = {
-    SOCIETE: {
-        nom: "SOLEX EXPRESS",                 // TODO : raison sociale réelle (paramètres société)
-        slogan: "Courrier · Colis · Messagerie",
-        logo: "assets/img/logo-societe.svg",  // TODO : logo officiel (PNG/SVG, même domaine pour l'export PDF)
-        adresse: "Rue Joffre, Akwa - BP 1234 Douala, Cameroun",
-        tel: "+237 233 00 00 00",
-        email: "facturation@solex.cm",
-        rccm: "RC/DLA/2015/B/0000",
-        niu: "M000000000000X",
-        banque: "Afriland First Bank - CM10005 00001 00000000000 00"
+/* =====================================================================
+   MULTI-ENTREPRISE : l'application épouse la charte (couleurs), le logo
+   et les coordonnées de l'entreprise choisie dans le pied de page.
+   Tous les documents (factures, cotations, reçus, bordereaux, fiches,
+   états, PDF) lisent CX.CONFIG.SOCIETE.
+   >>> INTÉGRATION SYMFONY <<< : la société vient du tenant connecté
+   (paramètres société en base) ; le sélecteur est réservé à la démo.
+   Logo : chemin relatif au dossier commercial/ (préfixé par CX_BASE
+   ailleurs, voir CX.societe.logoUrl()).
+   ===================================================================== */
+CX.SOCIETES = {
+    SOLEX: {
+        code: "SOLEX", nom: "SOLEX EXPRESS", nomCourt: "Solex", alias: "Solex Messagerie Express",
+        slogan: "Messagerie express · Le TGV de l'expédition",
+        logo: "assets/img/societes/solex-banniere.png", icone: "assets/img/societes/solex-logo.png",
+        adresse: "Akwa - Douala, Cameroun",
+        tel: "+237 677 087 901 / +237 677 087 903",
+        email: "info@solextgv.com", site: "www.solextgv.com",
+        rccm: "RC/DLA/2015/B/0000",           // TODO : RCCM réel
+        niu: "M000000000000X",                // TODO : NIU réel
+        banque: "Afriland First Bank - CM10005 00001 00000000000 00",
+        theme: { navy: "#13306b", navyTop: "#163877", navy2: "#1d4fa3", navy3: "#2a63c4", soft: "#e8f0fd", accent: "#ffd400", footerText: "#c9d6f0" }
     },
+    TL: {
+        code: "TL", nom: "TOURISTIQUE LOGISTIQUE", nomCourt: "Touristique", alias: "TL · TCCE · Touristique",
+        slogan: "Nous le faisons express",
+        logo: "assets/img/societes/touristique-logo.png", icone: "assets/img/societes/touristique-logo.png",
+        adresse: "Immeuble Jaco - BP 4473 Yaoundé, Cameroun",
+        tel: "+237 222 211 098",
+        email: "contact@tcce-sa.com", site: "www.tcce-sa.com",
+        rccm: "RC/YAO/0000/B/0000",           // TODO : RCCM réel
+        niu: "M000000000000Y",                // TODO : NIU réel
+        banque: "Banque - RIB à renseigner",
+        theme: { navy: "#1d4f17", navyTop: "#24611c", navy2: "#3b8f27", navy3: "#56ad3c", soft: "#e8f4e2", accent: "#111111", footerText: "#d3e8cb" }
+    }
+};
+/* Entreprise personnalisée (« Autre entreprise… ») : enregistrée dans le navigateur */
+CX.SOCIETE_PERSO_CLE = "cx_societe_perso";
+CX.SOCIETE_CLE = "cx_societe";
+
+CX.CONFIG = {
+    SOCIETE: null,            // renseigné par CX.societe.init() ci-dessous
     TVA: 19.25,               // % TVA Cameroun (TVA 17,5 % + CAC 10 %)
     DEVISE: "FCFA",
     DELAI_PAIEMENT_JOURS: 30, // échéance par défaut des factures
@@ -212,6 +242,77 @@ CX.util = {
         }
     }
 };
+
+/* =====================================================================
+   CX.societe - entreprise courante (multi-entreprise de démonstration)
+     CX.societe.liste()        entreprises disponibles (+ personnalisée)
+     CX.societe.code()         code de l'entreprise courante
+     CX.societe.choisir(code)  change d'entreprise (rechargement de la page)
+     CX.societe.logoUrl()      URL du logo utilisable depuis n'importe quel dossier
+     CX.societe.enregistrerPerso(o)  enregistre l'entreprise personnalisée
+   TODO API : GET /parametres/societe (tenant de l'utilisateur connecté)
+   ===================================================================== */
+CX.societe = (function () {
+    function lire(cle) { try { return window.localStorage.getItem(cle); } catch (e) { return null; } }
+    function perso() {
+        var o = null;
+        try { o = JSON.parse(lire(CX.SOCIETE_PERSO_CLE) || "null"); } catch (e) { o = null; }
+        if (!o || !o.nom) return null;
+        var c = o.couleur || "#334155", a = o.accent || "#f59e0b";
+        return $.extend({ code: "PERSO", nomCourt: o.nom, alias: "Entreprise personnalisée", slogan: "", logo: "", adresse: "", tel: "", email: "", site: "", rccm: "", niu: "", banque: "" }, o, {
+            code: "PERSO",
+            theme: { navy: ombre(c, -0.35), navyTop: ombre(c, -0.25), navy2: c, navy3: ombre(c, 0.15), soft: ombre(c, 0.88), accent: a, footerText: ombre(c, 0.75) }
+        });
+    }
+    /* éclaircit (k > 0) ou assombrit (k < 0) une couleur #rrggbb */
+    function ombre(hex, k) {
+        var m = /^#?([0-9a-f]{6})$/i.exec(hex || "");
+        if (!m) return hex;
+        var n = parseInt(m[1], 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+        function f(x) { return Math.round(k < 0 ? x * (1 + k) : x + (255 - x) * k); }
+        return "#" + ((1 << 24) + (f(r) << 16) + (f(g) << 8) + f(b)).toString(16).slice(1);
+    }
+    function liste() {
+        var l = $.map(CX.SOCIETES, function (s) { return s; }), p = perso();
+        if (p) l.push(p);
+        return l;
+    }
+    function trouver(code) { return $.grep(liste(), function (s) { return s.code === code; })[0] || null; }
+    function appliquerTheme(s) {
+        var t = s.theme || {};
+        var css = ":root{--cx-navy:" + t.navy + ";--cx-navy-top:" + t.navyTop + ";--cx-navy-2:" + t.navy2 + ";--cx-navy-3:" + t.navy3 +
+            ";--cx-blue-soft:" + t.soft + ";--cx-accent:" + t.accent + ";--cx-footer-text:" + t.footerText + ";}";
+        var el = document.getElementById("cx-theme");
+        if (!el) { el = document.createElement("style"); el.id = "cx-theme"; document.getElementsByTagName("head")[0].appendChild(el); }
+        el.innerHTML = css;
+        document.documentElement.setAttribute("data-societe", s.code);
+    }
+    var courante = null;
+    function init() {
+        courante = trouver(lire(CX.SOCIETE_CLE)) || CX.SOCIETES.SOLEX;
+        CX.CONFIG.SOCIETE = $.extend(true, {}, courante);
+        appliquerTheme(courante);
+    }
+    return {
+        liste: liste, trouver: trouver, ombre: ombre, init: init,
+        code: function () { return courante ? courante.code : "SOLEX"; },
+        choisir: function (code) {
+            try { window.localStorage.setItem(CX.SOCIETE_CLE, code); } catch (e) { /* navigation privée */ }
+            window.location.reload();
+        },
+        logoUrl: function (s) {
+            var l = (s || CX.CONFIG.SOCIETE).logo || "";
+            if (!l || /^(https?:|data:|\/)/.test(l)) return l;
+            return (window.CX_BASE || "") + l;
+        },
+        perso: perso,
+        enregistrerPerso: function (o) {
+            try { window.localStorage.setItem(CX.SOCIETE_PERSO_CLE, JSON.stringify(o)); return true; }
+            catch (e) { return false; }   // quota dépassé (logo trop lourd)
+        }
+    };
+})();
+CX.societe.init();
 
 /* =====================================================================
    CX.DataTable - tableau léger : tri, recherche, pagination, sélection.

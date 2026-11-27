@@ -156,6 +156,24 @@ $(function () {
         }
     });
 
+    /* Vues : tableau | cartes | Kanban du circuit (statuts) */
+    function carteCot(c) {
+        return "<div class='cx-vc-top'><span class='cx-vc-num'>" + U.esc(c.numero) + "</span>" + REF.badge(REF.STATUT_COTATION, c.statut) + "</div>" +
+            "<div class='cx-vc-l'><b>" + U.esc(c.nom) + "</b></div><div class='cx-vc-s'>" + U.esc(nomClient(c)) + " · " + U.esc((c.type || "").charAt(0) + (c.type || "").substr(1).toLowerCase()) + "</div>" +
+            "<div class='cx-vc-pied'><span class='cx-strong'>" + (c.type === "TARIFAIRE" ? "Grille" : U.money(c.montantTTC)) + "</span><span class='cx-muted'>" +
+            (c.dateValidite ? (estExpiree(c) ? "<span style='color:var(--cx-red)'>expirée</span>" : "valide → " + U.toFr(c.dateValidite)) : "") + "</span></div>";
+    }
+    CX.vues.brancher(dt, {
+        slot: "#vue-slot", cle: "cotations", vues: ["table", "cartes", "kanban"],
+        cartes: { carte: carteCot, vide: "Aucune cotation", icone: "fa-calculator" },
+        kanban: {
+            colonnes: $.map(["ENREGISTREE", "SOUMISE", "VALIDEE", "EN_ATTENTE", "ACCEPTEE", "REJETEE", "ANNULEE"], function (k) { var s = REF.STATUT_COTATION[k] || { label: k }; return { code: k, label: s.label, color: s.color }; }),
+            valeur: function (c) { return c.statut; }, carte: carteCot,
+            entete: function (col, l) { var t = 0; $.each(l, function (_, c) { if (c.type !== "TARIFAIRE") t += c.montantTTC || 0; }); return U.money(t) + " TTC"; }
+        },
+        onOuvrir: function (c) { location.href = "cotation-document.html?id=" + c.id; }
+    });
+
     /* ------------------------------------------------------------------
        Filtres et onglets
        ------------------------------------------------------------------ */

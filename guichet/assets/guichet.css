@@ -127,7 +127,7 @@
 .gx-statut { padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; letter-spacing: 0; text-transform: none; }
 .gx-statut.brouillon { background: #ffe2a8; color: #4a2e00; }
 .gx-statut.enregistree { background: #bfe8cf; color: #0b4a26; }
-.gx-statut.correction { background: #c9d8f0; color: #13306b; }
+.gx-statut.correction { background: #c9d8f0; color: var(--cx-navy, #13306b); }
 .gx-lt .cx-hero-route b { font-size: 22px; letter-spacing: .01em; overflow-wrap: break-word; line-height: 1.1; }
 .gx-lt .cx-hero-route b.gx-long { font-size: 17px; }
 .gx-lt .cx-hero-route small { display: block; color: #c9d8f0; opacity: 1; font-size: 12px; margin-top: 2px; }

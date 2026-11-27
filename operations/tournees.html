@@ -66,7 +66,10 @@
         </div>
         <div class="cx-tabs" id="onglets" role="tablist">
             <a data-tab="planning" class="active" role="tab"><i class="fa fa-calendar"></i> Planning de la semaine <span class="cx-count" id="n-semaine">0</span></a>
-            <a data-tab="jour" role="tab"><i class="fa fa-clock-o"></i> Tournées du jour <span class="cx-count" id="n-jour">0</span></a>
+            <a data-tab="jour" role="tab"><i class="fa fa-th-large"></i> Cartes du jour <span class="cx-count" id="n-jour">0</span></a>
+            <a data-tab="kanban" role="tab"><i class="fa fa-columns"></i> Kanban</a>
+            <a data-tab="calendrier" role="tab"><i class="fa fa-calendar-o"></i> Calendrier</a>
+            <a data-tab="gantt" role="tab"><i class="fa fa-align-left"></i> Gantt</a>
             <a data-tab="liste" role="tab"><i class="fa fa-list"></i> Liste <span class="cx-count" id="n-liste">0</span></a>
         </div>
 
@@ -79,6 +82,20 @@
         <div class="cx-card-body cx-hidden" id="vue-jour">
             <div class="ox-flex" style="margin-bottom:12px"><label class="cx-label" for="f-jour" style="margin:0">Jour</label><input type="date" class="form-control input-sm" id="f-jour" style="width:auto"><span class="cx-muted" id="jour-lib"></span></div>
             <div class="ox-cards" id="cartes-jour"></div>
+        </div>
+        <!-- Kanban (semaine affichée, par statut) -->
+        <div class="cx-card-body cx-hidden" id="vue-kanban"><p class="cx-muted" style="margin-top:0" id="kanban-lib"></p><div id="kanban"></div></div>
+        <!-- Calendrier (mois) -->
+        <div class="cx-card-body cx-hidden" id="vue-calendrier"><div id="calendrier"></div></div>
+        <!-- Gantt (une journée, une ligne par livreur) -->
+        <div class="cx-card-body cx-hidden" id="vue-gantt">
+            <div class="ox-flex" style="margin-bottom:12px">
+                <button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" id="gt-prec" aria-label="Jour précédent"><i class="fa fa-chevron-left"></i></button>
+                <input type="date" class="form-control input-sm" id="gt-jour" style="width:auto">
+                <button type="button" class="cx-btn cx-btn-ghost cx-btn-sm" id="gt-suiv" aria-label="Jour suivant"><i class="fa fa-chevron-right"></i></button>
+                <span class="cx-muted" id="gt-lib"></span>
+            </div>
+            <div id="gantt"></div>
         </div>
         <!-- Liste -->
         <div class="cx-hidden" id="vue-liste"><div id="dt-liste"></div></div>
@@ -101,6 +118,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 <script src="../commercial/assets/cx-core.js"></script>
 <script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-vues.js"></script>
 <script src="../commercial/assets/cx-tarifs.js"></script>
 <script src="../commercial/assets/cx-demo-exploitation.js"></script>
 <script src="../commercial/assets/cx-pdf.js"></script>

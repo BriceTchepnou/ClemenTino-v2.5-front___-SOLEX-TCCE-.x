@@ -105,7 +105,38 @@ $(function () {
         $("#onglets a").removeClass("active").filter("[data-tab='" + onglet + "']").addClass("active");
         $.each(T, function (k) { $("#dt-" + k).toggleClass("cx-hidden", k !== onglet); });
         majSelbar();
+        rendreFlux(sources, ok);
     }
+
+    /* Vue Kanban du flux : en agence -> à remettre au coursier -> chez le livreur -> livrées (7 derniers jours) */
+    var vueSw = new CX.vues.Selecteur("#vue-slot", { cle: "livraison-colis", vues: ["table", "kanban"], libelles: { table: { label: "Par onglet", icon: "fa-folder-o" } }, onChange: function () { appliquer(); } });
+    function rendreFlux(sources, ok) {
+        var kb = vueSw.vue() === "kanban";
+        $("#flux-kanban").toggleClass("cx-hidden", !kb);
+        $("#onglets").toggleClass("cx-hidden", kb);
+        if (kb) { $.each(T, function (k) { $("#dt-" + k).addClass("cx-hidden"); }); $("#selbar").addClass("cx-hidden"); }
+        if (!kb) return;
+        var depuis = U.addDays(U.today(), -7), rows = [];
+        $.each(["agence", "coursier", "livreur", "livrees"], function (_, k) {
+            $.each($.grep(sources[k], ok), function (_, e) { if (k !== "livrees" || (e.dateLivraison || "") >= depuis) rows.push($.extend({}, e, { _col: k })); });
+        });
+        CX.vues.kanban("#flux-kanban", rows, {
+            colonnes: [{ code: "agence", label: "En agence", color: "blue" }, { code: "coursier", label: "À remettre au coursier", color: "orange" },
+                { code: "livreur", label: "Chez le livreur", color: "purple" }, { code: "livrees", label: "Livrées (7 jours)", color: "green" }],
+            valeur: function (e) { return e._col; },
+            entete: function (c, l) { var n = 0; $.each(l, function (_, e) { n += e.nbColis || 1; }); return n + " colis"; },
+            carte: function (e) {
+                var a = age(e), sous = e._col === "agence" ? (a ? "en agence depuis " + a + " j" : "arrivée aujourd'hui") + ((e.avis || []).length ? " · avisé" : " · <span style='color:var(--cx-red)'>sans avis</span>")
+                    : e._col === "coursier" ? U.esc((e.livraison.quartier || "—") + (e.livraison.zone ? " · " + O.zoneLib(e.livraison.zone, true) : "")) + (e.etape === "ECHEC" ? " · <span style='color:var(--cx-red)'>échec à relivrer</span>" : "")
+                    : e._col === "livreur" ? "<i class='fa fa-motorcycle'></i> " + U.esc(e.coursier || "livreur") + " · " + U.esc(e.livraison.quartier || "")
+                    : "livrée le " + U.esc(U.toFr(e.dateLivraison)) + (e.remise ? " · " + U.esc(e.remise.mode === "DOMICILE" ? "à domicile" : "en agence") : "");
+                return "<div class='cx-vc-top'><span class='cx-vc-num'>" + U.esc(e.nRt) + "</span>" + O.slaBadge(e) + "</div>" +
+                    "<div class='cx-vc-l'><b>" + U.esc(e.destinataireInfo.nom) + "</b></div><div class='cx-vc-s'>" + sous + "</div>" +
+                    "<div class='cx-vc-s'>" + U.esc(O.contenuCourt(e)) + " · de " + U.esc(G.villeNom(e.villeDep)) + "</div>";
+            }
+        });
+    }
+    $("#flux-kanban").on("click", "[data-id]", function () { O.fiche($(this).data("id")); });
     function charger() {
         return O.charger().done(function (exps, b) {
             tous = exps; bords = b; f = O.files(exps, bords);

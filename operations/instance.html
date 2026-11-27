@@ -79,6 +79,8 @@
                 <div class="cx-search"><i class="fa fa-search"></i><input type="search" class="form-control" id="q" placeholder="N° RT, réf., nom, téléphone, quartier…"></div>
             </div>
         </div>
+        <div class="cx-vue-bar"><span class="cx-vue-titre">Affichage : par onglet (tableaux et actions groupées) ou Kanban du flux de livraison</span><div id="vue-slot"></div></div>
+        <div class="cx-card-body cx-hidden" id="flux-kanban"></div>
         <div class="cx-tabs" id="onglets" role="tablist">
             <a data-tab="agence" class="active" role="tab"><i class="fa fa-building-o"></i> Expéditions en agence <span class="cx-count" id="n-agence">0</span></a>
             <a data-tab="coursier" role="tab"><i class="fa fa-map-marker"></i> À remettre au coursier <span class="cx-count" id="n-coursier">0</span></a>
@@ -115,6 +117,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 <script src="../commercial/assets/cx-core.js"></script>
 <script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-vues.js"></script>
 <script src="../commercial/assets/cx-tarifs.js"></script>
 <script src="../commercial/assets/cx-demo-exploitation.js"></script>
 <script src="../guichet/assets/guichet-commun.js"></script>

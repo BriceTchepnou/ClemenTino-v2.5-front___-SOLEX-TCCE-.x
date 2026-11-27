@@ -228,14 +228,14 @@ body.ox-vue-client .ox-interne { display: none !important; }
 .ox-sh-infos small { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: .5px; color: #6b7280; font-weight: 700; }
 .ox-sh-infos b { font-size: 11.5px; }
 .ox-sh-table { width: 100%; border-collapse: collapse; font-size: 10px; }
-.ox-sh-table th { background: #13306b !important; color: #fff !important; padding: 5px 5px; text-align: left; font-weight: 700; font-size: 9.5px; }
+.ox-sh-table th { background: var(--cx-navy, #13306b) !important; color: #fff !important; padding: 5px 5px; text-align: left; font-weight: 700; font-size: 9.5px; }
 .ox-sh-table td { border-bottom: 1px solid #e3e7ef; padding: 5px 5px; vertical-align: top; }
 .ox-sh-table tr:nth-child(even) td { background: #f7f9fc !important; }
 .ox-sh-table .num { text-align: right; white-space: nowrap; }
-.ox-sh-table tfoot td { font-weight: 800; border-top: 2px solid #13306b; background: #eef2fa !important; }
+.ox-sh-table tfoot td { font-weight: 800; border-top: 2px solid var(--cx-navy, #13306b); background: #eef2fa !important; }
 .ox-sh-table thead { display: table-header-group; }
 .ox-sh-table tr { page-break-inside: avoid; }
-.ox-sh-box { width: 14px; height: 14px; border: 1.5px solid #13306b; display: inline-block; border-radius: 2px; }
+.ox-sh-box { width: 14px; height: 14px; border: 1.5px solid var(--cx-navy, #13306b); display: inline-block; border-radius: 2px; }
 .ox-sh-ecarts { margin-top: 10px; border: 1px solid #f5c2c2; background: #fff5f5 !important; border-radius: 6px; padding: 6px 10px; font-size: 10.5px; }
 .ox-sh-sign { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; page-break-inside: avoid; }
 .ox-sh-sign div { border: 1px solid #c9d1de; border-radius: 6px; height: 96px; padding: 6px 8px; font-size: 10px; display: flex; flex-direction: column; }
@@ -245,7 +245,7 @@ body.ox-vue-client .ox-interne { display: none !important; }
 .ox-sh-wm { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%) rotate(-28deg); font-size: 90px; font-weight: 800; color: rgba(15,27,51,.06); pointer-events: none; white-space: nowrap; }
 @media print {
     @page { size: A4; margin: 8mm; }
-    .ox-sh-table th { background: #13306b !important; color: #fff !important; }
+    .ox-sh-table th { background: var(--cx-navy, #13306b) !important; color: #fff !important; }
 }
 
 /* Lots (fiche détaillée) */
@@ -305,8 +305,12 @@ tr.ox-suspendu td { background: #f5f5f5; color: #8a8f99; }
 .ox-tour-bar { flex: 1 1 auto; height: 5px; border-radius: 3px; background: #e9edf4; overflow: hidden; min-width: 30px; }
 .ox-tour-bar i { display: block; height: 100%; background: var(--cx-green); border-radius: 3px; }
 .ox-tour-cap { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--cx-muted); }
-.ox-bcard-tour { border-left-width: 4px; }
-.ox-tour-bord-blue { border-left-color: var(--cx-navy-2); } .ox-tour-bord-purple { border-left-color: var(--cx-purple); } .ox-tour-bord-orange { border-left-color: var(--cx-orange); }
+/* Cartes « Tournées du jour » : bordure fine complète à la couleur de la zone, fond teinté au survol */
+.ox-bcard-tour { border: 1px solid var(--ox-zc, var(--cx-line)); box-shadow: none; transition: background-color .15s ease, box-shadow .15s ease; }
+.ox-bcard-tour:hover { background: var(--ox-zs, var(--cx-soft)); box-shadow: var(--cx-shadow); }
+.ox-tour-bord-blue { --ox-zc: rgba(29,79,163,.45); --ox-zs: var(--cx-blue-soft); }
+.ox-tour-bord-purple { --ox-zc: rgba(109,40,217,.40); --ox-zs: var(--cx-purple-soft); }
+.ox-tour-bord-orange { --ox-zc: rgba(217,119,6,.45); --ox-zs: var(--cx-orange-soft); }
 .ox-info { margin-bottom: 12px; }
 .ox-info small { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--cx-muted); margin-bottom: 2px; }
 .ox-info b { font-weight: 600; color: var(--cx-ink); }

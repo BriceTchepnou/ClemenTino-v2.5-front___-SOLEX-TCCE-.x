@@ -60,6 +60,45 @@ $(function () {
         ],
         onRender: function (rows) { $("#l-count").text(O.pl(rows.length, "bordereau", "bordereaux")); }
     });
+
+    /* Vues : tableau | Kanban (statut) | calendrier (départ prévu) | Gantt (départ -> arrivée, une ligne par direction) */
+    function statutB(b) { return b.annule ? "ANNULE" : b.statut; }
+    var COUL_B = { PREPARE: "purple", PARTI: "blue", ARRIVE: "orange", CLOTURE: "green", ANNULE: "grey" };
+    function carteB(b) {
+        var s = stats(b);
+        return "<div class='cx-vc-top'><span class='cx-vc-num'>" + U.esc(b.numero) + "</span>" + (b.annule ? "<span class='cx-badge cx-badge-grey'>Annulé</span>" : O.badge(O.STATUT_BORDEREAU, b.statut)) + "</div>" +
+            "<div class='cx-vc-l'><b>" + U.esc(G.villeNom(b.villeDep)) + "</b> <i class='fa fa-long-arrow-right cx-muted'></i> <b>" + U.esc(G.villeNom(b.villeDest)) + "</b></div>" +
+            "<div class='cx-vc-s'>" + U.esc(O.agenceLib(b.agenceDepId, true)) + " → " + U.esc(O.agenceLib(b.agenceDestId, true)) + " · " + U.esc((O.MOYENS_TRANSPORT[b.moyen || "ROUTE"] || "") + " " + (b.numeroTransport || (b.vehicule || {}).immatriculation || "")) + "</div>" +
+            "<div class='cx-vc-pied'><span><i class='fa fa-cube cx-muted'></i> " + s.exp + " exp. · " + s.colis + " colis · " + U.esc(G.kg(s.poids)) + "</span><span class='cx-muted'>" + U.esc(U.toFr(b.departPrevu || b.date)) + "</span></div>";
+    }
+    CX.vues.brancher(dt, {
+        slot: "#vue-slot", cle: "bordereaux", vues: ["table", "cartes", "kanban", "calendrier", "gantt"],
+        cartes: { carte: carteB, vide: "Aucun bordereau", icone: "fa-truck" },
+        kanban: {
+            colonnes: [{ code: "PREPARE", label: "En préparation", color: "purple" }, { code: "PARTI", label: "Partis", color: "blue" }, { code: "ARRIVE", label: "Pointage en cours", color: "orange" },
+                { code: "CLOTURE", label: "Clôturés", color: "green" }, { code: "ANNULE", label: "Annulés", color: "grey" }],
+            valeur: statutB, carte: carteB,
+            entete: function (c, l) { var n = 0; $.each(l, function (_, b) { n += stats(b).colis; }); return n + " colis"; }
+        },
+        calendrier: {
+            date: function (b) { return (b.departPrevu || b.date || "").substr(0, 10); }, max: 3,
+            puce: function (b) { return "<span class='cx-cal-pt " + COUL_B[statutB(b)] + "'></span><b>" + U.esc((b.departPrevu || "").substr(11, 5)) + "</b> " + U.esc(CX.REF.villeCode(b.villeDep) + "→" + CX.REF.villeCode(b.villeDest)) + " · " + stats(b).exp; }
+        },
+        gantt: function (rows) {
+            var du = U.addDays(U.today(), -6), au = U.addDays(U.today(), 2);
+            return {
+                du: du, au: au, titreLignes: "Direction",
+                ligne: function (b) { return G.villeNom(b.villeDep) + " → " + G.villeNom(b.villeDest); },
+                debut: function (b) { return b.dateDepart || b.departPrevu || (b.date + " 18:00"); },
+                fin: function (b) { return b.dateArrivee || b.arriveePrevue || U.addDays((b.departPrevu || b.date).substr(0, 10), 1) + " 15:00"; },
+                libelle: function (b) { return b.numero + " · " + stats(b).exp + " exp."; },
+                titre: function (b) { return b.numero + " · " + (b.annule ? "Annulé" : O.STATUT_BORDEREAU[b.statut].label) + " · départ " + U.toFr(b.dateDepart || b.departPrevu || b.date); },
+                couleur: function (b) { return COUL_B[statutB(b)]; },
+                vide: "Aucun bordereau entre le " + U.toFr(du) + " et le " + U.toFr(au)
+            };
+        },
+        onOuvrir: function (b) { window.location.href = "bordereau.html?id=" + b.id; }
+    });
     O.menusFixes("#dt-bordereaux");
 
     function filtrer() {

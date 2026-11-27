@@ -145,6 +145,35 @@ $(function () {
         onRender: function (rows) { $("#l-count").text(rows.length + " expédition" + (rows.length > 1 ? "s" : "")); }
     });
 
+    /* Vues : tableau | cartes | Kanban par étape du colis | calendrier des saisies */
+    var ETAPES_G = [
+        { code: "ENREGISTREE", label: "Enregistrées", color: "grey" }, { code: "GROUPEE", label: "Groupées", color: "purple" },
+        { code: "EN_TRANSIT", label: "En transit", color: "blue" }, { code: "ARRIVEE", label: "Arrivées", color: "blue" },
+        { code: "EN_INSTANCE", label: "En agence", color: "orange" }, { code: "EN_LIVRAISON", label: "En livraison", color: "orange" },
+        { code: "LIVREE", label: "Livrées", color: "green" }, { code: "ANNULEE", label: "Annulées", color: "red" }
+    ];
+    function etapeG(e) { var et = e.etape || (e.statut === "LIVREE" ? "LIVREE" : e.statut === "ANNULEE" ? "ANNULEE" : "ENREGISTREE"); return et === "ECHEC" ? "EN_LIVRAISON" : et; }
+    function couleurG(e) { var c = $.grep(ETAPES_G, function (x) { return x.code === etapeG(e); })[0]; return c ? c.color : "grey"; }
+    function carteExp(e) {
+        return "<div class='cx-vc-top'><span class='cx-vc-num'>" + U.esc(e.nRt) + "</span><span class='cx-badge cx-badge-" + couleurG(e) + "'>" + U.esc(($.grep(ETAPES_G, function (x) { return x.code === etapeG(e); })[0] || {}).label || "") + "</span></div>" +
+            "<div class='cx-vc-l'><b>" + U.esc(G.villeNom(e.villeDep)) + "</b> <i class='fa fa-long-arrow-right cx-muted'></i> <b>" + U.esc(G.villeNom(e.villeDest) || e.paysDest || "") + "</b>" + (e.livraison && e.livraison.mode === "DOMICILE" ? " <i class='fa fa-home cx-muted' title='Livraison à domicile'></i>" : "") + "</div>" +
+            "<div class='cx-vc-s'>" + U.esc((e.expediteurInfo || {}).nom || e.expediteur || "") + " → " + U.esc((e.destinataireInfo || {}).nom || e.destinataire || "") + "</div>" +
+            "<div class='cx-vc-pied'><span>" + (e.nbColis || 1) + " colis · " + U.esc(G.kg(e.poids)) + " · <b>" + U.money(e.montants.total) + "</b></span><span class='cx-muted'>" + U.esc(U.toFr(e.dateExp)) + "</span></div>";
+    }
+    CX.vues.brancher(dt, {
+        slot: "#vue-slot", cle: "guichet-exp", vues: ["table", "cartes", "kanban", "calendrier"],
+        cartes: { carte: carteExp, vide: "Aucune expédition", icone: "fa-cube" },
+        kanban: {
+            colonnes: ETAPES_G, valeur: etapeG, carte: carteExp,
+            entete: function (col, l) { var t = 0; $.each(l, function (_, e) { t += e.montants.total; }); return U.money(t); }
+        },
+        calendrier: {
+            date: function (e) { return e.dateExp; }, max: 3,
+            puce: function (e) { return "<span class='cx-cal-pt " + couleurG(e) + "'></span><b>" + U.esc(e.heure || "") + "</b> " + U.esc(CX.REF.villeCode(e.villeDest) || e.paysDest || "") + " · " + U.esc((e.destinataireInfo || {}).nom || e.destinataire || ""); }
+        },
+        onOuvrir: function (e) { location.href = "recu.html?id=" + e.id; }
+    });
+
     /* =================================================================
        Indicateurs du jour + caisse
        ================================================================= */

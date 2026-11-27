@@ -96,8 +96,8 @@
 .cd-filigrane.grey { color: rgba(15, 23, 42, .06); }
 
 /* Logo image (CX.CONFIG.SOCIETE.logo) */
-.cd-logo-mark.cd-logo-img { background: transparent; border-radius: 0; width: 52px; height: 52px; }
-.cd-logo-mark.cd-logo-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.cd-logo-mark.cd-logo-img { background: transparent; border-radius: 0; width: auto; height: 60px; max-width: 150px; }
+.cd-logo-mark.cd-logo-img img { width: auto; max-width: 150px; height: 100%; object-fit: contain; display: block; }
 
 /* Export PDF direct (CX.pdf) : feuille clonée hors écran à 794 px = A4 */
 .cd-sheet.cx-pdf-mode {

@@ -198,7 +198,7 @@ $(function () {
                 "<td class='num'>" + (r.is ? U.fmt(r.is) : "—") + "</td></tr>";
         }).join("");
         return "<div class='jv-sheet'>" +
-            "<div class='jv-sheet-head'><div><div class='jv-soc'>" + U.esc(S.nom) + "</div><div class='jv-small'>" + U.esc(S.adresse) + " · NIU " + U.esc(S.niu) + "</div></div>" +
+            "<div class='jv-sheet-head'><div>" + (S.logo ? "<img src='" + U.esc(CX.societe.logoUrl()) + "' alt='' style='height:40px;display:block;margin-bottom:4px'>" : "") + "<div class='jv-soc'>" + U.esc(S.nom) + "</div><div class='jv-small'>" + U.esc(S.adresse) + " · NIU " + U.esc(S.niu) + "</div></div>" +
             "<div class='jv-sheet-titre'><h1>JOURNAL DE VENTE</h1><div>" + U.esc(libellePeriode()) + "</div></div></div>" +
             "<div class='jv-small jv-filtres-txt'>Filtres : " + U.esc(filtresTexte()) + "</div>" +
             "<table class='jv-table'><thead><tr><th class='num'>#</th><th>N° de compte</th><th>Client</th><th>Date de facture</th><th>N° de facture</th>" +

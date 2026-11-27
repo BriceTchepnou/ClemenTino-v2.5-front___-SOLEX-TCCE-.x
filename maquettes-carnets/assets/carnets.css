@@ -14,7 +14,7 @@ body {
 
 /* ---------- Barre de navigation simulée (à retirer à l'intégration) --- */
 .ct-topbar {
-    background: #1d4fa3;
+    background: var(--cx-navy-2, #1d4fa3);
     color: #fff;
     height: 50px;
     line-height: 50px;
@@ -27,7 +27,7 @@ body {
 .ct-topbar a.active { border-bottom: 3px solid #8fd400; padding-bottom: 12px; }
 .ct-footer {
     position: fixed; left: 0; right: 0; bottom: 0;
-    background: #1d4fa3; color: #fff; text-align: center;
+    background: var(--cx-navy-2, #1d4fa3); color: #fff; text-align: center;
     font-size: 12px; padding: 4px 0; z-index: 10;
 }
 
@@ -43,7 +43,7 @@ body {
     margin: 10px 0 14px;
 }
 .ct-breadcrumb { font-size: 12px; color: #888; margin-bottom: 4px; }
-.ct-breadcrumb a { color: #1d4fa3; }
+.ct-breadcrumb a { color: var(--cx-navy-2, #1d4fa3); }
 
 /* ---------- Boutons dans le style existant --------------------------- */
 .btn-ct-new {
@@ -52,7 +52,7 @@ body {
 }
 .btn-ct-new:hover, .btn-ct-new:focus { background: #6cb81a; color: #fff; }
 .btn-ct-primary {
-    background: #1d4fa3; border: 1px solid #163f84; color: #fff;
+    background: var(--cx-navy-2, #1d4fa3); border: 1px solid #163f84; color: #fff;
     text-transform: uppercase; border-radius: 0;
     box-shadow: 0 2px 3px rgba(0,0,0,.25);
 }
@@ -75,7 +75,7 @@ body {
 .ct-kpis { margin: 6px -6px 14px; }
 .ct-kpis > div { padding: 0 6px; }
 .ct-kpi {
-    border: 1px solid #ddd; border-left: 4px solid #1d4fa3;
+    border: 1px solid #ddd; border-left: 4px solid var(--cx-navy-2, #1d4fa3);
     padding: 10px 12px; background: #fafbfd; margin-bottom: 10px;
 }
 .ct-kpi .ct-kpi-label { font-size: 11px; color: #777; text-transform: uppercase; }
@@ -111,7 +111,7 @@ body {
     border-radius: 2px; color: #fff; white-space: nowrap;
 }
 .ct-badge-STOCK   { background: #8a8f9c; }
-.ct-badge-AFFECTE { background: #1d4fa3; }
+.ct-badge-AFFECTE { background: var(--cx-navy-2, #1d4fa3); }
 .ct-badge-EPUISE  { background: #f0ad4e; }
 .ct-badge-CLOTURE { background: #555; }
 
@@ -142,7 +142,7 @@ body {
     background: #f4f8fe; border: 1px dashed #9bbbe8; padding: 8px 12px;
     font-size: 12px; margin-top: 4px;
 }
-.ct-summary strong { color: #1d4fa3; }
+.ct-summary strong { color: var(--cx-navy-2, #1d4fa3); }
 
 /* ---------- Page détail : grille des feuilles ------------------------ */
 .ct-info-table td { padding: 4px 10px 4px 0 !important; border: 0 !important; }
@@ -165,7 +165,7 @@ body {
     font-family: Consolas, "Courier New", monospace; font-size: 12px;
     cursor: pointer; position: relative; user-select: none;
 }
-.ct-sheet:hover { outline: 2px solid #1d4fa3; z-index: 2; }
+.ct-sheet:hover { outline: 2px solid var(--cx-navy-2, #1d4fa3); z-index: 2; }
 .ct-sheet.selected { outline: 2px solid #d9534f; z-index: 3; }
 .ct-sheet small { display: block; font-family: Arial, sans-serif; font-size: 9px; opacity: .8; }
 
@@ -187,7 +187,7 @@ body {
 .ct-timeline li { border-left: 3px solid #b7bccb; padding: 4px 0 10px 12px; position: relative; }
 .ct-timeline li:before {
     content: ""; position: absolute; left: -7px; top: 7px; width: 11px; height: 11px;
-    border-radius: 50%; background: #1d4fa3; border: 2px solid #fff;
+    border-radius: 50%; background: var(--cx-navy-2, #1d4fa3); border: 2px solid #fff;
 }
 .ct-timeline .ct-tl-date { font-size: 11px; color: #888; }
 

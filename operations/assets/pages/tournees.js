@@ -15,7 +15,7 @@
 $(function () {
     var U = CX.util, O = CX.ops, G = CX.guichet, A = O.agenceCourante(), today = U.today();
     var plannings = [], fiches = [], fichesMap = {}, livreurs = [], exps = {}, f = null;
-    var onglet = "planning", lundi = lundiDe(paramDate() || today), jourSel = today;
+    var onglet = (function () { var v = null; try { v = window.localStorage.getItem("cx_vue_tournees"); } catch (e) { v = null; } return $.inArray(v, ["planning", "jour", "kanban", "calendrier", "gantt", "liste"]) >= 0 ? v : "planning"; })(), lundi = lundiDe(paramDate() || today), jourSel = today;
     var JOURS = ["Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam.", "Dim."];
     var ZONE_COULEUR = { Z1: "blue", Z2: "purple", Z3: "orange" };
     var QZ = (CX.demoExploitation && CX.demoExploitation.QUARTIERS_ZONE) || {};
@@ -115,6 +115,52 @@ $(function () {
                 (p.date === today && (s === "PLANIFIEE" || s === "EN_COURS") ? "<a class='cx-btn cx-btn-primary cx-btn-xs' href='instance.html?tournee=" + p.id + "#coursier'><i class='fa fa-cubes'></i> Affecter des colis</a>" : "") + "</div></div>";
         }).join("") : "<div class='cx-empty'><i class='fa fa-calendar-o'></i><b>Aucune tournée le " + U.esc(U.toFr(jourSel)) + "</b>" +
             (jourSel >= today ? "<a href='#' data-add='" + jourSel + "'>Planifier une tournée</a>" : "") + "</div>");
+    }
+
+    /* ---------------- Kanban / Calendrier / Gantt (CX.vues) ---------------- */
+    var moisCal = (paramDate() || today).substr(0, 7);
+    function carteMini(p) {
+        var c = charge(p);
+        return "<div class='cx-vc-top'><span class='cx-vc-num'>" + U.esc(p.numero) + "</span>" + zoneBadge(p.zone) + "</div>" +
+            "<div class='cx-vc-l'><i class='fa fa-calendar cx-muted'></i> " + U.esc(jourLib(p.date)) + " · " + U.esc(p.heureDebut + "–" + p.heureFin) + "</div>" +
+            "<div class='cx-vc-l'><i class='fa fa-motorcycle cx-muted'></i> " + U.esc(p.livreurNom || "Livreur à désigner") + "</div>" +
+            "<div class='cx-vc-s'>" + U.esc((p.quartiers || []).join(", ")) + "</div>" +
+            "<div class='ox-tour-cap' style='margin-top:6px'><span class='ox-tour-bar'><i style='width:" + (p.capacite ? Math.min(100, Math.round(c / p.capacite * 100)) : 0) + "%'></i></span><small>" + c + "/" + (p.capacite || "∞") + "</small></div>";
+    }
+    function rendreKanban() {
+        var rows = $.grep(semaine(), filtre).sort(function (a, b) { return (a.date + a.heureDebut) > (b.date + b.heureDebut) ? 1 : -1; });
+        $("#kanban-lib").text("Semaine du " + U.toFr(lundi) + " au " + U.toFr(U.addDays(lundi, 6)) + " · tournées classées par statut");
+        CX.vues.kanban("#kanban", rows, {
+            colonnes: $.map(["PLANIFIEE", "EN_COURS", "TERMINEE", "NON_REALISEE", "ANNULEE"], function (k) { return { code: k, label: O.STATUT_PLANNING[k].label, color: O.STATUT_PLANNING[k].color }; }),
+            valeur: statut, carte: carteMini,
+            entete: function (col, l) { var n = 0; $.each(l, function (_, p) { n += charge(p); }); return n + " colis"; }
+        });
+    }
+    function rendreCalendrier() {
+        CX.vues.calendrier("#calendrier", $.grep(plannings, filtre).sort(function (a, b) { return a.heureDebut > b.heureDebut ? 1 : -1; }), {
+            mois: moisCal, date: function (p) { return p.date; }, max: 4,
+            puce: function (p) {
+                var s = statut(p);
+                return "<span class='cx-cal-pt " + (ZONE_COULEUR[p.zone] || "") + "'></span><b>" + U.esc(p.heureDebut) + "</b> " + U.esc(O.zoneLib(p.zone, true).replace("Zone ", "Z")) + " · " +
+                    U.esc((p.livreurNom || "à désigner").split(" ")[0]) + (s === "ANNULEE" ? " <i class='fa fa-ban'></i>" : s === "TERMINEE" ? " <i class='fa fa-check'></i>" : s === "EN_COURS" ? " <i class='fa fa-motorcycle'></i>" : "");
+            },
+            onMois: function (m) { moisCal = m; rendreCalendrier(); }
+        });
+    }
+    function rendreGantt() {
+        $("#gt-jour").val(jourSel);
+        $("#gt-lib").text(jourLib(jourSel, true));
+        var rows = $.grep(plannings, function (p) { return p.date === jourSel && filtre(p); });
+        CX.vues.gantt("#gantt", rows, {
+            du: jourSel, au: jourSel, heureMin: "07:00", heureMax: "20:00", titreLignes: "Livreur",
+            lignes: $.map($.grep(livreursVille(), function (l) { return l.statut === "ACTIF"; }), function (l) { return l.nom; }),
+            ligne: function (p) { return p.livreurNom || "Livreur à désigner"; },
+            debut: function (p) { return p.date + " " + p.heureDebut; }, fin: function (p) { return p.date + " " + p.heureFin; },
+            libelle: function (p) { return p.heureDebut + "–" + p.heureFin + " · " + O.zoneLib(p.zone, true) + " · " + charge(p) + "/" + (p.capacite || "∞") + " colis"; },
+            titre: function (p) { return p.numero + " · " + O.STATUT_PLANNING[statut(p)].label + " · " + (p.quartiers || []).join(", "); },
+            couleur: function (p) { var s = statut(p); return s === "ANNULEE" || s === "NON_REALISEE" ? "grey" : ZONE_COULEUR[p.zone] || "blue"; },
+            vide: "Aucune tournée le " + U.toFr(jourSel)
+        });
     }
 
     /* ---------------- Liste ---------------- */
@@ -280,7 +326,7 @@ $(function () {
     /* ---------------- Chargement / rendu ---------------- */
     function rendre() {
         $("#onglets a").removeClass("active").filter("[data-tab='" + onglet + "']").addClass("active");
-        $.each(["planning", "jour", "liste"], function (_, k) { $("#vue-" + k).toggleClass("cx-hidden", k !== onglet); });
+        $.each(["planning", "jour", "kanban", "calendrier", "gantt", "liste"], function (_, k) { $("#vue-" + k).toggleClass("cx-hidden", k !== onglet); });
         var fin = U.addDays(lundi, 6);
         $("#sem-lib").text("du " + U.toFr(lundi) + " au " + U.toFr(fin));
         $("#n-semaine").text(semaine().length);
@@ -289,7 +335,11 @@ $(function () {
         $("#n-liste").text(liste.length);
         if (onglet === "planning") rendrePlanning();
         if (onglet === "jour") rendreJour();
+        if (onglet === "kanban") rendreKanban();
+        if (onglet === "calendrier") rendreCalendrier();
+        if (onglet === "gantt") rendreGantt();
         if (onglet === "liste") dt.setRows(liste);
+        try { window.localStorage.setItem("cx_vue_tournees", onglet); } catch (e) { /* */ }
     }
     function charger() {
         // TODO API : GET /exploitation/tournees-planifiees?agence={id}&du=&au=  (+ fiches de livraison et livreurs)
@@ -333,6 +383,10 @@ $(function () {
         var liv = $(this).data("liv");
         formulaire({ date: String($(this).data("add")), livreurId: liv ? Number(liv) : null });
     });
+    $("#kanban, #calendrier, #gantt").on("click", "[data-id]", function () { detail(parId($(this).data("id"))); });
+    $("#kanban, #calendrier, #gantt").on("keydown", "[data-id]", function (e) { if (e.which === 13) detail(parId($(this).data("id"))); });
+    $("#gt-jour").on("change", function () { jourSel = this.value || today; lundi = lundiDe(jourSel); rendre(); });
+    $("#gt-prec, #gt-suiv").on("click", function () { jourSel = U.addDays(jourSel, this.id === "gt-prec" ? -1 : 1); lundi = lundiDe(jourSel); rendre(); });
     $("#cartes-jour").on("click", "[data-voir]", function () { detail(parId($(this).closest("[data-p]").data("p"))); });
     $("#dt-liste").on("click", "[data-voir]", function (ev) { ev.preventDefault(); detail(parId($(this).closest("tr").data("id"))); });
     $("#btn-nouvelle").on("click", function () { formulaire(null); });

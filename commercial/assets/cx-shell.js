@@ -218,6 +218,7 @@ CX.shell = {
         }).join("");
         return "<header class='cx-header'><div class='cx-header-inner'>" +
             "<a class='cx-brand' href='index.html'>ClemenTino<small>2.0</small></a>" +
+            (CX.societe.logoUrl() ? "<span class='cx-soc-chip' title='" + CX.util.esc(CX.CONFIG.SOCIETE.nom) + "'><img src='" + CX.util.esc(CX.societe.logoUrl()) + "' alt='" + CX.util.esc(CX.CONFIG.SOCIETE.nom) + "'></span>" : "") +
             "<ul class='cx-nav'>" + nav + "</ul>" +
             "<div class='cx-header-right'><span class='cx-loc-chip'><i class='fa fa-map-marker'></i> " +
             CX.util.esc(CX.shell.nomVille(u.ville)) + " · bureau " + CX.util.esc(u.agence.charAt(0) + u.agence.substr(1).toLowerCase()) + "</span>" +
@@ -257,9 +258,79 @@ CX.shell = {
     },
 
     footerHtml: function () {
-        var u = CX.CONFIG.USER;
-        return "<div class='cx-footer'>Copyright © ClemenTino 2.0 · KuTiWa · Vous êtes affecté à la ville de <b>" +
-            CX.util.esc(u.ville) + "</b>, au bureau de <b>" + CX.util.esc(u.agence) + "</b>.</div>";
+        var u = CX.CONFIG.USER, S = CX.CONFIG.SOCIETE, esc = CX.util.esc;
+        /* Sélecteur d'entreprise (drop-up) : charte, logo et coordonnées des documents */
+        var items = $.map(CX.societe.liste(), function (s) {
+            var src = CX.societe.logoUrl($.extend({}, s, { logo: s.icone || s.logo }));
+            return "<li class='" + (s.code === S.code ? "active" : "") + "'><a href='#' data-societe='" + esc(s.code) + "'>" +
+                "<span class='cx-soc-logo'>" + (src ? "<img src='" + esc(src) + "' alt=''>" : "<b>" + esc(CX.util.initials(s.nom)) + "</b>") + "</span>" +
+                "<span class='cx-soc-txt'><b>" + esc(s.nom) + "</b><small>" + esc(s.alias || s.slogan || "") + "</small></span>" +
+                "<i class='cx-soc-pastille' style='background:" + esc(s.theme.navy2) + "'></i>" +
+                (s.code === S.code ? "<i class='fa fa-check cx-soc-ok'></i>" : "") + "</a></li>";
+        }).join("");
+        var pick = "<div class='dropup cx-soc-pick'><button type='button' class='cx-soc-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' title=\"Entreprise pour laquelle vous naviguez\">" +
+            "<i class='fa fa-building'></i> " + esc(S.nomCourt || S.nom) + " <i class='fa fa-caret-up'></i></button>" +
+            "<ul class='dropdown-menu dropdown-menu-right'><li class='dropdown-header'>Naviguer pour l'entreprise</li>" + items +
+            "<li role='separator' class='divider'></li><li><a href='#' data-societe-perso><i class='fa fa-pencil'></i> " +
+            (CX.societe.perso() ? "Modifier l'entreprise personnalisée…" : "Autre entreprise…") + "</a></li></ul></div>";
+        return "<div class='cx-footer'><span class='cx-footer-txt'>Copyright © ClemenTino 2.0 · KuTiWa · Vous êtes affecté à la ville de <b>" +
+            esc(u.ville) + "</b>, au bureau de <b>" + esc(u.agence) + "</b>.</span>" + pick + "</div>";
+    },
+
+    /* Entreprise personnalisée : nom, couleurs, logo, coordonnées (démonstration à un autre client) */
+    modaleSocietePerso: function () {
+        var U = CX.util, esc = U.esc, p = CX.societe.perso() || { nom: "", slogan: "", couleur: "#334155", accent: "#f59e0b", adresse: "", tel: "", email: "", site: "", rccm: "", niu: "", banque: "", logo: "" };
+        function champ(id, label, val, type, req) {
+            return "<div class='cx-field'><label class='cx-label" + (req ? " req" : "") + "' for='" + id + "'>" + label + "</label><input type='" + (type || "text") + "' class='form-control' id='" + id + "' value='" + esc(val || "") + "' maxlength='120'></div>";
+        }
+        $("#cx-soc-modal").remove();
+        var $m = $("<div class='modal fade' id='cx-soc-modal' tabindex='-1' role='dialog'><div class='modal-dialog modal-lg' role='document'><div class='modal-content'>" +
+            "<div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-label='Fermer'>&times;</button><h4 class='modal-title'><i class='fa fa-building'></i> Autre entreprise</h4></div>" +
+            "<div class='modal-body'><p class='cx-muted' style='margin-top:0'>Présentez le logiciel aux couleurs d'une autre entreprise : charte, logo et coordonnées sont repris sur les écrans et dans tous les documents (factures, cotations, reçus, bordereaux, états, PDF).</p>" +
+            "<div class='row'><div class='col-sm-6'>" + champ("sp-nom", "Raison sociale", p.nom, "text", true) + "</div><div class='col-sm-6'>" + champ("sp-slogan", "Slogan", p.slogan) + "</div></div>" +
+            "<div class='row'><div class='col-sm-3'>" + champ("sp-couleur", "Couleur principale", p.couleur, "color") + "</div><div class='col-sm-3'>" + champ("sp-accent", "Couleur d'accent", p.accent, "color") + "</div>" +
+            "<div class='col-sm-6'><div class='cx-field'><label class='cx-label' for='sp-logo'>Logo <span class='cx-opt'>(PNG / JPG, réduit à 400 px)</span></label><div style='display:flex;gap:10px;align-items:center'>" +
+            "<span class='cx-soc-logo cx-soc-logo-lg' id='sp-apercu'>" + (p.logo ? "<img src='" + esc(p.logo) + "' alt=''>" : "<i class='fa fa-picture-o'></i>") + "</span>" +
+            "<input type='file' class='form-control' id='sp-logo' accept='image/*'></div></div></div></div>" +
+            "<div class='row'><div class='col-sm-6'>" + champ("sp-adresse", "Adresse", p.adresse) + "</div><div class='col-sm-3'>" + champ("sp-tel", "Téléphone", p.tel) + "</div><div class='col-sm-3'>" + champ("sp-email", "E-mail", p.email, "email") + "</div></div>" +
+            "<div class='row'><div class='col-sm-3'>" + champ("sp-site", "Site web", p.site) + "</div><div class='col-sm-3'>" + champ("sp-rccm", "RCCM", p.rccm) + "</div><div class='col-sm-3'>" + champ("sp-niu", "NIU", p.niu) + "</div><div class='col-sm-3'>" + champ("sp-banque", "Banque / RIB", p.banque) + "</div></div>" +
+            "</div><div class='modal-footer'>" + (CX.societe.perso() ? "<button type='button' class='cx-btn cx-btn-ghost text-danger pull-left' id='sp-suppr'><i class='fa fa-trash-o'></i> Supprimer</button>" : "") +
+            "<button type='button' class='cx-btn cx-btn-ghost' data-dismiss='modal'>Annuler</button><button type='button' class='cx-btn cx-btn-primary' id='sp-ok'><i class='fa fa-check'></i> Enregistrer et utiliser</button></div>" +
+            "</div></div></div>").appendTo("body");
+        var logo = p.logo || "";
+        $m.on("change", "#sp-logo", function () {
+            var file = this.files && this.files[0];
+            if (!file) return;
+            var fr = new FileReader();
+            fr.onload = function () {
+                var img = new Image();
+                img.onload = function () {
+                    var k = Math.min(1, 400 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+                    c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+                    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+                    logo = c.toDataURL("image/png");
+                    $("#sp-apercu").html("<img src='" + logo + "' alt=''>");
+                };
+                img.src = fr.result;
+            };
+            fr.readAsDataURL(file);
+        });
+        $m.on("click", "#sp-suppr", function () {
+            try { localStorage.removeItem(CX.SOCIETE_PERSO_CLE); } catch (e) { /* */ }
+            CX.societe.choisir("SOLEX");
+        });
+        $m.on("click", "#sp-ok", function () {
+            var nom = $.trim($("#sp-nom").val());
+            if (nom.length < 2) { $("#sp-nom").closest(".cx-field").addClass("has-error"); $("#sp-nom").focus(); return; }
+            var o = { nom: nom.toUpperCase(), slogan: $.trim($("#sp-slogan").val()), couleur: $("#sp-couleur").val(), accent: $("#sp-accent").val(), logo: logo,
+                adresse: $.trim($("#sp-adresse").val()), tel: $.trim($("#sp-tel").val()), email: $.trim($("#sp-email").val()), site: $.trim($("#sp-site").val()),
+                rccm: $.trim($("#sp-rccm").val()), niu: $.trim($("#sp-niu").val()), banque: $.trim($("#sp-banque").val()) };
+            // TODO API : PUT /parametres/societe (paramètres du tenant)
+            if (!CX.societe.enregistrerPerso(o)) { U.toast("Logo trop lourd pour le stockage du navigateur : choisissez une image plus légère.", "warning"); return; }
+            CX.societe.choisir("PERSO");
+        });
+        $m.on("hidden.bs.modal", function () { $m.remove(); });
+        $m.modal("show");
     },
 
     init: function () {
@@ -267,6 +338,8 @@ CX.shell = {
         if ($("#cx-header").length) $("#cx-header").replaceWith(CX.shell.headerHtml(current));
         if ($("#cx-subnav").length) $("#cx-subnav").replaceWith(CX.shell.subnavHtml(current));
         if ($("#cx-footer").length) $("#cx-footer").replaceWith(CX.shell.footerHtml());
+        $(document).on("click", "[data-societe]", function (e) { e.preventDefault(); var c = $(this).data("societe"); if (c !== CX.societe.code()) CX.societe.choisir(c); });
+        $(document).on("click", "[data-societe-perso]", function (e) { e.preventDefault(); CX.shell.modaleSocietePerso(); });
 
         /* Page hors du dossier commercial/ (ex : carnets) : window.CX_BASE = "../commercial/"
            préfixe les liens du menu pour qu'ils restent valides. */

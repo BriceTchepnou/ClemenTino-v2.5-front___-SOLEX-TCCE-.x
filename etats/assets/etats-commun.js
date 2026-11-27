@@ -60,8 +60,10 @@ CX.etats = (function () {
     };
 
     /* Couleurs (contraste AA sur fond blanc pour les textes ; séries distinguables) */
+    /* couleurs principales : charte de l'entreprise courante (CX.societe) */
+    var TH = (CX.CONFIG.SOCIETE && CX.CONFIG.SOCIETE.theme) || {};
     var COUL = {
-        marine: "#1d4fa3", marineF: "#13306b", bleuC: "#7aa2e3", vert: "#1e9e5a", vertC: "#8fd1ad",
+        marine: TH.navy2 || "#1d4fa3", marineF: TH.navy || "#13306b", bleuC: TH.navy3 ? CX.societe.ombre(TH.navy3, 0.35) : "#7aa2e3", vert: "#1e9e5a", vertC: "#8fd1ad",
         orange: "#d97706", orangeC: "#f2b766", gris: "#6b7280", grisC: "#c3cbd9", rouge: "#dc2626", violet: "#6d28d9",
         grille: "#e3e7ef", texte: "#475467"
     };
