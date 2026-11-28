@@ -1,0 +1,330 @@
+[
+  {
+    "numero": "REC-2026-0001",
+    "date": "2026-11-19 10:12",
+    "origine": "RECU",
+    "reference": "RT-2608-02082",
+    "expeditionId": 82,
+    "factureId": null,
+    "clientId": null,
+    "clientNom": "NKOULOU Mireille",
+    "contact": "658624613",
+    "type": "RECLAMATION",
+    "priorite": "NORMALE",
+    "echeance": "2026-11-24 10:12",
+    "objet": "Colis livré avec deux jours de retard",
+    "description": "Le destinataire indique avoir reçu le colis deux jours après la date annoncée au guichet. Il demande un geste commercial.",
+    "agenceId": 1,
+    "assigneA": "Service qualité",
+    "statut": "TRAITEE",
+    "pieces": [],
+    "creePar": "M. NJOYA",
+    "dateCreation": "2026-11-19",
+    "fil": [
+      {
+        "date": "2026-11-19 10:12",
+        "user": "M. NJOYA",
+        "genre": "CREATION",
+        "texte": "Réclamation enregistrée (reçu RT-2608-02082)"
+      },
+      {
+        "date": "2026-11-19 11:00",
+        "user": "Support KuTiWa",
+        "genre": "AFFECTATION",
+        "texte": "Assignée à Service qualité"
+      },
+      {
+        "date": "2026-11-20 09:30",
+        "user": "Service qualité",
+        "genre": "COMMENTAIRE",
+        "texte": "Retard confirmé : véhicule immobilisé à Edéa (panne)."
+      }
+    ],
+    "resolution": {
+      "date": "2026-11-21 15:20",
+      "user": "Service qualité",
+      "solution": "Excuses présentées au client par téléphone ; bon de réduction de 20 % sur le prochain envoi.",
+      "geste": {
+        "type": "Bon de réduction",
+        "montant": 0
+      },
+      "satisfaction": 4
+    },
+    "id": 1
+  },
+  {
+    "numero": "REC-2026-0002",
+    "date": "2026-11-22 14:40",
+    "origine": "RECU",
+    "reference": "RT-2610-01223",
+    "expeditionId": 23,
+    "factureId": null,
+    "clientId": 3,
+    "clientNom": "BELLO Ibrahim",
+    "contact": "698395041",
+    "type": "INCIDENT",
+    "priorite": "URGENTE",
+    "echeance": "2026-11-23 14:40",
+    "objet": "Colis endommagé à la réception (carton écrasé)",
+    "description": "Carton écrasé, deux bouteilles de parfum cassées. Photos prises au comptoir. Le client réclame le remboursement de la valeur déclarée.",
+    "agenceId": 1,
+    "assigneA": "M. NJOYA (chef d'agence Akwa)",
+    "statut": "EN_TRAITEMENT",
+    "pieces": [
+      {
+        "nom": "photo-colis-ecrase.jpg",
+        "taille": 248000,
+        "type": "image/jpeg"
+      },
+      {
+        "nom": "recu-client.pdf",
+        "taille": 82000,
+        "type": "application/pdf"
+      }
+    ],
+    "creePar": "M. NJOYA",
+    "dateCreation": "2026-11-22",
+    "fil": [
+      {
+        "date": "2026-11-22 14:40",
+        "user": "M. NJOYA",
+        "genre": "CREATION",
+        "texte": "Réclamation enregistrée (reçu RT-2610-01223)"
+      },
+      {
+        "date": "2026-11-22 15:05",
+        "user": "Support KuTiWa",
+        "genre": "AFFECTATION",
+        "texte": "Assignée à M. NJOYA (chef d'agence Akwa)"
+      },
+      {
+        "date": "2026-11-23 10:10",
+        "user": "M. NJOYA (chef d'agence Akwa)",
+        "genre": "STATUT",
+        "texte": "Prise en charge"
+      },
+      {
+        "date": "2026-11-24 16:45",
+        "user": "M. NJOYA (chef d'agence Akwa)",
+        "genre": "COMMENTAIRE",
+        "texte": "Déclaration transmise à l'assurance ; attente de l'expertise."
+      }
+    ],
+    "id": 2
+  },
+  {
+    "numero": "REC-2026-0003",
+    "date": "2026-11-24 09:05",
+    "origine": "FACTURE",
+    "reference": "FAC-2026-0003",
+    "expeditionId": null,
+    "factureId": 3,
+    "clientId": 7,
+    "clientNom": "ORANGE CAMEROUN",
+    "contact": "699 00 11 22",
+    "type": "RECLAMATION",
+    "priorite": "PRIORITAIRE",
+    "echeance": "2026-11-26 09:05",
+    "objet": "Contestation du montant facturé",
+    "description": "Le client conteste trois expéditions facturées qu'il dit ne pas avoir commandées. Il demande le détail des décharges signées.",
+    "agenceId": 1,
+    "assigneA": "",
+    "statut": "EN_ATTENTE",
+    "pieces": [],
+    "creePar": "Service commercial",
+    "dateCreation": "2026-11-24",
+    "fil": [
+      {
+        "date": "2026-11-24 09:05",
+        "user": "Service commercial",
+        "genre": "CREATION",
+        "texte": "Réclamation enregistrée (facture FAC-2026-0003)"
+      }
+    ],
+    "id": 3
+  },
+  {
+    "numero": "REC-2026-0004",
+    "date": "2026-11-25 17:30",
+    "origine": "RECU",
+    "reference": "RT-2611-01256",
+    "expeditionId": 56,
+    "factureId": null,
+    "clientId": 8,
+    "clientNom": "BELLO Ibrahim",
+    "contact": "679135754",
+    "type": "PLAINTE",
+    "priorite": "NORMALE",
+    "echeance": "2026-11-30 17:30",
+    "objet": "Accueil désagréable au comptoir de retrait",
+    "description": "La cliente dit avoir attendu 40 minutes et avoir été mal reçue par l'agent de retrait ; elle souhaite une réponse écrite.",
+    "agenceId": 1,
+    "assigneA": "",
+    "statut": "EN_ATTENTE",
+    "pieces": [],
+    "creePar": "M. NJOYA",
+    "dateCreation": "2026-11-25",
+    "fil": [
+      {
+        "date": "2026-11-25 17:30",
+        "user": "M. NJOYA",
+        "genre": "CREATION",
+        "texte": "Réclamation enregistrée (reçu RT-2611-01256)"
+      }
+    ],
+    "id": 4
+  },
+  {
+    "numero": "REC-2026-0005",
+    "date": "2026-11-26 08:20",
+    "origine": "SANS",
+    "reference": "",
+    "expeditionId": null,
+    "factureId": null,
+    "clientId": null,
+    "clientNom": "MBARGA Hervé",
+    "contact": "677 10 20 30",
+    "type": "ACCIDENT",
+    "priorite": "URGENTE",
+    "echeance": "2026-11-27 08:20",
+    "objet": "Véhicule de livraison a heurté un portail (Bonapriso)",
+    "description": "Le tricycle de livraison a endommagé le portail d'un riverain lors d'une manœuvre. Constat amiable rempli sur place, pas de blessé.",
+    "agenceId": 2,
+    "assigneA": "Service qualité",
+    "statut": "EN_TRAITEMENT",
+    "pieces": [
+      {
+        "nom": "constat-amiable.pdf",
+        "taille": 412000,
+        "type": "application/pdf"
+      }
+    ],
+    "creePar": "M. NJOYA",
+    "dateCreation": "2026-11-26",
+    "fil": [
+      {
+        "date": "2026-11-26 08:20",
+        "user": "M. NJOYA",
+        "genre": "CREATION",
+        "texte": "Réclamation enregistrée"
+      },
+      {
+        "date": "2026-11-26 08:40",
+        "user": "Support KuTiWa",
+        "genre": "AFFECTATION",
+        "texte": "Assignée à Service qualité"
+      },
+      {
+        "date": "2026-11-26 11:00",
+        "user": "Service qualité",
+        "genre": "STATUT",
+        "texte": "Prise en charge"
+      }
+    ],
+    "id": 5
+  },
+  {
+    "numero": "REC-2026-0006",
+    "date": "2026-11-27 11:50",
+    "origine": "RECU",
+    "reference": "RT-2611-02435",
+    "expeditionId": 435,
+    "factureId": null,
+    "clientId": null,
+    "clientNom": "ABENA Aïcha",
+    "contact": "676481066",
+    "type": "INCIDENT",
+    "priorite": "PRIORITAIRE",
+    "echeance": "2026-11-29 11:50",
+    "objet": "Colis introuvable au suivi depuis 3 jours",
+    "description": "Le suivi indique « en transit » depuis trois jours ; l'expéditeur demande où se trouve son colis.",
+    "agenceId": 1,
+    "assigneA": "Mme ABENA (Yaoundé Centrale)",
+    "statut": "EN_ATTENTE",
+    "pieces": [],
+    "creePar": "M. NJOYA",
+    "dateCreation": "2026-11-27",
+    "fil": [
+      {
+        "date": "2026-11-27 11:50",
+        "user": "M. NJOYA",
+        "genre": "CREATION",
+        "texte": "Réclamation enregistrée (reçu RT-2611-02435)"
+      },
+      {
+        "date": "2026-11-27 12:05",
+        "user": "M. NJOYA (chef d'agence Akwa)",
+        "genre": "AFFECTATION",
+        "texte": "Assignée à Mme ABENA (Yaoundé Centrale)"
+      }
+    ],
+    "id": 6
+  },
+  {
+    "numero": "REC-2026-0007",
+    "date": "2026-11-27 16:15",
+    "origine": "SANS",
+    "reference": "",
+    "expeditionId": null,
+    "factureId": null,
+    "clientId": null,
+    "clientNom": "NANA Esther",
+    "contact": "655 77 88 99",
+    "type": "RECLAMATION",
+    "priorite": "NORMALE",
+    "echeance": "2026-12-02 16:15",
+    "objet": "Demande de remboursement des frais de livraison",
+    "description": "La cliente demandait le remboursement des frais de livraison à domicile, finalement retirés en agence.",
+    "agenceId": 1,
+    "assigneA": "",
+    "statut": "ABANDONNEE",
+    "pieces": [],
+    "creePar": "M. NJOYA",
+    "dateCreation": "2026-11-27",
+    "fil": [
+      {
+        "date": "2026-11-27 16:15",
+        "user": "M. NJOYA",
+        "genre": "CREATION",
+        "texte": "Réclamation enregistrée"
+      }
+    ],
+    "abandon": {
+      "date": "2026-11-28 09:00",
+      "user": "Support KuTiWa",
+      "motif": "Client injoignable après trois relances ; aucun justificatif fourni."
+    },
+    "id": 7
+  },
+  {
+    "numero": "REC-2026-0008",
+    "date": "2026-11-28 08:35",
+    "origine": "RECU",
+    "reference": "RT-2611-02419",
+    "expeditionId": 419,
+    "factureId": null,
+    "clientId": null,
+    "clientNom": "BIYONG Boris",
+    "contact": "652562855",
+    "type": "RECLAMATION",
+    "priorite": "URGENTE",
+    "echeance": "2026-11-29 08:35",
+    "objet": "Livraison urgente : médicaments attendus ce matin",
+    "description": "Le destinataire attend des médicaments ce matin ; le livreur n'est pas encore passé. Demande de priorisation de la tournée.",
+    "agenceId": 1,
+    "assigneA": "",
+    "statut": "EN_ATTENTE",
+    "pieces": [],
+    "creePar": "M. NJOYA",
+    "dateCreation": "2026-11-28",
+    "fil": [
+      {
+        "date": "2026-11-28 08:35",
+        "user": "M. NJOYA",
+        "genre": "CREATION",
+        "texte": "Réclamation enregistrée (reçu RT-2611-02419)"
+      }
+    ],
+    "id": 8
+  }
+]

@@ -1,9 +1,9 @@
 {
   "application": "ClemenTino 2.0 - maquettes (Solex / Touristique Logistique)",
-  "genereLe": "2026-11-27",
+  "genereLe": "2026-11-28",
   "periode": {
-    "du": "2026-08-27",
-    "au": "2026-12-01"
+    "du": "2026-08-28",
+    "au": "2026-12-02"
   },
   "clesLocalStorage": {
     "store": "cx_commercial_demo_v1",
@@ -142,20 +142,21 @@
   },
   "volumes": {
     "apporteurs": 12,
-    "bordereaux": 70,
+    "bordereaux": 80,
     "clients": 12,
     "commissions": 0,
     "contrats": 4,
     "cotations": 11,
-    "expeditions": 502,
+    "expeditions": 511,
     "factures": 9,
     "groupesClients": 2,
     "livreurs": 7,
-    "meta": 6,
-    "plannings": 24,
+    "meta": 7,
+    "plannings": 21,
     "preenregistrements": 11,
+    "reclamations": 8,
     "tarifaires": 5,
-    "tournees": 16,
+    "tournees": 12,
     "carnets": 5
   }
 }

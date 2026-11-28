@@ -723,3 +723,12 @@ body.cx-app {
 .cx-gt-bar:hover, .cx-gt-bar:focus { filter: brightness(1.1); outline: 2px solid rgba(15,23,42,.25); }
 .cx-gt-green { background: var(--cx-green); } .cx-gt-orange { background: var(--cx-orange); } .cx-gt-purple { background: var(--cx-purple); } .cx-gt-red { background: var(--cx-red); } .cx-gt-grey { background: #9ca3af; }
 .cx-gt-bar.coupe-a { border-top-left-radius: 0; border-bottom-left-radius: 0; } .cx-gt-bar.coupe-b { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+
+/* Menu utilisateur (en-tête) */
+.cx-user-menu { position: relative; }
+.cx-user-menu > .cx-user { color: #fff !important; text-decoration: none !important; display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 6px; }
+.cx-user-menu > .cx-user:hover, .cx-user-menu.open > .cx-user { background: rgba(255,255,255,.12); opacity: 1; }
+.cx-user-menu .dropdown-menu { min-width: 220px; padding: 6px; border-radius: 10px; border: 1px solid var(--cx-line); box-shadow: var(--cx-shadow-lg); font-size: 13px; margin-top: 8px; }
+.cx-user-menu .dropdown-menu > li > a { padding: 7px 10px; border-radius: 7px; color: var(--cx-text); }
+.cx-user-menu .dropdown-menu > li > a:hover { background: var(--cx-soft); }
+.cx-user-menu .dropdown-header { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }

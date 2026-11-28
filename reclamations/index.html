@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>Contrôle · Réclamations - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="../commercial/assets/cx.css">
+    <link rel="stylesheet" href="assets/reclamations.css">
+</head>
+<body class="cx-app" data-module="controle" data-page="c-reclamations">
+
+<div id="cx-header"></div>
+<div id="cx-subnav"></div>
+
+<main class="cx-main">
+    <div class="cx-page-head">
+        <div>
+            <div class="cx-crumb">Contrôle · Qualité de service</div>
+            <h1 class="cx-title">Réclamations <small id="sous-titre">plaintes, incidents, accidents et réclamations clients</small></h1>
+        </div>
+        <div class="cx-page-actions">
+            <button type="button" class="cx-btn cx-btn-ghost" id="btn-refresh" title="Rafraîchir"><i class="fa fa-refresh"></i></button>
+            <button type="button" class="cx-btn cx-btn-new" id="btn-nouvelle"><i class="fa fa-plus"></i> Nouvelle réclamation</button>
+        </div>
+    </div>
+
+    <div class="cx-kpis" id="kpis"></div>
+
+    <div class="cx-card">
+        <div class="cx-toolbar">
+            <div class="cx-field"><label class="cx-label" for="f-du">Du</label><input type="date" class="form-control" id="f-du"></div>
+            <div class="cx-field"><label class="cx-label" for="f-au">Au</label><input type="date" class="form-control" id="f-au"></div>
+            <div class="cx-field"><label class="cx-label" for="f-type">Type</label><select class="form-control" id="f-type"></select></div>
+            <div class="cx-field"><label class="cx-label" for="f-prio">Priorité</label><select class="form-control" id="f-prio"></select></div>
+            <div class="cx-field"><label class="cx-label" for="f-agence">Agence</label><select class="form-control" id="f-agence"></select></div>
+            <div class="cx-field"><label class="cx-label" for="f-assigne">Assignée à</label><select class="form-control" id="f-assigne"></select></div>
+            <div class="cx-field cx-grow">
+                <label class="cx-label" for="q">Recherche</label>
+                <div class="cx-search"><i class="fa fa-search"></i><input type="search" class="form-control" id="q" placeholder="Référence, reçu, facture, client, objet…"></div>
+            </div>
+        </div>
+        <div class="cx-tabs" id="onglets" role="tablist">
+            <a data-tab="" class="active" role="tab">Toutes <span class="cx-count" id="n-tout">0</span></a>
+            <a data-tab="EN_ATTENTE" role="tab">En attente <span class="cx-count" id="n-EN_ATTENTE">0</span></a>
+            <a data-tab="EN_TRAITEMENT" role="tab">En traitement <span class="cx-count" id="n-EN_TRAITEMENT">0</span></a>
+            <a data-tab="TRAITEE" role="tab">Traitée <span class="cx-count" id="n-TRAITEE">0</span></a>
+            <a data-tab="ABANDONNEE" role="tab">Abandonnée <span class="cx-count" id="n-ABANDONNEE">0</span></a>
+            <a data-tab="RETARD" role="tab"><i class="fa fa-clock-o"></i> En retard <span class="cx-count" id="n-RETARD">0</span></a>
+        </div>
+        <div class="cx-vue-bar"><span class="cx-vue-titre">Affichage : tableau, cartes ou Kanban par statut</span><div id="vue-slot"></div></div>
+        <div id="dt-rec"></div>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="../commercial/assets/cx-core.js"></script>
+<script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-vues.js"></script>
+<script src="../commercial/assets/cx-tarifs.js"></script>
+<script src="../commercial/assets/cx-demo-exploitation.js"></script>
+<script src="../guichet/assets/guichet-commun.js"></script>
+<script src="assets/rec-commun.js"></script>
+<script>window.CX_BASE = "../commercial/";</script>
+<script src="../commercial/assets/cx-shell.js"></script>
+<script src="assets/reclamations.js"></script>
+</body>
+</html>

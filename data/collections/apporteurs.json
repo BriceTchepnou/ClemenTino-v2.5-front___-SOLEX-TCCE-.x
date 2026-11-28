@@ -19,11 +19,11 @@
     "baseCommission": "FACTURE",
     "statut": "ACTIF",
     "notes": "",
-    "dateCreation": "2025-10-03",
+    "dateCreation": "2025-10-04",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2025-10-03 09:15",
+        "date": "2025-10-04 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       }
@@ -49,11 +49,11 @@
     "baseCommission": "ENCAISSE",
     "statut": "ACTIF",
     "notes": "",
-    "dateCreation": "2025-11-12",
+    "dateCreation": "2025-11-13",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2025-11-12 09:15",
+        "date": "2025-11-13 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       }
@@ -79,11 +79,11 @@
     "baseCommission": "FACTURE",
     "statut": "ACTIF",
     "notes": "",
-    "dateCreation": "2026-01-31",
+    "dateCreation": "2026-02-01",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2026-01-31 09:15",
+        "date": "2026-02-01 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       }
@@ -109,11 +109,11 @@
     "baseCommission": "FACTURE",
     "statut": "ACTIF",
     "notes": "",
-    "dateCreation": "2026-02-10",
+    "dateCreation": "2026-02-11",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2026-02-10 09:15",
+        "date": "2026-02-11 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       }
@@ -139,11 +139,11 @@
     "baseCommission": "ENCAISSE",
     "statut": "ACTIF",
     "notes": "",
-    "dateCreation": "2026-04-01",
+    "dateCreation": "2026-04-02",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2026-04-01 09:15",
+        "date": "2026-04-02 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       }
@@ -169,11 +169,11 @@
     "baseCommission": "FACTURE",
     "statut": "ACTIF",
     "notes": "",
-    "dateCreation": "2026-05-01",
+    "dateCreation": "2026-05-02",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2026-05-01 09:15",
+        "date": "2026-05-02 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       }
@@ -199,11 +199,11 @@
     "baseCommission": "FACTURE",
     "statut": "ACTIF",
     "notes": "",
-    "dateCreation": "2026-05-21",
+    "dateCreation": "2026-05-22",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2026-05-21 09:15",
+        "date": "2026-05-22 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       }
@@ -229,16 +229,16 @@
     "baseCommission": "ENCAISSE",
     "statut": "SUSPENDU",
     "notes": "",
-    "dateCreation": "2026-06-20",
+    "dateCreation": "2026-06-21",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2026-06-20 09:15",
+        "date": "2026-06-21 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       },
       {
-        "date": "2026-11-07 16:40",
+        "date": "2026-11-08 16:40",
         "user": "Support KuTiWa",
         "action": "Apporteur suspendu - contrat d'agent non renouvelé"
       }
@@ -264,11 +264,11 @@
     "baseCommission": "ENCAISSE",
     "statut": "ACTIF",
     "notes": "",
-    "dateCreation": "2026-07-30",
+    "dateCreation": "2026-07-31",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2026-07-30 09:15",
+        "date": "2026-07-31 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       }
@@ -294,11 +294,11 @@
     "baseCommission": "FACTURE",
     "statut": "ACTIF",
     "notes": "",
-    "dateCreation": "2026-08-29",
+    "dateCreation": "2026-08-30",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2026-08-29 09:15",
+        "date": "2026-08-30 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       }
@@ -324,11 +324,11 @@
     "baseCommission": "FACTURE",
     "statut": "ACTIF",
     "notes": "",
-    "dateCreation": "2026-09-28",
+    "dateCreation": "2026-09-29",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2026-09-28 09:15",
+        "date": "2026-09-29 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       }
@@ -354,11 +354,11 @@
     "baseCommission": "FACTURE",
     "statut": "ACTIF",
     "notes": "",
-    "dateCreation": "2026-10-28",
+    "dateCreation": "2026-10-29",
     "creePar": "Support KuTiWa",
     "historique": [
       {
-        "date": "2026-10-28 09:15",
+        "date": "2026-10-29 09:15",
         "user": "Support KuTiWa",
         "action": "Apporteur d'affaires enregistré"
       }

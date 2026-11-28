@@ -347,10 +347,10 @@
       "groupeIds": []
     },
     "creePar": "Support KuTiWa",
-    "dateCreation": "2025-12-22",
+    "dateCreation": "2025-12-23",
     "historique": [
       {
-        "date": "2025-12-22 09:00",
+        "date": "2025-12-23 09:00",
         "user": "Support KuTiWa",
         "action": "Grille créée"
       }
@@ -449,10 +449,10 @@
       ]
     },
     "creePar": "Support KuTiWa",
-    "dateCreation": "2025-12-22",
+    "dateCreation": "2025-12-23",
     "historique": [
       {
-        "date": "2025-12-22 09:00",
+        "date": "2025-12-23 09:00",
         "user": "Support KuTiWa",
         "action": "Grille créée"
       }
@@ -569,10 +569,10 @@
       "groupeIds": []
     },
     "creePar": "Support KuTiWa",
-    "dateCreation": "2025-12-22",
+    "dateCreation": "2025-12-23",
     "historique": [
       {
-        "date": "2025-12-22 09:00",
+        "date": "2025-12-23 09:00",
         "user": "Support KuTiWa",
         "action": "Grille créée"
       }
@@ -583,8 +583,8 @@
     "nom": "PHARMACIE PACIFIC - contrat 2026",
     "type": "CLIENT",
     "statut": "ACTIVE",
-    "du": "2026-01-01",
-    "au": "2026-12-17"
+    "du": "2026-01-02",
+    "au": "2026-12-18"
   },
   {
     "description": "Courrier bancaire : plis à la pièce (dégressif) en urbain, par tranches en national.",
@@ -691,10 +691,10 @@
       ]
     },
     "creePar": "Support KuTiWa",
-    "dateCreation": "2025-12-22",
+    "dateCreation": "2025-12-23",
     "historique": [
       {
-        "date": "2025-12-22 09:00",
+        "date": "2025-12-23 09:00",
         "user": "Support KuTiWa",
         "action": "Grille créée"
       }
@@ -764,10 +764,10 @@
       "groupeIds": []
     },
     "creePar": "Support KuTiWa",
-    "dateCreation": "2026-11-17",
+    "dateCreation": "2026-11-18",
     "historique": [
       {
-        "date": "2026-11-17 15:20",
+        "date": "2026-11-18 15:20",
         "user": "M. NJOYA",
         "action": "Grille créée (brouillon)"
       }

@@ -9,7 +9,7 @@
     "vehicule": "Moto",
     "statut": "ACTIF",
     "numero": "LIV-DLA-01",
-    "dateCreation": "2026-11-27",
+    "dateCreation": "2026-11-28",
     "creePar": "Support KuTiWa"
   },
   {
@@ -22,7 +22,7 @@
     "vehicule": "Moto",
     "statut": "ACTIF",
     "numero": "LIV-DLA-02",
-    "dateCreation": "2026-11-27",
+    "dateCreation": "2026-11-28",
     "creePar": "Support KuTiWa"
   },
   {
@@ -35,7 +35,7 @@
     "vehicule": "Tricycle",
     "statut": "ACTIF",
     "numero": "LIV-DLA-03",
-    "dateCreation": "2026-11-27",
+    "dateCreation": "2026-11-28",
     "creePar": "Support KuTiWa"
   },
   {
@@ -48,7 +48,7 @@
     "vehicule": "Moto",
     "statut": "ACTIF",
     "numero": "LIV-YDE-01",
-    "dateCreation": "2026-11-27",
+    "dateCreation": "2026-11-28",
     "creePar": "Support KuTiWa"
   },
   {
@@ -61,7 +61,7 @@
     "vehicule": "Fourgonnette (1,5 t)",
     "statut": "ACTIF",
     "numero": "LIV-YDE-02",
-    "dateCreation": "2026-11-27",
+    "dateCreation": "2026-11-28",
     "creePar": "Support KuTiWa"
   },
   {
@@ -74,7 +74,7 @@
     "vehicule": "Moto",
     "statut": "ACTIF",
     "numero": "LIV-BFS-01",
-    "dateCreation": "2026-11-27",
+    "dateCreation": "2026-11-28",
     "creePar": "Support KuTiWa"
   },
   {
@@ -87,7 +87,7 @@
     "vehicule": "Moto",
     "statut": "CONGE",
     "numero": "LIV-GRA-01",
-    "dateCreation": "2026-11-27",
+    "dateCreation": "2026-11-28",
     "creePar": "Support KuTiWa"
   }
 ]

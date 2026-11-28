@@ -7,9 +7,9 @@
     "clientId": 4,
     "description": "Envoi mensuel échantillons",
     "statut": "ENREGISTREE",
-    "dateCreation": "2026-11-24",
+    "dateCreation": "2026-11-25",
     "dateSoumission": null,
-    "dateValidite": "2026-12-26",
+    "dateValidite": "2026-12-27",
     "creePar": "Support KuTiWa",
     "montantHT": 18500,
     "montantTTC": 22061,
@@ -47,7 +47,7 @@
     },
     "historique": [
       {
-        "date": "2026-11-24 11:00",
+        "date": "2026-11-25 11:00",
         "user": "Support KuTiWa",
         "action": "Cotation enregistrée"
       }
@@ -61,16 +61,16 @@
     "clientId": 10,
     "description": "Mise à dispo camion 10 t - inventaire",
     "statut": "SOUMISE",
-    "dateCreation": "2026-11-22",
-    "dateSoumission": "2026-11-24",
-    "dateValidite": "2026-12-24",
+    "dateCreation": "2026-11-23",
+    "dateSoumission": "2026-11-25",
+    "dateValidite": "2026-12-25",
     "creePar": "M. NJOYA",
     "montantHT": 450000,
     "montantTTC": 536625,
     "motifRejet": "",
     "details": {
       "vehicule": "Camion 10 t",
-      "dateDebut": "2026-12-04",
+      "dateDebut": "2026-12-05",
       "nbJours": 2,
       "villeDep": "DOUALA",
       "villeDest": "YAOUNDE",
@@ -81,7 +81,7 @@
     },
     "historique": [
       {
-        "date": "2026-11-22 11:00",
+        "date": "2026-11-23 11:00",
         "user": "Support KuTiWa",
         "action": "Cotation enregistrée"
       }
@@ -95,9 +95,9 @@
     "clientId": 11,
     "description": "Grille 2027 - réseau national",
     "statut": "VALIDEE",
-    "dateCreation": "2026-11-19",
-    "dateSoumission": "2026-11-21",
-    "dateValidite": "2026-12-21",
+    "dateCreation": "2026-11-20",
+    "dateSoumission": "2026-11-22",
+    "dateValidite": "2026-12-22",
     "creePar": "Support KuTiWa",
     "montantHT": 0,
     "montantTTC": 0,
@@ -129,11 +129,11 @@
           "prix": 6000
         }
       ],
-      "dateEffet": "2026-12-27"
+      "dateEffet": "2026-12-28"
     },
     "historique": [
       {
-        "date": "2026-11-19 11:00",
+        "date": "2026-11-20 11:00",
         "user": "Support KuTiWa",
         "action": "Cotation enregistrée"
       }
@@ -147,9 +147,9 @@
     "clientId": 9,
     "description": "Plis confidentiels Yaoundé",
     "statut": "EN_ATTENTE",
-    "dateCreation": "2026-11-21",
-    "dateSoumission": "2026-11-23",
-    "dateValidite": "2026-12-23",
+    "dateCreation": "2026-11-22",
+    "dateSoumission": "2026-11-24",
+    "dateValidite": "2026-12-24",
     "creePar": "M. NJOYA",
     "montantHT": 12000,
     "montantTTC": 14310,
@@ -187,7 +187,7 @@
     },
     "historique": [
       {
-        "date": "2026-11-21 11:00",
+        "date": "2026-11-22 11:00",
         "user": "Support KuTiWa",
         "action": "Cotation enregistrée"
       }
@@ -201,9 +201,9 @@
     "clientId": 5,
     "description": "Cartons promotionnels",
     "statut": "REJETEE",
-    "dateCreation": "2026-11-13",
-    "dateSoumission": "2026-11-15",
-    "dateValidite": "2026-12-15",
+    "dateCreation": "2026-11-14",
+    "dateSoumission": "2026-11-16",
+    "dateValidite": "2026-12-16",
     "creePar": "Support KuTiWa",
     "montantHT": 64000,
     "montantTTC": 76320,
@@ -241,7 +241,7 @@
     },
     "historique": [
       {
-        "date": "2026-11-13 11:00",
+        "date": "2026-11-14 11:00",
         "user": "Support KuTiWa",
         "action": "Cotation enregistrée"
       }
@@ -255,16 +255,16 @@
     "clientId": 1,
     "description": "Fourgonnette journée Douala",
     "statut": "ACCEPTEE",
-    "dateCreation": "2026-11-10",
-    "dateSoumission": "2026-11-12",
-    "dateValidite": "2026-12-12",
+    "dateCreation": "2026-11-11",
+    "dateSoumission": "2026-11-13",
+    "dateValidite": "2026-12-13",
     "creePar": "M. NJOYA",
     "montantHT": 85000,
     "montantTTC": 101363,
     "motifRejet": "",
     "details": {
       "vehicule": "Camion 10 t",
-      "dateDebut": "2026-12-04",
+      "dateDebut": "2026-12-05",
       "nbJours": 2,
       "villeDep": "DOUALA",
       "villeDest": "YAOUNDE",
@@ -275,7 +275,7 @@
     },
     "historique": [
       {
-        "date": "2026-11-10 11:00",
+        "date": "2026-11-11 11:00",
         "user": "Support KuTiWa",
         "action": "Cotation enregistrée"
       }
@@ -289,9 +289,9 @@
     "clientId": 8,
     "description": "Matériel informatique Garoua",
     "statut": "ENREGISTREE",
-    "dateCreation": "2026-11-25",
+    "dateCreation": "2026-11-26",
     "dateSoumission": null,
-    "dateValidite": "2026-12-27",
+    "dateValidite": "2026-12-28",
     "creePar": "Support KuTiWa",
     "montantHT": 42500,
     "montantTTC": 50681,
@@ -329,7 +329,7 @@
     },
     "historique": [
       {
-        "date": "2026-11-25 11:00",
+        "date": "2026-11-26 11:00",
         "user": "Support KuTiWa",
         "action": "Cotation enregistrée"
       }
@@ -343,9 +343,9 @@
     "clientId": 1,
     "description": "Tarifs spéciaux pharmacie",
     "statut": "SOUMISE",
-    "dateCreation": "2026-11-23",
-    "dateSoumission": "2026-11-25",
-    "dateValidite": "2026-12-25",
+    "dateCreation": "2026-11-24",
+    "dateSoumission": "2026-11-26",
+    "dateValidite": "2026-12-26",
     "creePar": "M. NJOYA",
     "montantHT": 0,
     "montantTTC": 0,
@@ -377,11 +377,11 @@
           "prix": 6000
         }
       ],
-      "dateEffet": "2026-12-27"
+      "dateEffet": "2026-12-28"
     },
     "historique": [
       {
-        "date": "2026-11-23 11:00",
+        "date": "2026-11-24 11:00",
         "user": "Support KuTiWa",
         "action": "Cotation enregistrée"
       }
@@ -395,9 +395,9 @@
     "clientId": 7,
     "description": "Retour matériel défectueux",
     "statut": "ANNULEE",
-    "dateCreation": "2026-11-05",
-    "dateSoumission": "2026-11-07",
-    "dateValidite": "2026-12-07",
+    "dateCreation": "2026-11-06",
+    "dateSoumission": "2026-11-08",
+    "dateValidite": "2026-12-08",
     "creePar": "Support KuTiWa",
     "montantHT": 9500,
     "montantTTC": 11329,
@@ -435,7 +435,7 @@
     },
     "historique": [
       {
-        "date": "2026-11-05 11:00",
+        "date": "2026-11-06 11:00",
         "user": "Support KuTiWa",
         "action": "Cotation enregistrée"
       }
@@ -449,9 +449,9 @@
     "description": "Livraison palettes Bafoussam",
     "clientId": 10,
     "statut": "SOUMISE",
-    "dateCreation": "2026-11-25",
-    "dateSoumission": "2026-11-25",
-    "dateValidite": "2026-12-01",
+    "dateCreation": "2026-11-26",
+    "dateSoumission": "2026-11-26",
+    "dateValidite": "2026-12-02",
     "creePar": "M. NJOYA",
     "montantHT": 185000,
     "montantTTC": 220613,
@@ -489,7 +489,7 @@
     },
     "historique": [
       {
-        "date": "2026-11-25 11:00",
+        "date": "2026-11-26 11:00",
         "user": "M. NJOYA",
         "action": "Cotation enregistrée"
       }
@@ -503,9 +503,9 @@
     "description": "Plis urgents Yaoundé - décembre",
     "clientId": 6,
     "statut": "ENREGISTREE",
-    "dateCreation": "2026-11-27",
+    "dateCreation": "2026-11-28",
     "dateSoumission": null,
-    "dateValidite": "2026-12-01",
+    "dateValidite": "2026-12-02",
     "creePar": "M. NJOYA",
     "montantHT": 36000,
     "montantTTC": 42930,
@@ -543,7 +543,7 @@
     },
     "historique": [
       {
-        "date": "2026-11-27 11:00",
+        "date": "2026-11-28 11:00",
         "user": "M. NJOYA",
         "action": "Cotation enregistrée"
       }

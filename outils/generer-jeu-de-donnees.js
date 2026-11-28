@@ -113,7 +113,7 @@ ctx.$ = ctx.jQuery = creerJQuery();
 vm.createContext(ctx);
 [
     "commercial/assets/cx-core.js", "commercial/assets/cx-data.js", "commercial/assets/cx-tarifs.js",
-    "commercial/assets/cx-demo-exploitation.js", "guichet/assets/guichet-commun.js", "operations/assets/ops-commun.js",
+    "commercial/assets/cx-demo-exploitation.js", "guichet/assets/guichet-commun.js", "operations/assets/ops-commun.js", "reclamations/assets/rec-commun.js",
     "maquettes-carnets/assets/carnets-common.js"
 ].forEach(function (f) { vm.runInContext(fs.readFileSync(path.join(RACINE, f), "utf8"), ctx, { filename: f }); });
 

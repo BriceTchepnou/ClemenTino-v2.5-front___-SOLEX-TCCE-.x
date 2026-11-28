@@ -248,3 +248,22 @@ Composant `CX.vues` : `Selecteur` (boutons de vue mémorisés), rendus `cartes`,
 | Opérations › Bordereaux d'expédition | Tableau, cartes, Kanban par statut, calendrier des départs, Gantt départ → arrivée par direction |
 | Commercial › Cotations | Tableau, cartes, Kanban du circuit (enregistrée → acceptée / rejetée) |
 | Guichet › Historique des saisies | Tableau, cartes, Kanban par étape du colis, calendrier des saisies |
+
+## Connexion et accueil (`accueil/`)
+
+| Page | Rôle |
+|---|---|
+| `index.html` (racine) | Point d'entrée des maquettes : redirige vers la connexion |
+| `accueil/connexion.html` | Écran de connexion modernisé : **image historique de l'hippopotame conservée** (recadrée en CSS dans `accueil/assets/connexion-hippopotame.webp`), logo ClemenTino, choix de l'entreprise (charte), identifiant / mot de passe (afficher, majuscules), « Se souvenir de moi », « Mot de passe oublié ? ». Maquette : tout identifiant ouvre une session de démonstration (`sessionStorage cx_session`). `?deconnexion=1` ferme la session. |
+| `accueil/index.html` | Page d'arrivée après connexion : salutation, recherche de colis (tracking), entreprise courante, **accès rapides** (nouvelle expédition, facture, client, bordereau, dépense, tournées, réclamation, suivi), indicateurs du mois (expéditions vs mois précédent, en attente de livraison, livrées, chiffre d'affaires, réclamations ouvertes), activité 14 jours, **À traiter** de l'agence, dernières expéditions. |
+
+En-tête : le logo ClemenTino mène à l'accueil ; le menu utilisateur propose Accueil, Réclamations et **Se déconnecter**.
+**Intégration Symfony** : `connexion.html` = template du firewall (`form_login` : `_username`, `_password`, `_remember_me`, jeton CSRF, `last_error`) ; l'accueil est la `default_target_path`.
+
+## Réclamations (`reclamations/`, menu Contrôle)
+
+`reclamations/index.html[#nouvelle][?rt=RT-…|?facture=FAC-…|?id=ID]` — collection `reclamations` (modèle en tête de `reclamations/assets/rec-commun.js`, `CX.rec`).
+
+- **Liste** : filtres période, type, priorité, agence, assignée à (mes réclamations, non assignées) ; onglets Toutes / En attente / En traitement / Traitée / Abandonnée / En retard ; vues tableau, cartes, Kanban ; indicateurs (ouvertes, urgentes, en retard, traitées et délai moyen, taux de résolution).
+- **Nouvelle réclamation** : 1 · origine (N° de reçu RT ou LT manuel, N° de facture, sans justificatif) avec recherche qui rattache l'expédition / la facture et pré-remplit client, contact et agence ; 2 · qualification (réclamation, plainte, incident, accident ; priorité normale 5 j, prioritaire 48 h, urgente 24 h ; objet, description) ; 3 · prise en charge (agence, assigner à, pièces jointes par glisser-déposer).
+- **Traitement** : affectation / réaffectation, « Je m'en occupe », prise en charge, fil de traitement (commentaires, affectations, changements de statut), **marquer comme traitée** (solution, geste commercial et montant, satisfaction client, client informé), abandon (motif), réouverture. Échéance et retard calculés selon la priorité.

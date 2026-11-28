@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>Accueil - ClemenTino</title>
+
+    <!-- ===== Dépendances (déjà présentes dans le layout Symfony existant) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="../commercial/assets/cx.css">
+    <link rel="stylesheet" href="assets/accueil.css">
+</head>
+<body class="cx-app" data-module="accueil" data-page="accueil">
+
+<div id="cx-header"></div>
+
+<main class="cx-main">
+    <!-- Bandeau d'accueil -->
+    <section class="ac-hero">
+        <div style="position:relative;z-index:1">
+            <div class="ac-hero-date" id="hero-date"></div>
+            <h1 id="hero-titre">Bonjour</h1>
+            <p id="hero-sous"></p>
+            <form class="ac-hero-recherche" id="hero-form" role="search">
+                <i class="fa fa-search"></i>
+                <input type="search" class="form-control" id="hero-q" placeholder="Suivre un colis : N° de reçu (RT), N° de LT manuel, référence…" aria-label="Suivre un colis">
+                <button type="submit" class="cx-btn cx-btn-primary cx-btn-sm">Suivre</button>
+            </form>
+        </div>
+        <div class="ac-hero-soc" id="hero-soc"></div>
+    </section>
+
+    <!-- Accès rapide -->
+    <h2 class="ac-section-titre"><i class="fa fa-rocket"></i> Accès rapide <small>les actions les plus utilisées</small></h2>
+    <div class="ac-tuiles" id="tuiles"></div>
+
+    <!-- Indicateurs -->
+    <div class="cx-kpis" id="kpis"></div>
+
+    <div class="ac-grille">
+        <div class="cx-card">
+            <div class="cx-card-head"><h3 class="cx-card-title"><i class="fa fa-bar-chart"></i> Activité des 14 derniers jours</h3>
+                <div class="ac-legende"><span><i style="background:var(--cx-navy-2)"></i>Expédiées</span><span><i style="background:var(--cx-green)"></i>Livrées</span></div></div>
+            <div class="cx-card-body"><div id="graph"></div></div>
+        </div>
+        <div class="cx-card">
+            <div class="cx-card-head"><h3 class="cx-card-title"><i class="fa fa-tasks"></i> À traiter <small id="todo-agence"></small></h3></div>
+            <div class="cx-card-body" style="padding-top:4px;padding-bottom:6px"><ul class="ac-todo" id="todo"></ul></div>
+        </div>
+    </div>
+
+    <div class="cx-card">
+        <div class="cx-card-head"><div><h3 class="cx-card-title"><i class="fa fa-history"></i> Dernières expéditions</h3></div>
+            <a class="cx-btn cx-btn-ghost cx-btn-sm" href="../guichet/expeditions-liste.html">Tout l'historique <i class="fa fa-angle-right"></i></a></div>
+        <div class="cx-table-wrap"><table class="cx-table"><thead><tr><th>N° reçu</th><th>Date</th><th>Trajet</th><th>Expéditeur → destinataire</th><th class="num">Montant</th><th>Étape</th></tr></thead><tbody id="dernieres"></tbody></table></div>
+    </div>
+
+    <p class="cx-demo-bar">Maquette - données de démonstration stockées dans le navigateur</p>
+</main>
+
+<div id="cx-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+<script src="../commercial/assets/cx-core.js"></script>
+<script src="../commercial/assets/cx-data.js"></script>
+<script src="../commercial/assets/cx-tarifs.js"></script>
+<script src="../commercial/assets/cx-demo-exploitation.js"></script>
+<script src="../guichet/assets/guichet-commun.js"></script>
+<script src="../operations/assets/ops-commun.js"></script>
+<script src="../reclamations/assets/rec-commun.js"></script>
+<script>window.CX_BASE = "../commercial/";</script>
+<script src="../commercial/assets/cx-shell.js"></script>
+<script src="assets/accueil.js"></script>
+</body>
+</html>

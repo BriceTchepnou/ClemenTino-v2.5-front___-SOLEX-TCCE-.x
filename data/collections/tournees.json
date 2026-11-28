@@ -1,7 +1,7 @@
 [
   {
-    "numero": "TRN-261121-01",
-    "date": "2026-11-21",
+    "numero": "TRN-261124-01",
+    "date": "2026-11-24",
     "heure": "08:00",
     "agenceId": 1,
     "ville": "DOUALA",
@@ -14,234 +14,6 @@
     "planningId": 1,
     "zone": "Z1",
     "expeditionIds": [
-      470,
-      471,
-      472
-    ],
-    "statut": "CLOTUREE",
-    "resultats": {
-      "470": {
-        "resultat": "LIVREE",
-        "receveur": "NGASSA Hervé",
-        "heure": "09:55",
-        "decharge": true
-      },
-      "471": {
-        "resultat": "LIVREE",
-        "receveur": "DJOKO Ibrahim",
-        "heure": "10:34",
-        "decharge": true
-      },
-      "472": {
-        "resultat": "LIVREE",
-        "receveur": "MBALLA Esther",
-        "heure": "11:37",
-        "decharge": true
-      }
-    },
-    "creePar": "Dispatch",
-    "dateCreation": "2026-11-21",
-    "historique": [
-      {
-        "date": "2026-11-21 12:00",
-        "user": "Dispatch",
-        "action": "Fiche de livraison clôturée"
-      },
-      {
-        "date": "2026-11-21 08:00",
-        "user": "Dispatch",
-        "action": "Fiche de livraison créée (tournée TOU-261121-01)"
-      }
-    ],
-    "id": 1,
-    "dateCloture": "2026-11-21 12:00"
-  },
-  {
-    "numero": "TRN-261123-01",
-    "date": "2026-11-23",
-    "heure": "08:00",
-    "agenceId": 1,
-    "ville": "DOUALA",
-    "agence": "AKWA",
-    "livreurId": 1,
-    "livreurNom": "TCHOUAMO Rodrigue",
-    "vehicule": "Moto",
-    "matricule": "LT 1818 M",
-    "type": "TOURNEE",
-    "planningId": 2,
-    "zone": "Z1",
-    "expeditionIds": [
-      473,
-      474,
-      475
-    ],
-    "statut": "CLOTUREE",
-    "resultats": {
-      "473": {
-        "resultat": "LIVREE",
-        "receveur": "ABENA Clarisse",
-        "heure": "09:45",
-        "decharge": true
-      },
-      "474": {
-        "resultat": "LIVREE",
-        "receveur": "BELLO Luc",
-        "heure": "10:35",
-        "decharge": true
-      },
-      "475": {
-        "resultat": "LIVREE",
-        "receveur": "FOTSO Mireille",
-        "heure": "11:53",
-        "decharge": true
-      }
-    },
-    "creePar": "Dispatch",
-    "dateCreation": "2026-11-23",
-    "historique": [
-      {
-        "date": "2026-11-23 12:00",
-        "user": "Dispatch",
-        "action": "Fiche de livraison clôturée"
-      },
-      {
-        "date": "2026-11-23 08:00",
-        "user": "Dispatch",
-        "action": "Fiche de livraison créée (tournée TOU-261123-01)"
-      }
-    ],
-    "id": 2,
-    "dateCloture": "2026-11-23 12:00"
-  },
-  {
-    "numero": "TRN-261123-02",
-    "date": "2026-11-23",
-    "heure": "08:30",
-    "agenceId": 1,
-    "ville": "DOUALA",
-    "agence": "AKWA",
-    "livreurId": 2,
-    "livreurNom": "EBOUÉ Patrick",
-    "vehicule": "Moto",
-    "matricule": "LT 5859 M",
-    "type": "TOURNEE",
-    "planningId": 3,
-    "zone": "Z2",
-    "expeditionIds": [
-      476,
-      477,
-      478
-    ],
-    "statut": "CLOTUREE",
-    "resultats": {
-      "476": {
-        "resultat": "LIVREE",
-        "receveur": "ATANGANA Boris",
-        "heure": "09:34",
-        "decharge": true
-      },
-      "477": {
-        "resultat": "LIVREE",
-        "receveur": "EWANE Nadège",
-        "heure": "10:05",
-        "decharge": true
-      },
-      "478": {
-        "resultat": "LIVREE",
-        "receveur": "EKOTTO Clarisse",
-        "heure": "11:03",
-        "decharge": true
-      }
-    },
-    "creePar": "Dispatch",
-    "dateCreation": "2026-11-23",
-    "historique": [
-      {
-        "date": "2026-11-23 13:00",
-        "user": "Dispatch",
-        "action": "Fiche de livraison clôturée"
-      },
-      {
-        "date": "2026-11-23 08:30",
-        "user": "Dispatch",
-        "action": "Fiche de livraison créée (tournée TOU-261123-02)"
-      }
-    ],
-    "id": 3,
-    "dateCloture": "2026-11-23 13:00"
-  },
-  {
-    "numero": "TRN-261124-01",
-    "date": "2026-11-24",
-    "heure": "14:00",
-    "agenceId": 1,
-    "ville": "DOUALA",
-    "agence": "AKWA",
-    "livreurId": 3,
-    "livreurNom": "NDOUMBÉ Cyrille",
-    "vehicule": "Tricycle",
-    "matricule": "LT 404 AF",
-    "type": "TOURNEE",
-    "planningId": 4,
-    "zone": "Z3",
-    "expeditionIds": [
-      479,
-      480,
-      481
-    ],
-    "statut": "CLOTUREE",
-    "resultats": {
-      "479": {
-        "resultat": "LIVREE",
-        "receveur": "TALLA Rose",
-        "heure": "15:09",
-        "decharge": true
-      },
-      "480": {
-        "resultat": "LIVREE",
-        "receveur": "NGASSA Aïcha",
-        "heure": "16:35",
-        "decharge": true
-      },
-      "481": {
-        "resultat": "ECHEC",
-        "motif": "Téléphone injoignable",
-        "suite": "INSTANCE",
-        "heure": "17:45"
-      }
-    },
-    "creePar": "Dispatch",
-    "dateCreation": "2026-11-24",
-    "historique": [
-      {
-        "date": "2026-11-24 18:00",
-        "user": "Dispatch",
-        "action": "Fiche de livraison clôturée"
-      },
-      {
-        "date": "2026-11-24 14:00",
-        "user": "Dispatch",
-        "action": "Fiche de livraison créée (tournée TOU-261124-01)"
-      }
-    ],
-    "id": 4,
-    "dateCloture": "2026-11-24 18:00"
-  },
-  {
-    "numero": "TRN-261125-01",
-    "date": "2026-11-25",
-    "heure": "08:30",
-    "agenceId": 1,
-    "ville": "DOUALA",
-    "agence": "AKWA",
-    "livreurId": 2,
-    "livreurNom": "EBOUÉ Patrick",
-    "vehicule": "Moto",
-    "matricule": "LT 6653 M",
-    "type": "TOURNEE",
-    "planningId": 5,
-    "zone": "Z2",
-    "expeditionIds": [
       482,
       483,
       484
@@ -250,54 +22,54 @@
     "resultats": {
       "482": {
         "resultat": "LIVREE",
-        "receveur": "OUMAROU Sandrine",
-        "heure": "09:58",
+        "receveur": "NGASSA Hervé",
+        "heure": "09:55",
         "decharge": true
       },
       "483": {
         "resultat": "LIVREE",
-        "receveur": "MBALLA Hervé",
-        "heure": "10:32",
+        "receveur": "DJOKO Ibrahim",
+        "heure": "10:34",
         "decharge": true
       },
       "484": {
         "resultat": "LIVREE",
-        "receveur": "ETOGA Clarisse",
-        "heure": "11:47",
+        "receveur": "MBALLA Esther",
+        "heure": "11:37",
         "decharge": true
       }
     },
     "creePar": "Dispatch",
-    "dateCreation": "2026-11-25",
+    "dateCreation": "2026-11-24",
     "historique": [
       {
-        "date": "2026-11-25 13:00",
+        "date": "2026-11-24 12:00",
         "user": "Dispatch",
         "action": "Fiche de livraison clôturée"
       },
       {
-        "date": "2026-11-25 08:30",
+        "date": "2026-11-24 08:00",
         "user": "Dispatch",
-        "action": "Fiche de livraison créée (tournée TOU-261125-01)"
+        "action": "Fiche de livraison créée (tournée TOU-261124-01)"
       }
     ],
-    "id": 5,
-    "dateCloture": "2026-11-25 13:00"
+    "id": 1,
+    "dateCloture": "2026-11-24 12:00"
   },
   {
-    "numero": "TRN-261126-01",
-    "date": "2026-11-26",
-    "heure": "08:00",
+    "numero": "TRN-261124-02",
+    "date": "2026-11-24",
+    "heure": "08:30",
     "agenceId": 1,
     "ville": "DOUALA",
     "agence": "AKWA",
-    "livreurId": 1,
-    "livreurNom": "TCHOUAMO Rodrigue",
+    "livreurId": 2,
+    "livreurNom": "EBOUÉ Patrick",
     "vehicule": "Moto",
-    "matricule": "LT 7401 M",
+    "matricule": "LT 1818 M",
     "type": "TOURNEE",
-    "planningId": 6,
-    "zone": "Z1",
+    "planningId": 2,
+    "zone": "Z2",
     "expeditionIds": [
       485,
       486,
@@ -307,20 +79,134 @@
     "resultats": {
       "485": {
         "resultat": "LIVREE",
-        "receveur": "BIYONG Odile",
-        "heure": "09:06",
+        "receveur": "ABENA Clarisse",
+        "heure": "09:45",
         "decharge": true
       },
       "486": {
         "resultat": "LIVREE",
-        "receveur": "BELLO Esther",
-        "heure": "10:03",
+        "receveur": "BELLO Luc",
+        "heure": "10:35",
         "decharge": true
       },
       "487": {
         "resultat": "LIVREE",
-        "receveur": "ETOGA Aïcha",
-        "heure": "11:16",
+        "receveur": "FOTSO Mireille",
+        "heure": "11:53",
+        "decharge": true
+      }
+    },
+    "creePar": "Dispatch",
+    "dateCreation": "2026-11-24",
+    "historique": [
+      {
+        "date": "2026-11-24 13:00",
+        "user": "Dispatch",
+        "action": "Fiche de livraison clôturée"
+      },
+      {
+        "date": "2026-11-24 08:30",
+        "user": "Dispatch",
+        "action": "Fiche de livraison créée (tournée TOU-261124-02)"
+      }
+    ],
+    "id": 2,
+    "dateCloture": "2026-11-24 13:00"
+  },
+  {
+    "numero": "TRN-261125-01",
+    "date": "2026-11-25",
+    "heure": "14:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "livreurId": 3,
+    "livreurNom": "NDOUMBÉ Cyrille",
+    "vehicule": "Tricycle",
+    "matricule": "LT 585 AF",
+    "type": "TOURNEE",
+    "planningId": 3,
+    "zone": "Z3",
+    "expeditionIds": [
+      488,
+      489,
+      490
+    ],
+    "statut": "CLOTUREE",
+    "resultats": {
+      "488": {
+        "resultat": "LIVREE",
+        "receveur": "ATANGANA Boris",
+        "heure": "15:34",
+        "decharge": true
+      },
+      "489": {
+        "resultat": "LIVREE",
+        "receveur": "EWANE Nadège",
+        "heure": "16:05",
+        "decharge": true
+      },
+      "490": {
+        "resultat": "ECHEC",
+        "motif": "Téléphone injoignable",
+        "suite": "INSTANCE",
+        "heure": "17:03"
+      }
+    },
+    "creePar": "Dispatch",
+    "dateCreation": "2026-11-25",
+    "historique": [
+      {
+        "date": "2026-11-25 18:00",
+        "user": "Dispatch",
+        "action": "Fiche de livraison clôturée"
+      },
+      {
+        "date": "2026-11-25 14:00",
+        "user": "Dispatch",
+        "action": "Fiche de livraison créée (tournée TOU-261125-01)"
+      }
+    ],
+    "id": 3,
+    "dateCloture": "2026-11-25 18:00"
+  },
+  {
+    "numero": "TRN-261126-01",
+    "date": "2026-11-26",
+    "heure": "08:30",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "livreurId": 2,
+    "livreurNom": "EBOUÉ Patrick",
+    "vehicule": "Moto",
+    "matricule": "LT 4047 M",
+    "type": "TOURNEE",
+    "planningId": 4,
+    "zone": "Z2",
+    "expeditionIds": [
+      491,
+      492,
+      493
+    ],
+    "statut": "CLOTUREE",
+    "resultats": {
+      "491": {
+        "resultat": "LIVREE",
+        "receveur": "TALLA Rose",
+        "heure": "09:09",
+        "decharge": true
+      },
+      "492": {
+        "resultat": "LIVREE",
+        "receveur": "NGASSA Aïcha",
+        "heure": "10:35",
+        "decharge": true
+      },
+      "493": {
+        "resultat": "LIVREE",
+        "receveur": "ESSOMBA Mireille",
+        "heure": "11:45",
         "decharge": true
       }
     },
@@ -328,18 +214,18 @@
     "dateCreation": "2026-11-26",
     "historique": [
       {
-        "date": "2026-11-26 12:00",
+        "date": "2026-11-26 13:00",
         "user": "Dispatch",
         "action": "Fiche de livraison clôturée"
       },
       {
-        "date": "2026-11-26 08:00",
+        "date": "2026-11-26 08:30",
         "user": "Dispatch",
         "action": "Fiche de livraison créée (tournée TOU-261126-01)"
       }
     ],
-    "id": 6,
-    "dateCloture": "2026-11-26 12:00"
+    "id": 4,
+    "dateCloture": "2026-11-26 13:00"
   },
   {
     "numero": "TRN-261127-01",
@@ -351,31 +237,88 @@
     "livreurId": 1,
     "livreurNom": "TCHOUAMO Rodrigue",
     "vehicule": "Moto",
-    "matricule": "LT 6386 M",
+    "matricule": "LT 6653 M",
     "type": "TOURNEE",
-    "planningId": 8,
+    "planningId": 5,
     "zone": "Z1",
     "expeditionIds": [
-      488,
-      489,
-      490
+      494,
+      495,
+      496
     ],
-    "statut": "EN_COURS",
-    "resultats": {},
+    "statut": "CLOTUREE",
+    "resultats": {
+      "494": {
+        "resultat": "LIVREE",
+        "receveur": "OUMAROU Sandrine",
+        "heure": "09:58",
+        "decharge": true
+      },
+      "495": {
+        "resultat": "LIVREE",
+        "receveur": "MBALLA Hervé",
+        "heure": "10:32",
+        "decharge": true
+      },
+      "496": {
+        "resultat": "LIVREE",
+        "receveur": "ETOGA Clarisse",
+        "heure": "11:47",
+        "decharge": true
+      }
+    },
     "creePar": "Dispatch",
     "dateCreation": "2026-11-27",
     "historique": [
+      {
+        "date": "2026-11-27 12:00",
+        "user": "Dispatch",
+        "action": "Fiche de livraison clôturée"
+      },
       {
         "date": "2026-11-27 08:00",
         "user": "Dispatch",
         "action": "Fiche de livraison créée (tournée TOU-261127-01)"
       }
     ],
-    "id": 7
+    "id": 5,
+    "dateCloture": "2026-11-27 12:00"
   },
   {
-    "numero": "TRN-261127-02",
-    "date": "2026-11-27",
+    "numero": "TRN-261128-01",
+    "date": "2026-11-28",
+    "heure": "08:00",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "livreurId": 1,
+    "livreurNom": "TCHOUAMO Rodrigue",
+    "vehicule": "Moto",
+    "matricule": "LT 7401 M",
+    "type": "TOURNEE",
+    "planningId": 7,
+    "zone": "Z1",
+    "expeditionIds": [
+      497,
+      498,
+      499
+    ],
+    "statut": "EN_COURS",
+    "resultats": {},
+    "creePar": "Dispatch",
+    "dateCreation": "2026-11-28",
+    "historique": [
+      {
+        "date": "2026-11-28 08:00",
+        "user": "Dispatch",
+        "action": "Fiche de livraison créée (tournée TOU-261128-01)"
+      }
+    ],
+    "id": 6
+  },
+  {
+    "numero": "TRN-261128-02",
+    "date": "2026-11-28",
     "heure": "08:30",
     "agenceId": 1,
     "ville": "DOUALA",
@@ -383,30 +326,30 @@
     "livreurId": 2,
     "livreurNom": "EBOUÉ Patrick",
     "vehicule": "Moto",
-    "matricule": "LT 8691 M",
+    "matricule": "LT 5312 M",
     "type": "TOURNEE",
-    "planningId": 9,
+    "planningId": 8,
     "zone": "Z2",
     "expeditionIds": [
-      491,
-      492
+      500,
+      501
     ],
     "statut": "EN_COURS",
     "resultats": {},
     "creePar": "Dispatch",
-    "dateCreation": "2026-11-27",
+    "dateCreation": "2026-11-28",
     "historique": [
       {
-        "date": "2026-11-27 08:30",
+        "date": "2026-11-28 08:30",
         "user": "Dispatch",
-        "action": "Fiche de livraison créée (tournée TOU-261127-02)"
+        "action": "Fiche de livraison créée (tournée TOU-261128-02)"
       }
     ],
-    "id": 8
+    "id": 7
   },
   {
-    "numero": "TRN-261127-03",
-    "date": "2026-11-27",
+    "numero": "TRN-261128-03",
+    "date": "2026-11-28",
     "heure": "11:15",
     "agenceId": 1,
     "ville": "DOUALA",
@@ -414,188 +357,30 @@
     "livreurId": 3,
     "livreurNom": "NDOUMBÉ Cyrille",
     "vehicule": "Tricycle",
-    "matricule": "LT 531 AF",
+    "matricule": "LT 788 AF",
     "type": "EXPRESS",
     "planningId": null,
     "zone": "Z1",
     "expeditionIds": [
-      493,
-      494
+      502,
+      503
     ],
     "statut": "EN_COURS",
     "resultats": {},
     "creePar": "Dispatch",
-    "dateCreation": "2026-11-27",
+    "dateCreation": "2026-11-28",
     "historique": [
       {
-        "date": "2026-11-27 11:15",
+        "date": "2026-11-28 11:15",
         "user": "Dispatch",
         "action": "Fiche de livraison créée (express)"
       }
     ],
-    "id": 9
-  },
-  {
-    "numero": "TRN-261122-01",
-    "date": "2026-11-22",
-    "heure": "08:30",
-    "agenceId": 11,
-    "ville": "BUEA",
-    "agence": "MOLYKO",
-    "livreurId": null,
-    "livreurNom": "Coursier externe",
-    "vehicule": "",
-    "expeditionIds": [
-      402
-    ],
-    "statut": "EN_COURS",
-    "resultats": {},
-    "creePar": "Dispatch",
-    "dateCreation": "2026-11-22",
-    "historique": [
-      {
-        "date": "2026-11-22 08:30",
-        "user": "Dispatch",
-        "action": "Tournée constituée"
-      }
-    ],
-    "id": 10
-  },
-  {
-    "numero": "TRN-261122-02",
-    "date": "2026-11-22",
-    "heure": "08:30",
-    "agenceId": 7,
-    "ville": "BAFOUSSAM",
-    "agence": "CENTRE",
-    "livreurId": 6,
-    "livreurNom": "FEUDJIO Hugues",
-    "vehicule": "Moto",
-    "expeditionIds": [
-      396
-    ],
-    "statut": "EN_COURS",
-    "resultats": {},
-    "creePar": "Dispatch",
-    "dateCreation": "2026-11-22",
-    "historique": [
-      {
-        "date": "2026-11-22 08:30",
-        "user": "Dispatch",
-        "action": "Tournée constituée"
-      }
-    ],
-    "id": 11
+    "id": 8
   },
   {
     "numero": "TRN-261125-02",
     "date": "2026-11-25",
-    "heure": "08:30",
-    "agenceId": 4,
-    "ville": "YAOUNDE",
-    "agence": "CENTRALE",
-    "livreurId": 4,
-    "livreurNom": "MVOGO Arsène",
-    "vehicule": "Moto",
-    "expeditionIds": [
-      408,
-      412,
-      415
-    ],
-    "statut": "EN_COURS",
-    "resultats": {},
-    "creePar": "Dispatch",
-    "dateCreation": "2026-11-25",
-    "historique": [
-      {
-        "date": "2026-11-25 08:30",
-        "user": "Dispatch",
-        "action": "Tournée constituée"
-      }
-    ],
-    "id": 12
-  },
-  {
-    "numero": "TRN-261125-03",
-    "date": "2026-11-25",
-    "heure": "08:30",
-    "agenceId": 7,
-    "ville": "BAFOUSSAM",
-    "agence": "CENTRE",
-    "livreurId": 6,
-    "livreurNom": "FEUDJIO Hugues",
-    "vehicule": "Moto",
-    "expeditionIds": [
-      417
-    ],
-    "statut": "EN_COURS",
-    "resultats": {},
-    "creePar": "Dispatch",
-    "dateCreation": "2026-11-25",
-    "historique": [
-      {
-        "date": "2026-11-25 08:30",
-        "user": "Dispatch",
-        "action": "Tournée constituée"
-      }
-    ],
-    "id": 13
-  },
-  {
-    "numero": "TRN-261126-02",
-    "date": "2026-11-26",
-    "heure": "08:30",
-    "agenceId": 10,
-    "ville": "LIMBE",
-    "agence": "CENTRE",
-    "livreurId": null,
-    "livreurNom": "Coursier externe",
-    "vehicule": "",
-    "expeditionIds": [
-      413
-    ],
-    "statut": "EN_COURS",
-    "resultats": {},
-    "creePar": "Dispatch",
-    "dateCreation": "2026-11-26",
-    "historique": [
-      {
-        "date": "2026-11-26 08:30",
-        "user": "Dispatch",
-        "action": "Tournée constituée"
-      }
-    ],
-    "id": 14
-  },
-  {
-    "numero": "TRN-261127-04",
-    "date": "2026-11-27",
-    "heure": "08:30",
-    "agenceId": 10,
-    "ville": "LIMBE",
-    "agence": "CENTRE",
-    "livreurId": null,
-    "livreurNom": "Coursier externe",
-    "vehicule": "",
-    "expeditionIds": [
-      421
-    ],
-    "statut": "EN_COURS",
-    "resultats": {},
-    "creePar": "Dispatch",
-    "dateCreation": "2026-11-27",
-    "historique": [
-      {
-        "date": "2026-11-27 08:30",
-        "user": "Dispatch",
-        "action": "Tournée constituée"
-      }
-    ],
-    "id": 15
-  },
-  {
-    "numero": "TRN-261127-05",
-    "date": "2026-11-27",
     "heure": "08:30",
     "agenceId": 9,
     "ville": "KRIBI",
@@ -604,7 +389,33 @@
     "livreurNom": "Coursier externe",
     "vehicule": "",
     "expeditionIds": [
-      420
+      419
+    ],
+    "statut": "EN_COURS",
+    "resultats": {},
+    "creePar": "Dispatch",
+    "dateCreation": "2026-11-25",
+    "historique": [
+      {
+        "date": "2026-11-25 08:30",
+        "user": "Dispatch",
+        "action": "Tournée constituée"
+      }
+    ],
+    "id": 9
+  },
+  {
+    "numero": "TRN-261127-02",
+    "date": "2026-11-27",
+    "heure": "08:30",
+    "agenceId": 1,
+    "ville": "DOUALA",
+    "agence": "AKWA",
+    "livreurId": 1,
+    "livreurNom": "TCHOUAMO Rodrigue",
+    "vehicule": "Moto",
+    "expeditionIds": [
+      434
     ],
     "statut": "EN_COURS",
     "resultats": {},
@@ -617,6 +428,58 @@
         "action": "Tournée constituée"
       }
     ],
-    "id": 16
+    "id": 10
+  },
+  {
+    "numero": "TRN-261127-03",
+    "date": "2026-11-27",
+    "heure": "08:30",
+    "agenceId": 4,
+    "ville": "YAOUNDE",
+    "agence": "CENTRALE",
+    "livreurId": 4,
+    "livreurNom": "MVOGO Arsène",
+    "vehicule": "Moto",
+    "expeditionIds": [
+      430
+    ],
+    "statut": "EN_COURS",
+    "resultats": {},
+    "creePar": "Dispatch",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 08:30",
+        "user": "Dispatch",
+        "action": "Tournée constituée"
+      }
+    ],
+    "id": 11
+  },
+  {
+    "numero": "TRN-261128-04",
+    "date": "2026-11-28",
+    "heure": "08:30",
+    "agenceId": 4,
+    "ville": "YAOUNDE",
+    "agence": "CENTRALE",
+    "livreurId": 4,
+    "livreurNom": "MVOGO Arsène",
+    "vehicule": "Moto",
+    "expeditionIds": [
+      432
+    ],
+    "statut": "EN_COURS",
+    "resultats": {},
+    "creePar": "Dispatch",
+    "dateCreation": "2026-11-28",
+    "historique": [
+      {
+        "date": "2026-11-28 08:30",
+        "user": "Dispatch",
+        "action": "Tournée constituée"
+      }
+    ],
+    "id": 12
   }
 ]

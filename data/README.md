@@ -11,7 +11,7 @@ exportées en JSON pour servir de référence (fixtures, migrations, tests côt�
 |---|---|
 | `jeu-de-donnees.json` | Store complet de l'application (clé `localStorage` `cx_commercial_demo_v1`) |
 | `carnets.json` | Carnets de lettres de transport (clé `ct_carnets_demo_cx_v1`) |
-| `collections/<nom>.json` | Une collection par fichier : `clients`, `expeditions`, `factures`, `cotations`, `tarifaires`, `groupesClients`, `contrats`, `apporteurs`, `commissions`, `livreurs`, `bordereaux`, `tournees` (fiches de livraison), `plannings` (tournées planifiées), `preenregistrements`, `meta` |
+| `collections/<nom>.json` | Une collection par fichier : `clients`, `expeditions`, `factures`, `cotations`, `tarifaires`, `groupesClients`, `contrats`, `apporteurs`, `commissions`, `livreurs`, `bordereaux`, `tournees` (fiches de livraison), `plannings` (tournées planifiées), `preenregistrements`, `reclamations`, `meta` |
 | `referentiels.json` | Villes, agences, zones de livraison, natures de colis, secteurs, modes de paiement, véhicules, entreprises (Solex, Touristique Logistique) |
 | `index.json` | Date de génération, période couverte, volumes par collection |
 

@@ -1,13 +1,13 @@
 [
   {
-    "numero": "YDE112600091",
-    "date": "2026-11-26",
+    "numero": "YDE112700091",
+    "date": "2026-11-27",
     "heure": "17:30",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-27 06:15",
-    "arriveePrevue": "2026-11-28 08:00",
+    "departPrevu": "2026-11-28 06:15",
+    "arriveePrevue": "2026-11-29 08:00",
     "annule": false,
     "agenceDepId": 4,
     "villeDep": "YAOUNDE",
@@ -25,26 +25,26 @@
     },
     "scelle": "SC-052041",
     "expeditionIds": [
-      443,
-      444,
-      445
+      455,
+      456,
+      457
     ],
     "statut": "PARTI",
-    "dateDepart": "2026-11-27 06:15",
+    "dateDepart": "2026-11-28 06:15",
     "dateArrivee": null,
     "recus": [],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-26",
+    "dateCreation": "2026-11-27",
     "historique": [
       {
-        "date": "2026-11-27 06:15",
+        "date": "2026-11-28 06:15",
         "user": "Quai départ",
         "action": "Bordereau parti"
       },
       {
-        "date": "2026-11-26 17:30",
+        "date": "2026-11-27 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué"
       }
@@ -52,14 +52,14 @@
     "id": 1
   },
   {
-    "numero": "BFS112700092",
-    "date": "2026-11-27",
+    "numero": "BFS112800092",
+    "date": "2026-11-28",
     "heure": "17:30",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-27 18:20",
-    "arriveePrevue": "2026-11-28 08:00",
+    "departPrevu": "2026-11-28 18:20",
+    "arriveePrevue": "2026-11-29 08:00",
     "annule": false,
     "agenceDepId": 7,
     "villeDep": "BAFOUSSAM",
@@ -77,26 +77,26 @@
     },
     "scelle": "SC-052082",
     "expeditionIds": [
-      446,
-      447,
-      448
+      458,
+      459,
+      460
     ],
     "statut": "PARTI",
-    "dateDepart": "2026-11-27 18:20",
+    "dateDepart": "2026-11-28 18:20",
     "dateArrivee": null,
     "recus": [],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-27",
+    "dateCreation": "2026-11-28",
     "historique": [
       {
-        "date": "2026-11-27 18:20",
+        "date": "2026-11-28 18:20",
         "user": "Quai départ",
         "action": "Bordereau parti"
       },
       {
-        "date": "2026-11-27 17:30",
+        "date": "2026-11-28 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué"
       }
@@ -104,21 +104,21 @@
     "id": 2
   },
   {
-    "numero": "AKW111500001",
-    "date": "2026-11-15",
+    "numero": "MOL111600001",
+    "date": "2026-11-16",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-15 18:00",
-    "arriveePrevue": "2026-11-16 15:00",
+    "departPrevu": "2026-11-16 18:00",
+    "arriveePrevue": "2026-11-17 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 1,
-    "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 7,
-    "villeDest": "BAFOUSSAM",
-    "agenceDest": "CENTRE",
+    "agenceDepId": 11,
+    "villeDep": "BUEA",
+    "agenceDep": "MOLYKO",
+    "agenceDestId": 4,
+    "villeDest": "YAOUNDE",
+    "agenceDest": "CENTRALE",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
       "immatriculation": "LT 452 AB"
@@ -129,22 +129,22 @@
     },
     "scelle": "SC-041037",
     "expeditionIds": [
-      1
+      390
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-16 06:15",
-    "dateArrivee": "2026-11-16 15:40",
-    "dateCloture": "2026-11-16 16:05",
+    "dateDepart": "2026-11-17 06:15",
+    "dateArrivee": "2026-11-17 15:40",
+    "dateCloture": "2026-11-17 16:05",
     "recus": [
-      1
+      390
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-15",
+    "dateCreation": "2026-11-16",
     "historique": [
       {
-        "date": "2026-11-15 17:30",
+        "date": "2026-11-16 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -152,20 +152,20 @@
     "id": 3
   },
   {
-    "numero": "YDE111500001",
-    "date": "2026-11-15",
+    "numero": "AKW111600001",
+    "date": "2026-11-16",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-15 18:00",
-    "arriveePrevue": "2026-11-16 15:00",
+    "departPrevu": "2026-11-16 18:00",
+    "arriveePrevue": "2026-11-17 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 4,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "CENTRALE",
-    "agenceDestId": 10,
-    "villeDest": "LIMBE",
+    "agenceDepId": 1,
+    "villeDep": "DOUALA",
+    "agenceDep": "AKWA",
+    "agenceDestId": 7,
+    "villeDest": "BAFOUSSAM",
     "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
@@ -177,22 +177,22 @@
     },
     "scelle": "SC-041074",
     "expeditionIds": [
-      69
+      1
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-16 06:15",
-    "dateArrivee": "2026-11-16 15:40",
-    "dateCloture": "2026-11-16 16:05",
+    "dateDepart": "2026-11-17 06:15",
+    "dateArrivee": "2026-11-17 15:40",
+    "dateCloture": "2026-11-17 16:05",
     "recus": [
-      69
+      1
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-15",
+    "dateCreation": "2026-11-16",
     "historique": [
       {
-        "date": "2026-11-15 17:30",
+        "date": "2026-11-16 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -200,20 +200,20 @@
     "id": 4
   },
   {
-    "numero": "YDE111500002",
-    "date": "2026-11-15",
+    "numero": "YDE111600001",
+    "date": "2026-11-16",
     "moyen": "ROUTE",
     "numeroTransport": "LT 907 HC",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-15 18:00",
-    "arriveePrevue": "2026-11-16 15:00",
+    "departPrevu": "2026-11-16 18:00",
+    "arriveePrevue": "2026-11-17 15:00",
     "annule": false,
     "heure": "17:30",
     "agenceDepId": 4,
     "villeDep": "YAOUNDE",
     "agenceDep": "CENTRALE",
-    "agenceDestId": 7,
-    "villeDest": "BAFOUSSAM",
+    "agenceDestId": 10,
+    "villeDest": "LIMBE",
     "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Camion 10 t",
@@ -225,22 +225,22 @@
     },
     "scelle": "SC-041111",
     "expeditionIds": [
-      27
+      69
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-16 06:15",
-    "dateArrivee": "2026-11-16 15:40",
-    "dateCloture": "2026-11-16 16:05",
+    "dateDepart": "2026-11-17 06:15",
+    "dateArrivee": "2026-11-17 15:40",
+    "dateCloture": "2026-11-17 16:05",
     "recus": [
-      27
+      69
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-15",
+    "dateCreation": "2026-11-16",
     "historique": [
       {
-        "date": "2026-11-15 17:30",
+        "date": "2026-11-16 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -248,7 +248,7 @@
     "id": 5
   },
   {
-    "numero": "AKW111600001",
+    "numero": "YDE111600002",
     "date": "2026-11-16",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
@@ -257,12 +257,12 @@
     "arriveePrevue": "2026-11-17 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 1,
-    "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 4,
-    "villeDest": "YAOUNDE",
-    "agenceDest": "CENTRALE",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 7,
+    "villeDest": "BAFOUSSAM",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "OU 334 DA"
@@ -273,14 +273,14 @@
     },
     "scelle": "SC-041148",
     "expeditionIds": [
-      32
+      27
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-17 06:15",
     "dateArrivee": "2026-11-17 15:40",
     "dateCloture": "2026-11-17 16:05",
     "recus": [
-      32
+      27
     ],
     "ecarts": [],
     "observations": "",
@@ -296,7 +296,7 @@
     "id": 6
   },
   {
-    "numero": "YDE111600001",
+    "numero": "MVA111600001",
     "date": "2026-11-16",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
@@ -305,12 +305,12 @@
     "arriveePrevue": "2026-11-17 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 4,
+    "agenceDepId": 6,
     "villeDep": "YAOUNDE",
-    "agenceDep": "CENTRALE",
-    "agenceDestId": 7,
-    "villeDest": "BAFOUSSAM",
-    "agenceDest": "CENTRE",
+    "agenceDep": "MVAN",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
       "immatriculation": "LT 452 AB"
@@ -321,14 +321,14 @@
     },
     "scelle": "SC-041185",
     "expeditionIds": [
-      375
+      388
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-17 06:15",
     "dateArrivee": "2026-11-17 15:40",
     "dateCloture": "2026-11-17 16:05",
     "recus": [
-      375
+      388
     ],
     "ecarts": [],
     "observations": "",
@@ -344,58 +344,10 @@
     "id": 7
   },
   {
-    "numero": "GRA111600001",
-    "date": "2026-11-16",
-    "moyen": "ROUTE",
-    "numeroTransport": "CE 218 KF",
-    "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-16 18:00",
-    "arriveePrevue": "2026-11-17 15:00",
-    "annule": false,
-    "heure": "17:30",
-    "agenceDepId": 8,
-    "villeDep": "GAROUA",
-    "agenceDep": "CENTRE",
-    "agenceDestId": 10,
-    "villeDest": "LIMBE",
-    "agenceDest": "CENTRE",
-    "vehicule": {
-      "type": "Fourgonnette (1,5 t)",
-      "immatriculation": "CE 218 KF"
-    },
-    "chauffeur": {
-      "nom": "TCHATCHOUA Eric",
-      "tel": "677 52 08 31"
-    },
-    "scelle": "SC-041222",
-    "expeditionIds": [
-      376
-    ],
-    "statut": "CLOTURE",
-    "dateDepart": "2026-11-17 06:15",
-    "dateArrivee": "2026-11-17 15:40",
-    "dateCloture": "2026-11-17 16:05",
-    "recus": [
-      376
-    ],
-    "ecarts": [],
-    "observations": "",
-    "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-16",
-    "historique": [
-      {
-        "date": "2026-11-16 17:30",
-        "user": "Chef d'agence",
-        "action": "Bordereau constitué (groupage du soir)"
-      }
-    ],
-    "id": 8
-  },
-  {
     "numero": "AKW111700001",
     "date": "2026-11-17",
     "moyen": "ROUTE",
-    "numeroTransport": "LT 907 HC",
+    "numeroTransport": "CE 218 KF",
     "transporteur": "Flotte SOLEX EXPRESS",
     "departPrevu": "2026-11-17 18:00",
     "arriveePrevue": "2026-11-18 15:00",
@@ -408,6 +360,54 @@
     "villeDest": "BUEA",
     "agenceDest": "MOLYKO",
     "vehicule": {
+      "type": "Fourgonnette (1,5 t)",
+      "immatriculation": "CE 218 KF"
+    },
+    "chauffeur": {
+      "nom": "TCHATCHOUA Eric",
+      "tel": "677 52 08 31"
+    },
+    "scelle": "SC-041222",
+    "expeditionIds": [
+      395
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-18 06:15",
+    "dateArrivee": "2026-11-18 15:40",
+    "dateCloture": "2026-11-18 16:05",
+    "recus": [
+      395
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-17",
+    "historique": [
+      {
+        "date": "2026-11-17 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 8
+  },
+  {
+    "numero": "AKW111700002",
+    "date": "2026-11-17",
+    "moyen": "ROUTE",
+    "numeroTransport": "LT 907 HC",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-17 18:00",
+    "arriveePrevue": "2026-11-18 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 1,
+    "villeDep": "DOUALA",
+    "agenceDep": "AKWA",
+    "agenceDestId": 4,
+    "villeDest": "YAOUNDE",
+    "agenceDest": "CENTRALE",
+    "vehicule": {
       "type": "Camion 10 t",
       "immatriculation": "LT 907 HC"
     },
@@ -417,14 +417,14 @@
     },
     "scelle": "SC-041259",
     "expeditionIds": [
-      380
+      32
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-18 06:15",
     "dateArrivee": "2026-11-18 15:40",
     "dateCloture": "2026-11-18 16:05",
     "recus": [
-      380
+      32
     ],
     "ecarts": [],
     "observations": "",
@@ -440,7 +440,7 @@
     "id": 9
   },
   {
-    "numero": "YDE111700001",
+    "numero": "BON111700001",
     "date": "2026-11-17",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
@@ -449,11 +449,11 @@
     "arriveePrevue": "2026-11-18 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 4,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "CENTRALE",
-    "agenceDestId": 7,
-    "villeDest": "BAFOUSSAM",
+    "agenceDepId": 2,
+    "villeDep": "DOUALA",
+    "agenceDep": "BONANJO",
+    "agenceDestId": 10,
+    "villeDest": "LIMBE",
     "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
@@ -465,14 +465,14 @@
     },
     "scelle": "SC-041296",
     "expeditionIds": [
-      386
+      392
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-18 06:15",
     "dateArrivee": "2026-11-18 15:40",
     "dateCloture": "2026-11-18 16:05",
     "recus": [
-      386
+      392
     ],
     "ecarts": [],
     "observations": "",
@@ -488,7 +488,7 @@
     "id": 10
   },
   {
-    "numero": "BAS111700001",
+    "numero": "YDE111700001",
     "date": "2026-11-17",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
@@ -497,11 +497,11 @@
     "arriveePrevue": "2026-11-18 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 5,
+    "agenceDepId": 4,
     "villeDep": "YAOUNDE",
-    "agenceDep": "BASTOS",
-    "agenceDestId": 8,
-    "villeDest": "GAROUA",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 7,
+    "villeDest": "BAFOUSSAM",
     "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
@@ -513,14 +513,14 @@
     },
     "scelle": "SC-041333",
     "expeditionIds": [
-      383
+      394
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-18 06:15",
     "dateArrivee": "2026-11-18 15:40",
     "dateCloture": "2026-11-18 16:05",
     "recus": [
-      383
+      394
     ],
     "ecarts": [],
     "observations": "",
@@ -548,9 +548,9 @@
     "agenceDepId": 11,
     "villeDep": "BUEA",
     "agenceDep": "MOLYKO",
-    "agenceDestId": 4,
-    "villeDest": "YAOUNDE",
-    "agenceDest": "CENTRALE",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "CE 218 KF"
@@ -561,14 +561,14 @@
     },
     "scelle": "SC-041370",
     "expeditionIds": [
-      387
+      401
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-19 06:15",
     "dateArrivee": "2026-11-19 15:40",
     "dateCloture": "2026-11-19 16:05",
     "recus": [
-      387
+      401
     ],
     "ecarts": [],
     "observations": "",
@@ -596,9 +596,9 @@
     "agenceDepId": 1,
     "villeDep": "DOUALA",
     "agenceDep": "AKWA",
-    "agenceDestId": 4,
-    "villeDest": "YAOUNDE",
-    "agenceDest": "CENTRALE",
+    "agenceDestId": 12,
+    "villeDest": "NGAOUNDERE",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Camion 10 t",
       "immatriculation": "LT 907 HC"
@@ -609,14 +609,14 @@
     },
     "scelle": "SC-041407",
     "expeditionIds": [
-      33
+      402
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-19 06:15",
     "dateArrivee": "2026-11-19 15:40",
     "dateCloture": "2026-11-19 16:05",
     "recus": [
-      33
+      402
     ],
     "ecarts": [],
     "observations": "",
@@ -632,7 +632,7 @@
     "id": 13
   },
   {
-    "numero": "AKW111800002",
+    "numero": "BON111800001",
     "date": "2026-11-18",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
@@ -641,11 +641,11 @@
     "arriveePrevue": "2026-11-19 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 1,
+    "agenceDepId": 3,
     "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 9,
-    "villeDest": "KRIBI",
+    "agenceDep": "BONABERI",
+    "agenceDestId": 10,
+    "villeDest": "LIMBE",
     "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
@@ -657,14 +657,14 @@
     },
     "scelle": "SC-041444",
     "expeditionIds": [
-      389
+      400
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-19 06:15",
     "dateArrivee": "2026-11-19 15:40",
     "dateCloture": "2026-11-19 16:05",
     "recus": [
-      389
+      400
     ],
     "ecarts": [],
     "observations": "",
@@ -680,21 +680,21 @@
     "id": 14
   },
   {
-    "numero": "AKW111900001",
-    "date": "2026-11-19",
+    "numero": "MVA111800001",
+    "date": "2026-11-18",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-19 18:00",
-    "arriveePrevue": "2026-11-20 15:00",
+    "departPrevu": "2026-11-18 18:00",
+    "arriveePrevue": "2026-11-19 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 1,
-    "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 10,
-    "villeDest": "LIMBE",
-    "agenceDest": "CENTRE",
+    "agenceDepId": 6,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "MVAN",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
       "immatriculation": "LT 452 AB"
@@ -705,22 +705,22 @@
     },
     "scelle": "SC-041481",
     "expeditionIds": [
-      394
+      399
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-20 06:15",
-    "dateArrivee": "2026-11-20 15:40",
-    "dateCloture": "2026-11-20 16:05",
+    "dateDepart": "2026-11-19 06:15",
+    "dateArrivee": "2026-11-19 15:40",
+    "dateCloture": "2026-11-19 16:05",
     "recus": [
-      394
+      399
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-19",
+    "dateCreation": "2026-11-18",
     "historique": [
       {
-        "date": "2026-11-19 17:30",
+        "date": "2026-11-18 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -728,20 +728,20 @@
     "id": 15
   },
   {
-    "numero": "AKW111900002",
-    "date": "2026-11-19",
+    "numero": "MVA111800002",
+    "date": "2026-11-18",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-19 18:00",
-    "arriveePrevue": "2026-11-20 15:00",
+    "departPrevu": "2026-11-18 18:00",
+    "arriveePrevue": "2026-11-19 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 1,
-    "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 8,
-    "villeDest": "GAROUA",
+    "agenceDepId": 6,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "MVAN",
+    "agenceDestId": 10,
+    "villeDest": "LIMBE",
     "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
@@ -753,22 +753,22 @@
     },
     "scelle": "SC-041518",
     "expeditionIds": [
-      10
+      396
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-20 06:15",
-    "dateArrivee": "2026-11-20 15:40",
-    "dateCloture": "2026-11-20 16:05",
+    "dateDepart": "2026-11-19 06:15",
+    "dateArrivee": "2026-11-19 15:40",
+    "dateCloture": "2026-11-19 16:05",
     "recus": [
-      10
+      396
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-19",
+    "dateCreation": "2026-11-18",
     "historique": [
       {
-        "date": "2026-11-19 17:30",
+        "date": "2026-11-18 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -776,7 +776,7 @@
     "id": 16
   },
   {
-    "numero": "YDE111900001",
+    "numero": "AKW111900001",
     "date": "2026-11-19",
     "moyen": "ROUTE",
     "numeroTransport": "LT 907 HC",
@@ -785,12 +785,12 @@
     "arriveePrevue": "2026-11-20 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 4,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "CENTRALE",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDepId": 1,
+    "villeDep": "DOUALA",
+    "agenceDep": "AKWA",
+    "agenceDestId": 4,
+    "villeDest": "YAOUNDE",
+    "agenceDest": "CENTRALE",
     "vehicule": {
       "type": "Camion 10 t",
       "immatriculation": "LT 907 HC"
@@ -801,14 +801,14 @@
     },
     "scelle": "SC-041555",
     "expeditionIds": [
-      470
+      33
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-20 06:15",
     "dateArrivee": "2026-11-20 15:40",
     "dateCloture": "2026-11-20 16:05",
     "recus": [
-      470
+      33
     ],
     "ecarts": [],
     "observations": "",
@@ -824,7 +824,7 @@
     "id": 17
   },
   {
-    "numero": "BAS111900001",
+    "numero": "AKW111900002",
     "date": "2026-11-19",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
@@ -833,12 +833,12 @@
     "arriveePrevue": "2026-11-20 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 5,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "BASTOS",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDepId": 1,
+    "villeDep": "DOUALA",
+    "agenceDep": "AKWA",
+    "agenceDestId": 7,
+    "villeDest": "BAFOUSSAM",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "OU 334 DA"
@@ -849,16 +849,14 @@
     },
     "scelle": "SC-041592",
     "expeditionIds": [
-      395,
-      471
+      405
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-20 06:15",
     "dateArrivee": "2026-11-20 15:40",
     "dateCloture": "2026-11-20 16:05",
     "recus": [
-      395,
-      471
+      405
     ],
     "ecarts": [],
     "observations": "",
@@ -874,7 +872,7 @@
     "id": 18
   },
   {
-    "numero": "BFS111900001",
+    "numero": "BON111900001",
     "date": "2026-11-19",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
@@ -883,12 +881,12 @@
     "arriveePrevue": "2026-11-20 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 7,
-    "villeDep": "BAFOUSSAM",
-    "agenceDep": "CENTRE",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDepId": 2,
+    "villeDep": "DOUALA",
+    "agenceDep": "BONANJO",
+    "agenceDestId": 10,
+    "villeDest": "LIMBE",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
       "immatriculation": "LT 452 AB"
@@ -899,14 +897,14 @@
     },
     "scelle": "SC-041629",
     "expeditionIds": [
-      472
+      408
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-20 06:15",
     "dateArrivee": "2026-11-20 15:40",
     "dateCloture": "2026-11-20 16:05",
     "recus": [
-      472
+      408
     ],
     "ecarts": [],
     "observations": "",
@@ -922,7 +920,7 @@
     "id": 19
   },
   {
-    "numero": "BFS111900002",
+    "numero": "BON111900002",
     "date": "2026-11-19",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
@@ -931,9 +929,9 @@
     "arriveePrevue": "2026-11-20 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 7,
-    "villeDep": "BAFOUSSAM",
-    "agenceDep": "CENTRE",
+    "agenceDepId": 2,
+    "villeDep": "DOUALA",
+    "agenceDep": "BONANJO",
     "agenceDestId": 4,
     "villeDest": "YAOUNDE",
     "agenceDest": "CENTRALE",
@@ -947,14 +945,14 @@
     },
     "scelle": "SC-041666",
     "expeditionIds": [
-      393
+      407
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-20 06:15",
     "dateArrivee": "2026-11-20 15:40",
     "dateCloture": "2026-11-20 16:05",
     "recus": [
-      393
+      407
     ],
     "ecarts": [],
     "observations": "",
@@ -970,13 +968,397 @@
     "id": 20
   },
   {
+    "numero": "YDE111900001",
+    "date": "2026-11-19",
+    "moyen": "ROUTE",
+    "numeroTransport": "LT 907 HC",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-19 18:00",
+    "arriveePrevue": "2026-11-20 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 8,
+    "villeDest": "GAROUA",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Camion 10 t",
+      "immatriculation": "LT 907 HC"
+    },
+    "chauffeur": {
+      "nom": "ABOUBAKAR Moussa",
+      "tel": "655 90 12 64"
+    },
+    "scelle": "SC-041703",
+    "expeditionIds": [
+      403
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-20 06:15",
+    "dateArrivee": "2026-11-20 15:40",
+    "dateCloture": "2026-11-20 16:05",
+    "recus": [
+      403
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-19",
+    "historique": [
+      {
+        "date": "2026-11-19 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 21
+  },
+  {
+    "numero": "BAS111900001",
+    "date": "2026-11-19",
+    "moyen": "ROUTE",
+    "numeroTransport": "OU 334 DA",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-19 18:00",
+    "arriveePrevue": "2026-11-20 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 5,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "BASTOS",
+    "agenceDestId": 8,
+    "villeDest": "GAROUA",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Fourgonnette (1,5 t)",
+      "immatriculation": "OU 334 DA"
+    },
+    "chauffeur": {
+      "nom": "NGUEMA Fabrice",
+      "tel": "690 23 77 15"
+    },
+    "scelle": "SC-041740",
+    "expeditionIds": [
+      409
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-20 06:15",
+    "dateArrivee": "2026-11-20 15:40",
+    "dateCloture": "2026-11-20 16:05",
+    "recus": [
+      409
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-19",
+    "historique": [
+      {
+        "date": "2026-11-19 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 22
+  },
+  {
     "numero": "AKW112000001",
+    "date": "2026-11-20",
+    "moyen": "ROUTE",
+    "numeroTransport": "LT 452 AB",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-20 18:00",
+    "arriveePrevue": "2026-11-21 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 1,
+    "villeDep": "DOUALA",
+    "agenceDep": "AKWA",
+    "agenceDestId": 8,
+    "villeDest": "GAROUA",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Camionnette (3,5 t)",
+      "immatriculation": "LT 452 AB"
+    },
+    "chauffeur": {
+      "nom": "MBIDA Joseph",
+      "tel": "699 11 45 78"
+    },
+    "scelle": "SC-041777",
+    "expeditionIds": [
+      10
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-21 06:15",
+    "dateArrivee": "2026-11-21 15:40",
+    "dateCloture": "2026-11-21 16:05",
+    "recus": [
+      10
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-20",
+    "historique": [
+      {
+        "date": "2026-11-20 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 23
+  },
+  {
+    "numero": "AKW112000002",
+    "date": "2026-11-20",
+    "moyen": "ROUTE",
+    "numeroTransport": "CE 218 KF",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-20 18:00",
+    "arriveePrevue": "2026-11-21 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 1,
+    "villeDep": "DOUALA",
+    "agenceDep": "AKWA",
+    "agenceDestId": 9,
+    "villeDest": "KRIBI",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Fourgonnette (1,5 t)",
+      "immatriculation": "CE 218 KF"
+    },
+    "chauffeur": {
+      "nom": "TCHATCHOUA Eric",
+      "tel": "677 52 08 31"
+    },
+    "scelle": "SC-041814",
+    "expeditionIds": [
+      412
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-21 06:15",
+    "dateArrivee": "2026-11-21 15:40",
+    "dateCloture": "2026-11-21 16:05",
+    "recus": [
+      412
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-20",
+    "historique": [
+      {
+        "date": "2026-11-20 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 24
+  },
+  {
+    "numero": "YDE112000001",
     "date": "2026-11-20",
     "moyen": "ROUTE",
     "numeroTransport": "LT 907 HC",
     "transporteur": "Flotte SOLEX EXPRESS",
     "departPrevu": "2026-11-20 18:00",
     "arriveePrevue": "2026-11-21 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
+    "vehicule": {
+      "type": "Camion 10 t",
+      "immatriculation": "LT 907 HC"
+    },
+    "chauffeur": {
+      "nom": "ABOUBAKAR Moussa",
+      "tel": "655 90 12 64"
+    },
+    "scelle": "SC-041851",
+    "expeditionIds": [
+      413
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-21 06:15",
+    "dateArrivee": "2026-11-21 15:40",
+    "dateCloture": "2026-11-21 16:05",
+    "recus": [
+      413
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-20",
+    "historique": [
+      {
+        "date": "2026-11-20 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 25
+  },
+  {
+    "numero": "YDE112000002",
+    "date": "2026-11-20",
+    "moyen": "ROUTE",
+    "numeroTransport": "OU 334 DA",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-20 18:00",
+    "arriveePrevue": "2026-11-21 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 8,
+    "villeDest": "GAROUA",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Fourgonnette (1,5 t)",
+      "immatriculation": "OU 334 DA"
+    },
+    "chauffeur": {
+      "nom": "NGUEMA Fabrice",
+      "tel": "690 23 77 15"
+    },
+    "scelle": "SC-041888",
+    "expeditionIds": [
+      411
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-21 06:15",
+    "dateArrivee": "2026-11-21 15:40",
+    "dateCloture": "2026-11-21 16:05",
+    "recus": [
+      411
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-20",
+    "historique": [
+      {
+        "date": "2026-11-20 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 26
+  },
+  {
+    "numero": "MVA112000001",
+    "date": "2026-11-20",
+    "moyen": "ROUTE",
+    "numeroTransport": "LT 452 AB",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-20 18:00",
+    "arriveePrevue": "2026-11-21 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 6,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "MVAN",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
+    "vehicule": {
+      "type": "Camionnette (3,5 t)",
+      "immatriculation": "LT 452 AB"
+    },
+    "chauffeur": {
+      "nom": "MBIDA Joseph",
+      "tel": "699 11 45 78"
+    },
+    "scelle": "SC-041925",
+    "expeditionIds": [
+      410
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-21 06:15",
+    "dateArrivee": "2026-11-21 15:40",
+    "dateCloture": "2026-11-21 16:05",
+    "recus": [
+      410
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-20",
+    "historique": [
+      {
+        "date": "2026-11-20 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 27
+  },
+  {
+    "numero": "BFS112000001",
+    "date": "2026-11-20",
+    "moyen": "ROUTE",
+    "numeroTransport": "CE 218 KF",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-20 18:00",
+    "arriveePrevue": "2026-11-21 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 7,
+    "villeDep": "BAFOUSSAM",
+    "agenceDep": "CENTRE",
+    "agenceDestId": 9,
+    "villeDest": "KRIBI",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Fourgonnette (1,5 t)",
+      "immatriculation": "CE 218 KF"
+    },
+    "chauffeur": {
+      "nom": "TCHATCHOUA Eric",
+      "tel": "677 52 08 31"
+    },
+    "scelle": "SC-041962",
+    "expeditionIds": [
+      414
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-21 06:15",
+    "dateArrivee": "2026-11-21 15:40",
+    "dateCloture": "2026-11-21 16:05",
+    "recus": [
+      414
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-20",
+    "historique": [
+      {
+        "date": "2026-11-20 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 28
+  },
+  {
+    "numero": "AKW112100001",
+    "date": "2026-11-21",
+    "moyen": "ROUTE",
+    "numeroTransport": "LT 907 HC",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-21 18:00",
+    "arriveePrevue": "2026-11-22 15:00",
     "annule": false,
     "heure": "17:30",
     "agenceDepId": 1,
@@ -993,402 +1375,16 @@
       "nom": "ABOUBAKAR Moussa",
       "tel": "655 90 12 64"
     },
-    "scelle": "SC-041703",
-    "expeditionIds": [
-      59
-    ],
-    "statut": "CLOTURE",
-    "dateDepart": "2026-11-21 06:15",
-    "dateArrivee": "2026-11-21 15:40",
-    "dateCloture": "2026-11-21 16:05",
-    "recus": [
-      59
-    ],
-    "ecarts": [],
-    "observations": "",
-    "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-20",
-    "historique": [
-      {
-        "date": "2026-11-20 17:30",
-        "user": "Chef d'agence",
-        "action": "Bordereau constitué (groupage du soir)"
-      }
-    ],
-    "id": 21
-  },
-  {
-    "numero": "AKW112000002",
-    "date": "2026-11-20",
-    "moyen": "ROUTE",
-    "numeroTransport": "OU 334 DA",
-    "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-20 18:00",
-    "arriveePrevue": "2026-11-21 15:00",
-    "annule": false,
-    "heure": "17:30",
-    "agenceDepId": 1,
-    "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 11,
-    "villeDest": "BUEA",
-    "agenceDest": "MOLYKO",
-    "vehicule": {
-      "type": "Fourgonnette (1,5 t)",
-      "immatriculation": "OU 334 DA"
-    },
-    "chauffeur": {
-      "nom": "NGUEMA Fabrice",
-      "tel": "690 23 77 15"
-    },
-    "scelle": "SC-041740",
-    "expeditionIds": [
-      402
-    ],
-    "statut": "CLOTURE",
-    "dateDepart": "2026-11-21 06:15",
-    "dateArrivee": "2026-11-21 15:40",
-    "dateCloture": "2026-11-21 16:05",
-    "recus": [
-      402
-    ],
-    "ecarts": [],
-    "observations": "",
-    "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-20",
-    "historique": [
-      {
-        "date": "2026-11-20 17:30",
-        "user": "Chef d'agence",
-        "action": "Bordereau constitué (groupage du soir)"
-      }
-    ],
-    "id": 22
-  },
-  {
-    "numero": "AKW112000003",
-    "date": "2026-11-20",
-    "moyen": "ROUTE",
-    "numeroTransport": "LT 452 AB",
-    "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-20 18:00",
-    "arriveePrevue": "2026-11-21 15:00",
-    "annule": false,
-    "heure": "17:30",
-    "agenceDepId": 1,
-    "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 7,
-    "villeDest": "BAFOUSSAM",
-    "agenceDest": "CENTRE",
-    "vehicule": {
-      "type": "Camionnette (3,5 t)",
-      "immatriculation": "LT 452 AB"
-    },
-    "chauffeur": {
-      "nom": "MBIDA Joseph",
-      "tel": "699 11 45 78"
-    },
-    "scelle": "SC-041777",
-    "expeditionIds": [
-      19
-    ],
-    "statut": "CLOTURE",
-    "dateDepart": "2026-11-21 06:15",
-    "dateArrivee": "2026-11-21 15:40",
-    "dateCloture": "2026-11-21 16:05",
-    "recus": [
-      19
-    ],
-    "ecarts": [],
-    "observations": "",
-    "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-20",
-    "historique": [
-      {
-        "date": "2026-11-20 17:30",
-        "user": "Chef d'agence",
-        "action": "Bordereau constitué (groupage du soir)"
-      }
-    ],
-    "id": 23
-  },
-  {
-    "numero": "YDE112000001",
-    "date": "2026-11-20",
-    "moyen": "ROUTE",
-    "numeroTransport": "CE 218 KF",
-    "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-20 18:00",
-    "arriveePrevue": "2026-11-21 15:00",
-    "annule": false,
-    "heure": "17:30",
-    "agenceDepId": 4,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "CENTRALE",
-    "agenceDestId": 7,
-    "villeDest": "BAFOUSSAM",
-    "agenceDest": "CENTRE",
-    "vehicule": {
-      "type": "Fourgonnette (1,5 t)",
-      "immatriculation": "CE 218 KF"
-    },
-    "chauffeur": {
-      "nom": "TCHATCHOUA Eric",
-      "tel": "677 52 08 31"
-    },
-    "scelle": "SC-041814",
-    "expeditionIds": [
-      396
-    ],
-    "statut": "CLOTURE",
-    "dateDepart": "2026-11-21 06:15",
-    "dateArrivee": "2026-11-21 15:40",
-    "dateCloture": "2026-11-21 16:05",
-    "recus": [
-      396
-    ],
-    "ecarts": [],
-    "observations": "",
-    "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-20",
-    "historique": [
-      {
-        "date": "2026-11-20 17:30",
-        "user": "Chef d'agence",
-        "action": "Bordereau constitué (groupage du soir)"
-      }
-    ],
-    "id": 24
-  },
-  {
-    "numero": "GRA112000001",
-    "date": "2026-11-20",
-    "moyen": "ROUTE",
-    "numeroTransport": "LT 907 HC",
-    "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-20 18:00",
-    "arriveePrevue": "2026-11-21 15:00",
-    "annule": false,
-    "heure": "17:30",
-    "agenceDepId": 8,
-    "villeDep": "GAROUA",
-    "agenceDep": "CENTRE",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
-    "vehicule": {
-      "type": "Camion 10 t",
-      "immatriculation": "LT 907 HC"
-    },
-    "chauffeur": {
-      "nom": "ABOUBAKAR Moussa",
-      "tel": "655 90 12 64"
-    },
-    "scelle": "SC-041851",
-    "expeditionIds": [
-      469
-    ],
-    "statut": "CLOTURE",
-    "dateDepart": "2026-11-21 06:15",
-    "dateArrivee": "2026-11-21 15:40",
-    "dateCloture": "2026-11-21 16:05",
-    "recus": [
-      469
-    ],
-    "ecarts": [],
-    "observations": "",
-    "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-20",
-    "historique": [
-      {
-        "date": "2026-11-20 17:30",
-        "user": "Chef d'agence",
-        "action": "Bordereau constitué (groupage du soir)"
-      }
-    ],
-    "id": 25
-  },
-  {
-    "numero": "BON112100001",
-    "date": "2026-11-21",
-    "moyen": "ROUTE",
-    "numeroTransport": "OU 334 DA",
-    "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-21 18:00",
-    "arriveePrevue": "2026-11-22 15:00",
-    "annule": false,
-    "heure": "17:30",
-    "agenceDepId": 2,
-    "villeDep": "DOUALA",
-    "agenceDep": "BONANJO",
-    "agenceDestId": 8,
-    "villeDest": "GAROUA",
-    "agenceDest": "CENTRE",
-    "vehicule": {
-      "type": "Fourgonnette (1,5 t)",
-      "immatriculation": "OU 334 DA"
-    },
-    "chauffeur": {
-      "nom": "NGUEMA Fabrice",
-      "tel": "690 23 77 15"
-    },
-    "scelle": "SC-041888",
-    "expeditionIds": [
-      403
-    ],
-    "statut": "CLOTURE",
-    "dateDepart": "2026-11-22 06:15",
-    "dateArrivee": "2026-11-22 15:40",
-    "dateCloture": "2026-11-22 16:05",
-    "recus": [
-      403
-    ],
-    "ecarts": [],
-    "observations": "",
-    "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-21",
-    "historique": [
-      {
-        "date": "2026-11-21 17:30",
-        "user": "Chef d'agence",
-        "action": "Bordereau constitué (groupage du soir)"
-      }
-    ],
-    "id": 26
-  },
-  {
-    "numero": "YDE112100001",
-    "date": "2026-11-21",
-    "moyen": "ROUTE",
-    "numeroTransport": "LT 452 AB",
-    "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-21 18:00",
-    "arriveePrevue": "2026-11-22 15:00",
-    "annule": false,
-    "heure": "17:30",
-    "agenceDepId": 4,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "CENTRALE",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
-    "vehicule": {
-      "type": "Camionnette (3,5 t)",
-      "immatriculation": "LT 452 AB"
-    },
-    "chauffeur": {
-      "nom": "MBIDA Joseph",
-      "tel": "699 11 45 78"
-    },
-    "scelle": "SC-041925",
-    "expeditionIds": [
-      26,
-      477
-    ],
-    "statut": "CLOTURE",
-    "dateDepart": "2026-11-22 06:15",
-    "dateArrivee": "2026-11-22 15:40",
-    "dateCloture": "2026-11-22 16:05",
-    "recus": [
-      26,
-      477
-    ],
-    "ecarts": [],
-    "observations": "",
-    "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-21",
-    "historique": [
-      {
-        "date": "2026-11-21 17:30",
-        "user": "Chef d'agence",
-        "action": "Bordereau constitué (groupage du soir)"
-      }
-    ],
-    "id": 27
-  },
-  {
-    "numero": "YDE112100002",
-    "date": "2026-11-21",
-    "moyen": "ROUTE",
-    "numeroTransport": "CE 218 KF",
-    "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-21 18:00",
-    "arriveePrevue": "2026-11-22 15:00",
-    "annule": false,
-    "heure": "17:30",
-    "agenceDepId": 4,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "CENTRALE",
-    "agenceDestId": 9,
-    "villeDest": "KRIBI",
-    "agenceDest": "CENTRE",
-    "vehicule": {
-      "type": "Fourgonnette (1,5 t)",
-      "immatriculation": "CE 218 KF"
-    },
-    "chauffeur": {
-      "nom": "TCHATCHOUA Eric",
-      "tel": "677 52 08 31"
-    },
-    "scelle": "SC-041962",
-    "expeditionIds": [
-      68
-    ],
-    "statut": "CLOTURE",
-    "dateDepart": "2026-11-22 06:15",
-    "dateArrivee": "2026-11-22 15:40",
-    "dateCloture": "2026-11-22 16:05",
-    "recus": [
-      68
-    ],
-    "ecarts": [],
-    "observations": "",
-    "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-21",
-    "historique": [
-      {
-        "date": "2026-11-21 17:30",
-        "user": "Chef d'agence",
-        "action": "Bordereau constitué (groupage du soir)"
-      }
-    ],
-    "id": 28
-  },
-  {
-    "numero": "BAS112100001",
-    "date": "2026-11-21",
-    "moyen": "ROUTE",
-    "numeroTransport": "LT 907 HC",
-    "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-21 18:00",
-    "arriveePrevue": "2026-11-22 15:00",
-    "annule": false,
-    "heure": "17:30",
-    "agenceDepId": 5,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "BASTOS",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
-    "vehicule": {
-      "type": "Camion 10 t",
-      "immatriculation": "LT 907 HC"
-    },
-    "chauffeur": {
-      "nom": "ABOUBAKAR Moussa",
-      "tel": "655 90 12 64"
-    },
     "scelle": "SC-041999",
     "expeditionIds": [
-      474
+      59
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-22 06:15",
     "dateArrivee": "2026-11-22 15:40",
     "dateCloture": "2026-11-22 16:05",
     "recus": [
-      474
+      59
     ],
     "ecarts": [],
     "observations": "",
@@ -1404,7 +1400,7 @@
     "id": 29
   },
   {
-    "numero": "BFS112100001",
+    "numero": "AKW112100002",
     "date": "2026-11-21",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
@@ -1413,12 +1409,12 @@
     "arriveePrevue": "2026-11-22 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 7,
-    "villeDep": "BAFOUSSAM",
-    "agenceDep": "CENTRE",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDepId": 1,
+    "villeDep": "DOUALA",
+    "agenceDep": "AKWA",
+    "agenceDestId": 7,
+    "villeDest": "BAFOUSSAM",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "OU 334 DA"
@@ -1429,14 +1425,14 @@
     },
     "scelle": "SC-042036",
     "expeditionIds": [
-      476
+      19
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-22 06:15",
     "dateArrivee": "2026-11-22 15:40",
     "dateCloture": "2026-11-22 16:05",
     "recus": [
-      476
+      19
     ],
     "ecarts": [],
     "observations": "",
@@ -1452,7 +1448,7 @@
     "id": 30
   },
   {
-    "numero": "GRA112100001",
+    "numero": "BON112100001",
     "date": "2026-11-21",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
@@ -1461,12 +1457,12 @@
     "arriveePrevue": "2026-11-22 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 8,
-    "villeDep": "GAROUA",
-    "agenceDep": "CENTRE",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDepId": 2,
+    "villeDep": "DOUALA",
+    "agenceDep": "BONANJO",
+    "agenceDestId": 10,
+    "villeDest": "LIMBE",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
       "immatriculation": "LT 452 AB"
@@ -1477,14 +1473,14 @@
     },
     "scelle": "SC-042073",
     "expeditionIds": [
-      475
+      416
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-22 06:15",
     "dateArrivee": "2026-11-22 15:40",
     "dateCloture": "2026-11-22 16:05",
     "recus": [
-      475
+      416
     ],
     "ecarts": [],
     "observations": "",
@@ -1500,21 +1496,21 @@
     "id": 31
   },
   {
-    "numero": "AKW112200001",
-    "date": "2026-11-22",
+    "numero": "GRA112100001",
+    "date": "2026-11-21",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-22 18:00",
-    "arriveePrevue": "2026-11-23 15:00",
+    "departPrevu": "2026-11-21 18:00",
+    "arriveePrevue": "2026-11-22 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 1,
-    "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 12,
-    "villeDest": "NGAOUNDERE",
-    "agenceDest": "CENTRE",
+    "agenceDepId": 8,
+    "villeDep": "GAROUA",
+    "agenceDep": "CENTRE",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "CE 218 KF"
@@ -1525,24 +1521,22 @@
     },
     "scelle": "SC-042110",
     "expeditionIds": [
-      31,
-      42
+      481
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-23 06:15",
-    "dateArrivee": "2026-11-23 15:40",
-    "dateCloture": "2026-11-23 16:05",
+    "dateDepart": "2026-11-22 06:15",
+    "dateArrivee": "2026-11-22 15:40",
+    "dateCloture": "2026-11-22 16:05",
     "recus": [
-      31,
-      42
+      481
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-22",
+    "dateCreation": "2026-11-21",
     "historique": [
       {
-        "date": "2026-11-22 17:30",
+        "date": "2026-11-21 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -1575,14 +1569,16 @@
     },
     "scelle": "SC-042147",
     "expeditionIds": [
-      480
+      26,
+      482
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-23 06:15",
     "dateArrivee": "2026-11-23 15:40",
     "dateCloture": "2026-11-23 16:05",
     "recus": [
-      480
+      26,
+      482
     ],
     "ecarts": [],
     "observations": "",
@@ -1598,7 +1594,7 @@
     "id": 33
   },
   {
-    "numero": "BFS112200001",
+    "numero": "YDE112200002",
     "date": "2026-11-22",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
@@ -1607,12 +1603,12 @@
     "arriveePrevue": "2026-11-23 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 7,
-    "villeDep": "BAFOUSSAM",
-    "agenceDep": "CENTRE",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 9,
+    "villeDest": "KRIBI",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "OU 334 DA"
@@ -1623,16 +1619,14 @@
     },
     "scelle": "SC-042184",
     "expeditionIds": [
-      468,
-      481
+      68
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-23 06:15",
     "dateArrivee": "2026-11-23 15:40",
     "dateCloture": "2026-11-23 16:05",
     "recus": [
-      468,
-      481
+      68
     ],
     "ecarts": [],
     "observations": "",
@@ -1648,7 +1642,7 @@
     "id": 34
   },
   {
-    "numero": "GRA112200001",
+    "numero": "BAS112200001",
     "date": "2026-11-22",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
@@ -1657,9 +1651,9 @@
     "arriveePrevue": "2026-11-23 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 8,
-    "villeDep": "GAROUA",
-    "agenceDep": "CENTRE",
+    "agenceDepId": 5,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "BASTOS",
     "agenceDestId": 1,
     "villeDest": "DOUALA",
     "agenceDest": "AKWA",
@@ -1673,14 +1667,16 @@
     },
     "scelle": "SC-042221",
     "expeditionIds": [
-      479
+      483,
+      486
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-23 06:15",
     "dateArrivee": "2026-11-23 15:40",
     "dateCloture": "2026-11-23 16:05",
     "recus": [
-      479
+      483,
+      486
     ],
     "ecarts": [],
     "observations": "",
@@ -1696,21 +1692,21 @@
     "id": 35
   },
   {
-    "numero": "MOL112300001",
-    "date": "2026-11-23",
+    "numero": "BFS112200001",
+    "date": "2026-11-22",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-23 18:00",
-    "arriveePrevue": "2026-11-24 15:00",
+    "departPrevu": "2026-11-22 18:00",
+    "arriveePrevue": "2026-11-23 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 11,
-    "villeDep": "BUEA",
-    "agenceDep": "MOLYKO",
-    "agenceDestId": 4,
-    "villeDest": "YAOUNDE",
-    "agenceDest": "CENTRALE",
+    "agenceDepId": 7,
+    "villeDep": "BAFOUSSAM",
+    "agenceDep": "CENTRE",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "CE 218 KF"
@@ -1721,22 +1717,22 @@
     },
     "scelle": "SC-042258",
     "expeditionIds": [
-      407
+      484
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-24 06:15",
-    "dateArrivee": "2026-11-24 15:40",
-    "dateCloture": "2026-11-24 16:05",
+    "dateDepart": "2026-11-23 06:15",
+    "dateArrivee": "2026-11-23 15:40",
+    "dateCloture": "2026-11-23 16:05",
     "recus": [
-      407
+      484
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-23",
+    "dateCreation": "2026-11-22",
     "historique": [
       {
-        "date": "2026-11-23 17:30",
+        "date": "2026-11-22 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -1744,21 +1740,21 @@
     "id": 36
   },
   {
-    "numero": "AKW112300001",
-    "date": "2026-11-23",
+    "numero": "GRA112200001",
+    "date": "2026-11-22",
     "moyen": "ROUTE",
     "numeroTransport": "LT 907 HC",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-23 18:00",
-    "arriveePrevue": "2026-11-24 15:00",
+    "departPrevu": "2026-11-22 18:00",
+    "arriveePrevue": "2026-11-23 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 1,
-    "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 4,
-    "villeDest": "YAOUNDE",
-    "agenceDest": "CENTRALE",
+    "agenceDepId": 8,
+    "villeDep": "GAROUA",
+    "agenceDep": "CENTRE",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Camion 10 t",
       "immatriculation": "LT 907 HC"
@@ -1769,22 +1765,22 @@
     },
     "scelle": "SC-042295",
     "expeditionIds": [
-      50
+      487
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-24 06:15",
-    "dateArrivee": "2026-11-24 15:40",
-    "dateCloture": "2026-11-24 16:05",
+    "dateDepart": "2026-11-23 06:15",
+    "dateArrivee": "2026-11-23 15:40",
+    "dateCloture": "2026-11-23 16:05",
     "recus": [
-      50
+      487
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-23",
+    "dateCreation": "2026-11-22",
     "historique": [
       {
-        "date": "2026-11-23 17:30",
+        "date": "2026-11-22 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -1792,7 +1788,7 @@
     "id": 37
   },
   {
-    "numero": "BON112300001",
+    "numero": "AKW112300001",
     "date": "2026-11-23",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
@@ -1801,12 +1797,12 @@
     "arriveePrevue": "2026-11-24 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 2,
+    "agenceDepId": 1,
     "villeDep": "DOUALA",
-    "agenceDep": "BONANJO",
-    "agenceDestId": 4,
-    "villeDest": "YAOUNDE",
-    "agenceDest": "CENTRALE",
+    "agenceDep": "AKWA",
+    "agenceDestId": 12,
+    "villeDest": "NGAOUNDERE",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "OU 334 DA"
@@ -1817,14 +1813,16 @@
     },
     "scelle": "SC-042332",
     "expeditionIds": [
-      410
+      31,
+      42
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-24 06:15",
     "dateArrivee": "2026-11-24 15:40",
     "dateCloture": "2026-11-24 16:05",
     "recus": [
-      410
+      31,
+      42
     ],
     "ecarts": [],
     "observations": "",
@@ -1840,7 +1838,7 @@
     "id": 38
   },
   {
-    "numero": "YDE112300001",
+    "numero": "AKW112300002",
     "date": "2026-11-23",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
@@ -1849,12 +1847,12 @@
     "arriveePrevue": "2026-11-24 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 4,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "CENTRALE",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDepId": 1,
+    "villeDep": "DOUALA",
+    "agenceDep": "AKWA",
+    "agenceDestId": 4,
+    "villeDest": "YAOUNDE",
+    "agenceDest": "CENTRALE",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
       "immatriculation": "LT 452 AB"
@@ -1865,14 +1863,14 @@
     },
     "scelle": "SC-042369",
     "expeditionIds": [
-      405
+      420
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-24 06:15",
     "dateArrivee": "2026-11-24 15:40",
     "dateCloture": "2026-11-24 16:05",
     "recus": [
-      405
+      420
     ],
     "ecarts": [],
     "observations": "",
@@ -1888,7 +1886,7 @@
     "id": 39
   },
   {
-    "numero": "BAS112300001",
+    "numero": "AKW112300003",
     "date": "2026-11-23",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
@@ -1897,12 +1895,12 @@
     "arriveePrevue": "2026-11-24 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 5,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "BASTOS",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDepId": 1,
+    "villeDep": "DOUALA",
+    "agenceDep": "AKWA",
+    "agenceDestId": 9,
+    "villeDest": "KRIBI",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "CE 218 KF"
@@ -1913,14 +1911,14 @@
     },
     "scelle": "SC-042406",
     "expeditionIds": [
-      484
+      419
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-24 06:15",
     "dateArrivee": "2026-11-24 15:40",
     "dateCloture": "2026-11-24 16:05",
     "recus": [
-      484
+      419
     ],
     "ecarts": [],
     "observations": "",
@@ -1936,7 +1934,7 @@
     "id": 40
   },
   {
-    "numero": "BFS112300001",
+    "numero": "YDE112300001",
     "date": "2026-11-23",
     "moyen": "ROUTE",
     "numeroTransport": "LT 907 HC",
@@ -1945,12 +1943,12 @@
     "arriveePrevue": "2026-11-24 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 7,
-    "villeDep": "BAFOUSSAM",
-    "agenceDep": "CENTRE",
-    "agenceDestId": 12,
-    "villeDest": "NGAOUNDERE",
-    "agenceDest": "CENTRE",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Camion 10 t",
       "immatriculation": "LT 907 HC"
@@ -1961,14 +1959,14 @@
     },
     "scelle": "SC-042443",
     "expeditionIds": [
-      409
+      489
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-24 06:15",
     "dateArrivee": "2026-11-24 15:40",
     "dateCloture": "2026-11-24 16:05",
     "recus": [
-      409
+      489
     ],
     "ecarts": [],
     "observations": "",
@@ -1984,7 +1982,7 @@
     "id": 41
   },
   {
-    "numero": "BFS112300002",
+    "numero": "BAS112300001",
     "date": "2026-11-23",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
@@ -1993,12 +1991,12 @@
     "arriveePrevue": "2026-11-24 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 7,
-    "villeDep": "BAFOUSSAM",
-    "agenceDep": "CENTRE",
-    "agenceDestId": 4,
-    "villeDest": "YAOUNDE",
-    "agenceDest": "CENTRALE",
+    "agenceDepId": 5,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "BASTOS",
+    "agenceDestId": 8,
+    "villeDest": "GAROUA",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "OU 334 DA"
@@ -2009,14 +2007,14 @@
     },
     "scelle": "SC-042480",
     "expeditionIds": [
-      408
+      417
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-24 06:15",
     "dateArrivee": "2026-11-24 15:40",
     "dateCloture": "2026-11-24 16:05",
     "recus": [
-      408
+      417
     ],
     "ecarts": [],
     "observations": "",
@@ -2032,21 +2030,21 @@
     "id": 42
   },
   {
-    "numero": "AKW112400001",
-    "date": "2026-11-24",
+    "numero": "BFS112300001",
+    "date": "2026-11-23",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-24 18:00",
-    "arriveePrevue": "2026-11-25 15:00",
+    "departPrevu": "2026-11-23 18:00",
+    "arriveePrevue": "2026-11-24 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 1,
-    "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 11,
-    "villeDest": "BUEA",
-    "agenceDest": "MOLYKO",
+    "agenceDepId": 7,
+    "villeDep": "BAFOUSSAM",
+    "agenceDep": "CENTRE",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
       "immatriculation": "LT 452 AB"
@@ -2057,22 +2055,24 @@
     },
     "scelle": "SC-042517",
     "expeditionIds": [
-      56
+      480,
+      488
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-25 06:15",
-    "dateArrivee": "2026-11-25 15:40",
-    "dateCloture": "2026-11-25 16:05",
+    "dateDepart": "2026-11-24 06:15",
+    "dateArrivee": "2026-11-24 15:40",
+    "dateCloture": "2026-11-24 16:05",
     "recus": [
-      56
+      480,
+      488
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-24",
+    "dateCreation": "2026-11-23",
     "historique": [
       {
-        "date": "2026-11-24 17:30",
+        "date": "2026-11-23 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -2080,7 +2080,7 @@
     "id": 43
   },
   {
-    "numero": "BON112400001",
+    "numero": "AKW112400001",
     "date": "2026-11-24",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
@@ -2089,12 +2089,12 @@
     "arriveePrevue": "2026-11-25 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 2,
+    "agenceDepId": 1,
     "villeDep": "DOUALA",
-    "agenceDep": "BONANJO",
-    "agenceDestId": 7,
-    "villeDest": "BAFOUSSAM",
-    "agenceDest": "CENTRE",
+    "agenceDep": "AKWA",
+    "agenceDestId": 4,
+    "villeDest": "YAOUNDE",
+    "agenceDest": "CENTRALE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "CE 218 KF"
@@ -2105,14 +2105,14 @@
     },
     "scelle": "SC-042554",
     "expeditionIds": [
-      414
+      50
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-25 06:15",
     "dateArrivee": "2026-11-25 15:40",
     "dateCloture": "2026-11-25 16:05",
     "recus": [
-      414
+      50
     ],
     "ecarts": [],
     "observations": "",
@@ -2128,7 +2128,7 @@
     "id": 44
   },
   {
-    "numero": "BON112400002",
+    "numero": "YDE112400001",
     "date": "2026-11-24",
     "moyen": "ROUTE",
     "numeroTransport": "LT 907 HC",
@@ -2137,12 +2137,12 @@
     "arriveePrevue": "2026-11-25 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 2,
-    "villeDep": "DOUALA",
-    "agenceDep": "BONANJO",
-    "agenceDestId": 9,
-    "villeDest": "KRIBI",
-    "agenceDest": "CENTRE",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Camion 10 t",
       "immatriculation": "LT 907 HC"
@@ -2153,14 +2153,16 @@
     },
     "scelle": "SC-042591",
     "expeditionIds": [
-      411
+      425,
+      492
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-25 06:15",
     "dateArrivee": "2026-11-25 15:40",
     "dateCloture": "2026-11-25 16:05",
     "recus": [
-      411
+      425,
+      492
     ],
     "ecarts": [],
     "observations": "",
@@ -2176,7 +2178,7 @@
     "id": 45
   },
   {
-    "numero": "YDE112400001",
+    "numero": "YDE112400002",
     "date": "2026-11-24",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
@@ -2188,9 +2190,9 @@
     "agenceDepId": 4,
     "villeDep": "YAOUNDE",
     "agenceDep": "CENTRALE",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDestId": 10,
+    "villeDest": "LIMBE",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "OU 334 DA"
@@ -2201,14 +2203,14 @@
     },
     "scelle": "SC-042628",
     "expeditionIds": [
-      464
+      424
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-25 06:15",
     "dateArrivee": "2026-11-25 15:40",
     "dateCloture": "2026-11-25 16:05",
     "recus": [
-      464
+      424
     ],
     "ecarts": [],
     "observations": "",
@@ -2224,7 +2226,7 @@
     "id": 46
   },
   {
-    "numero": "YDE112400002",
+    "numero": "YDE112400003",
     "date": "2026-11-24",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
@@ -2236,8 +2238,8 @@
     "agenceDepId": 4,
     "villeDep": "YAOUNDE",
     "agenceDep": "CENTRALE",
-    "agenceDestId": 10,
-    "villeDest": "LIMBE",
+    "agenceDestId": 9,
+    "villeDest": "KRIBI",
     "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
@@ -2249,14 +2251,14 @@
     },
     "scelle": "SC-042665",
     "expeditionIds": [
-      413
+      423
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-25 06:15",
     "dateArrivee": "2026-11-25 15:40",
     "dateCloture": "2026-11-25 16:05",
     "recus": [
-      413
+      423
     ],
     "ecarts": [],
     "observations": "",
@@ -2272,7 +2274,7 @@
     "id": 47
   },
   {
-    "numero": "BAS112400001",
+    "numero": "BFS112400001",
     "date": "2026-11-24",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
@@ -2281,9 +2283,9 @@
     "arriveePrevue": "2026-11-25 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 5,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "BASTOS",
+    "agenceDepId": 7,
+    "villeDep": "BAFOUSSAM",
+    "agenceDep": "CENTRE",
     "agenceDestId": 1,
     "villeDest": "DOUALA",
     "agenceDest": "AKWA",
@@ -2297,14 +2299,14 @@
     },
     "scelle": "SC-042702",
     "expeditionIds": [
-      467
+      493
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-25 06:15",
     "dateArrivee": "2026-11-25 15:40",
     "dateCloture": "2026-11-25 16:05",
     "recus": [
-      467
+      493
     ],
     "ecarts": [],
     "observations": "",
@@ -2345,16 +2347,14 @@
     },
     "scelle": "SC-042739",
     "expeditionIds": [
-      486,
-      487
+      491
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-25 06:15",
     "dateArrivee": "2026-11-25 15:40",
     "dateCloture": "2026-11-25 16:05",
     "recus": [
-      486,
-      487
+      491
     ],
     "ecarts": [],
     "observations": "",
@@ -2370,21 +2370,21 @@
     "id": 49
   },
   {
-    "numero": "MOL112500001",
-    "date": "2026-11-25",
+    "numero": "GRA112400002",
+    "date": "2026-11-24",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-25 18:00",
-    "arriveePrevue": "2026-11-26 15:00",
+    "departPrevu": "2026-11-24 18:00",
+    "arriveePrevue": "2026-11-25 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 11,
-    "villeDep": "BUEA",
-    "agenceDep": "MOLYKO",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDepId": 8,
+    "villeDep": "GAROUA",
+    "agenceDep": "CENTRE",
+    "agenceDestId": 12,
+    "villeDest": "NGAOUNDERE",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "OU 334 DA"
@@ -2395,22 +2395,22 @@
     },
     "scelle": "SC-042776",
     "expeditionIds": [
-      451
+      426
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-26 06:15",
-    "dateArrivee": "2026-11-26 15:40",
-    "dateCloture": "2026-11-26 16:05",
+    "dateDepart": "2026-11-25 06:15",
+    "dateArrivee": "2026-11-25 15:40",
+    "dateCloture": "2026-11-25 16:05",
     "recus": [
-      451
+      426
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-25",
+    "dateCreation": "2026-11-24",
     "historique": [
       {
-        "date": "2026-11-25 17:30",
+        "date": "2026-11-24 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -2418,7 +2418,7 @@
     "id": 50
   },
   {
-    "numero": "AKW112500001",
+    "numero": "MOL112500001",
     "date": "2026-11-25",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
@@ -2427,12 +2427,12 @@
     "arriveePrevue": "2026-11-26 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 1,
-    "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 7,
-    "villeDest": "BAFOUSSAM",
-    "agenceDest": "CENTRE",
+    "agenceDepId": 11,
+    "villeDep": "BUEA",
+    "agenceDep": "MOLYKO",
+    "agenceDestId": 4,
+    "villeDest": "YAOUNDE",
+    "agenceDest": "CENTRALE",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
       "immatriculation": "LT 452 AB"
@@ -2443,14 +2443,14 @@
     },
     "scelle": "SC-042813",
     "expeditionIds": [
-      9
+      430
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-26 06:15",
     "dateArrivee": "2026-11-26 15:40",
     "dateCloture": "2026-11-26 16:05",
     "recus": [
-      9
+      430
     ],
     "ecarts": [],
     "observations": "",
@@ -2466,7 +2466,7 @@
     "id": 51
   },
   {
-    "numero": "BON112500001",
+    "numero": "AKW112500001",
     "date": "2026-11-25",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
@@ -2475,12 +2475,12 @@
     "arriveePrevue": "2026-11-26 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 2,
+    "agenceDepId": 1,
     "villeDep": "DOUALA",
-    "agenceDep": "BONANJO",
-    "agenceDestId": 10,
-    "villeDest": "LIMBE",
-    "agenceDest": "CENTRE",
+    "agenceDep": "AKWA",
+    "agenceDestId": 11,
+    "villeDest": "BUEA",
+    "agenceDest": "MOLYKO",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "CE 218 KF"
@@ -2491,14 +2491,14 @@
     },
     "scelle": "SC-042850",
     "expeditionIds": [
-      421
+      56
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-26 06:15",
     "dateArrivee": "2026-11-26 15:40",
     "dateCloture": "2026-11-26 16:05",
     "recus": [
-      421
+      56
     ],
     "ecarts": [],
     "observations": "",
@@ -2514,7 +2514,7 @@
     "id": 52
   },
   {
-    "numero": "BON112500002",
+    "numero": "YDE112500001",
     "date": "2026-11-25",
     "moyen": "ROUTE",
     "numeroTransport": "LT 907 HC",
@@ -2523,12 +2523,12 @@
     "arriveePrevue": "2026-11-26 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 2,
-    "villeDep": "DOUALA",
-    "agenceDep": "BONANJO",
-    "agenceDestId": 9,
-    "villeDest": "KRIBI",
-    "agenceDest": "CENTRE",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Camion 10 t",
       "immatriculation": "LT 907 HC"
@@ -2539,14 +2539,14 @@
     },
     "scelle": "SC-042887",
     "expeditionIds": [
-      420
+      476
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-26 06:15",
     "dateArrivee": "2026-11-26 15:40",
     "dateCloture": "2026-11-26 16:05",
     "recus": [
-      420
+      476
     ],
     "ecarts": [],
     "observations": "",
@@ -2562,7 +2562,7 @@
     "id": 53
   },
   {
-    "numero": "BON112500003",
+    "numero": "YDE112500002",
     "date": "2026-11-25",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
@@ -2571,9 +2571,9 @@
     "arriveePrevue": "2026-11-26 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 3,
-    "villeDep": "DOUALA",
-    "agenceDep": "BONABERI",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
     "agenceDestId": 11,
     "villeDest": "BUEA",
     "agenceDest": "MOLYKO",
@@ -2587,14 +2587,14 @@
     },
     "scelle": "SC-042924",
     "expeditionIds": [
-      418
+      428
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-26 06:15",
     "dateArrivee": "2026-11-26 15:40",
     "dateCloture": "2026-11-26 16:05",
     "recus": [
-      418
+      428
     ],
     "ecarts": [],
     "observations": "",
@@ -2610,7 +2610,7 @@
     "id": 54
   },
   {
-    "numero": "BAS112500001",
+    "numero": "YDE112500003",
     "date": "2026-11-25",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
@@ -2619,12 +2619,12 @@
     "arriveePrevue": "2026-11-26 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 5,
+    "agenceDepId": 4,
     "villeDep": "YAOUNDE",
-    "agenceDep": "BASTOS",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 7,
+    "villeDest": "BAFOUSSAM",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
       "immatriculation": "LT 452 AB"
@@ -2635,16 +2635,14 @@
     },
     "scelle": "SC-042961",
     "expeditionIds": [
-      489,
-      491
+      429
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-26 06:15",
     "dateArrivee": "2026-11-26 15:40",
     "dateCloture": "2026-11-26 16:05",
     "recus": [
-      489,
-      491
+      429
     ],
     "ecarts": [],
     "observations": "",
@@ -2660,7 +2658,7 @@
     "id": 55
   },
   {
-    "numero": "BAS112500002",
+    "numero": "BAS112500001",
     "date": "2026-11-25",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
@@ -2672,9 +2670,9 @@
     "agenceDepId": 5,
     "villeDep": "YAOUNDE",
     "agenceDep": "BASTOS",
-    "agenceDestId": 11,
-    "villeDest": "BUEA",
-    "agenceDest": "MOLYKO",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "CE 218 KF"
@@ -2685,14 +2683,16 @@
     },
     "scelle": "SC-042998",
     "expeditionIds": [
-      419
+      479,
+      496
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-26 06:15",
     "dateArrivee": "2026-11-26 15:40",
     "dateCloture": "2026-11-26 16:05",
     "recus": [
-      419
+      479,
+      496
     ],
     "ecarts": [],
     "observations": "",
@@ -2733,16 +2733,14 @@
     },
     "scelle": "SC-043035",
     "expeditionIds": [
-      466,
-      492
+      427
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-26 06:15",
     "dateArrivee": "2026-11-26 15:40",
     "dateCloture": "2026-11-26 16:05",
     "recus": [
-      466,
-      492
+      427
     ],
     "ecarts": [],
     "observations": "",
@@ -2770,9 +2768,9 @@
     "agenceDepId": 8,
     "villeDep": "GAROUA",
     "agenceDep": "CENTRE",
-    "agenceDestId": 1,
-    "villeDest": "DOUALA",
-    "agenceDest": "AKWA",
+    "agenceDestId": 11,
+    "villeDest": "BUEA",
+    "agenceDest": "MOLYKO",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "OU 334 DA"
@@ -2783,20 +2781,14 @@
     },
     "scelle": "SC-043072",
     "expeditionIds": [
-      488,
-      490,
-      493,
-      494
+      431
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-26 06:15",
     "dateArrivee": "2026-11-26 15:40",
     "dateCloture": "2026-11-26 16:05",
     "recus": [
-      488,
-      490,
-      493,
-      494
+      431
     ],
     "ecarts": [],
     "observations": "",
@@ -2837,16 +2829,14 @@
     },
     "scelle": "SC-043109",
     "expeditionIds": [
-      450,
-      452
+      463
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-27 06:15",
     "dateArrivee": "2026-11-27 15:40",
     "dateCloture": "2026-11-27 16:05",
     "recus": [
-      450,
-      452
+      463
     ],
     "ecarts": [],
     "observations": "",
@@ -2874,9 +2864,9 @@
     "agenceDepId": 1,
     "villeDep": "DOUALA",
     "agenceDep": "AKWA",
-    "agenceDestId": 4,
-    "villeDest": "YAOUNDE",
-    "agenceDest": "CENTRALE",
+    "agenceDestId": 7,
+    "villeDest": "BAFOUSSAM",
+    "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "CE 218 KF"
@@ -2887,13 +2877,15 @@
     },
     "scelle": "SC-043146",
     "expeditionIds": [
-      18
+      9
     ],
-    "statut": "PARTI",
+    "statut": "CLOTURE",
     "dateDepart": "2026-11-27 06:15",
-    "dateArrivee": null,
-    "dateCloture": null,
-    "recus": [],
+    "dateArrivee": "2026-11-27 15:40",
+    "dateCloture": "2026-11-27 16:05",
+    "recus": [
+      9
+    ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
@@ -2908,7 +2900,7 @@
     "id": 60
   },
   {
-    "numero": "AKW112600002",
+    "numero": "BON112600001",
     "date": "2026-11-26",
     "moyen": "ROUTE",
     "numeroTransport": "LT 907 HC",
@@ -2917,12 +2909,12 @@
     "arriveePrevue": "2026-11-27 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 1,
+    "agenceDepId": 3,
     "villeDep": "DOUALA",
-    "agenceDep": "AKWA",
-    "agenceDestId": 9,
-    "villeDest": "KRIBI",
-    "agenceDest": "CENTRE",
+    "agenceDep": "BONABERI",
+    "agenceDestId": 4,
+    "villeDest": "YAOUNDE",
+    "agenceDest": "CENTRALE",
     "vehicule": {
       "type": "Camion 10 t",
       "immatriculation": "LT 907 HC"
@@ -2933,14 +2925,15 @@
     },
     "scelle": "SC-043183",
     "expeditionIds": [
-      58,
-      424
+      432
     ],
-    "statut": "PARTI",
+    "statut": "CLOTURE",
     "dateDepart": "2026-11-27 06:15",
-    "dateArrivee": null,
-    "dateCloture": null,
-    "recus": [],
+    "dateArrivee": "2026-11-27 15:40",
+    "dateCloture": "2026-11-27 16:05",
+    "recus": [
+      432
+    ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
@@ -2955,7 +2948,7 @@
     "id": 61
   },
   {
-    "numero": "YDE112600092",
+    "numero": "YDE112600001",
     "date": "2026-11-26",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
@@ -2980,16 +2973,16 @@
     },
     "scelle": "SC-043220",
     "expeditionIds": [
-      449,
-      460
+      500,
+      502
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-27 06:15",
     "dateArrivee": "2026-11-27 15:40",
     "dateCloture": "2026-11-27 16:05",
     "recus": [
-      449,
-      460
+      500,
+      502
     ],
     "ecarts": [],
     "observations": "",
@@ -3005,7 +2998,7 @@
     "id": 62
   },
   {
-    "numero": "YDE112600093",
+    "numero": "YDE112600002",
     "date": "2026-11-26",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
@@ -3017,8 +3010,8 @@
     "agenceDepId": 4,
     "villeDep": "YAOUNDE",
     "agenceDep": "CENTRALE",
-    "agenceDestId": 10,
-    "villeDest": "LIMBE",
+    "agenceDestId": 7,
+    "villeDest": "BAFOUSSAM",
     "agenceDest": "CENTRE",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
@@ -3030,14 +3023,14 @@
     },
     "scelle": "SC-043257",
     "expeditionIds": [
-      455
+      433
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-27 06:15",
     "dateArrivee": "2026-11-27 15:40",
     "dateCloture": "2026-11-27 16:05",
     "recus": [
-      455
+      433
     ],
     "ecarts": [],
     "observations": "",
@@ -3053,7 +3046,7 @@
     "id": 63
   },
   {
-    "numero": "YDE112600094",
+    "numero": "BFS112600001",
     "date": "2026-11-26",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
@@ -3062,12 +3055,12 @@
     "arriveePrevue": "2026-11-27 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 4,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "CENTRALE",
-    "agenceDestId": 11,
-    "villeDest": "BUEA",
-    "agenceDest": "MOLYKO",
+    "agenceDepId": 7,
+    "villeDep": "BAFOUSSAM",
+    "agenceDep": "CENTRE",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "CE 218 KF"
@@ -3078,15 +3071,17 @@
     },
     "scelle": "SC-043294",
     "expeditionIds": [
-      422,
-      425,
-      456
+      478,
+      503
     ],
-    "statut": "PARTI",
+    "statut": "CLOTURE",
     "dateDepart": "2026-11-27 06:15",
-    "dateArrivee": null,
-    "dateCloture": null,
-    "recus": [],
+    "dateArrivee": "2026-11-27 15:40",
+    "dateCloture": "2026-11-27 16:05",
+    "recus": [
+      478,
+      503
+    ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
@@ -3101,7 +3096,7 @@
     "id": 64
   },
   {
-    "numero": "BAS112600001",
+    "numero": "GRA112600001",
     "date": "2026-11-26",
     "moyen": "ROUTE",
     "numeroTransport": "LT 907 HC",
@@ -3110,9 +3105,9 @@
     "arriveePrevue": "2026-11-27 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 5,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "BASTOS",
+    "agenceDepId": 8,
+    "villeDep": "GAROUA",
+    "agenceDep": "CENTRE",
     "agenceDestId": 1,
     "villeDest": "DOUALA",
     "agenceDest": "AKWA",
@@ -3126,16 +3121,18 @@
     },
     "scelle": "SC-043331",
     "expeditionIds": [
-      453,
-      465
+      498,
+      499,
+      501
     ],
     "statut": "CLOTURE",
     "dateDepart": "2026-11-27 06:15",
     "dateArrivee": "2026-11-27 15:40",
     "dateCloture": "2026-11-27 16:05",
     "recus": [
-      453,
-      465
+      498,
+      499,
+      501
     ],
     "ecarts": [],
     "observations": "",
@@ -3151,21 +3148,21 @@
     "id": 65
   },
   {
-    "numero": "BAS112600002",
-    "date": "2026-11-26",
+    "numero": "MOL112700001",
+    "date": "2026-11-27",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-26 18:00",
-    "arriveePrevue": "2026-11-27 15:00",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 5,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "BASTOS",
-    "agenceDestId": 9,
-    "villeDest": "KRIBI",
-    "agenceDest": "CENTRE",
+    "agenceDepId": 11,
+    "villeDep": "BUEA",
+    "agenceDep": "MOLYKO",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
     "vehicule": {
       "type": "Fourgonnette (1,5 t)",
       "immatriculation": "OU 334 DA"
@@ -3176,22 +3173,24 @@
     },
     "scelle": "SC-043368",
     "expeditionIds": [
-      457
+      462,
+      464
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-27 06:15",
-    "dateArrivee": "2026-11-27 15:40",
-    "dateCloture": "2026-11-27 16:05",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": "2026-11-28 15:40",
+    "dateCloture": "2026-11-28 16:05",
     "recus": [
-      457
+      462,
+      464
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-26",
+    "dateCreation": "2026-11-27",
     "historique": [
       {
-        "date": "2026-11-26 17:30",
+        "date": "2026-11-27 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -3199,21 +3198,21 @@
     "id": 66
   },
   {
-    "numero": "MVA112600001",
-    "date": "2026-11-26",
+    "numero": "AKW112700001",
+    "date": "2026-11-27",
     "moyen": "ROUTE",
     "numeroTransport": "LT 452 AB",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-26 18:00",
-    "arriveePrevue": "2026-11-27 15:00",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 6,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "MVAN",
-    "agenceDestId": 2,
-    "villeDest": "DOUALA",
-    "agenceDest": "BONANJO",
+    "agenceDepId": 1,
+    "villeDep": "DOUALA",
+    "agenceDep": "AKWA",
+    "agenceDestId": 4,
+    "villeDest": "YAOUNDE",
+    "agenceDest": "CENTRALE",
     "vehicule": {
       "type": "Camionnette (3,5 t)",
       "immatriculation": "LT 452 AB"
@@ -3224,22 +3223,20 @@
     },
     "scelle": "SC-043405",
     "expeditionIds": [
-      458
+      18
     ],
-    "statut": "CLOTURE",
-    "dateDepart": "2026-11-27 06:15",
-    "dateArrivee": "2026-11-27 15:40",
-    "dateCloture": "2026-11-27 16:05",
-    "recus": [
-      458
-    ],
+    "statut": "PARTI",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": null,
+    "dateCloture": null,
+    "recus": [],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-26",
+    "dateCreation": "2026-11-27",
     "historique": [
       {
-        "date": "2026-11-26 17:30",
+        "date": "2026-11-27 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -3247,18 +3244,18 @@
     "id": 67
   },
   {
-    "numero": "MVA112600002",
-    "date": "2026-11-26",
+    "numero": "AKW112700002",
+    "date": "2026-11-27",
     "moyen": "ROUTE",
     "numeroTransport": "CE 218 KF",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-26 18:00",
-    "arriveePrevue": "2026-11-27 15:00",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 6,
-    "villeDep": "YAOUNDE",
-    "agenceDep": "MVAN",
+    "agenceDepId": 1,
+    "villeDep": "DOUALA",
+    "agenceDep": "AKWA",
     "agenceDestId": 9,
     "villeDest": "KRIBI",
     "agenceDest": "CENTRE",
@@ -3272,22 +3269,20 @@
     },
     "scelle": "SC-043442",
     "expeditionIds": [
-      454
+      58
     ],
-    "statut": "CLOTURE",
-    "dateDepart": "2026-11-27 06:15",
-    "dateArrivee": "2026-11-27 15:40",
-    "dateCloture": "2026-11-27 16:05",
-    "recus": [
-      454
-    ],
+    "statut": "PARTI",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": null,
+    "dateCloture": null,
+    "recus": [],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-26",
+    "dateCreation": "2026-11-27",
     "historique": [
       {
-        "date": "2026-11-26 17:30",
+        "date": "2026-11-27 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -3295,18 +3290,18 @@
     "id": 68
   },
   {
-    "numero": "BFS112600001",
-    "date": "2026-11-26",
+    "numero": "YDE112700092",
+    "date": "2026-11-27",
     "moyen": "ROUTE",
     "numeroTransport": "LT 907 HC",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-26 18:00",
-    "arriveePrevue": "2026-11-27 15:00",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 7,
-    "villeDep": "BAFOUSSAM",
-    "agenceDep": "CENTRE",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
     "agenceDestId": 1,
     "villeDest": "DOUALA",
     "agenceDest": "AKWA",
@@ -3320,24 +3315,24 @@
     },
     "scelle": "SC-043479",
     "expeditionIds": [
-      462,
-      463
+      461,
+      472
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-27 06:15",
-    "dateArrivee": "2026-11-27 15:40",
-    "dateCloture": "2026-11-27 16:05",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": "2026-11-28 15:40",
+    "dateCloture": "2026-11-28 16:05",
     "recus": [
-      462,
-      463
+      461,
+      472
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-26",
+    "dateCreation": "2026-11-27",
     "historique": [
       {
-        "date": "2026-11-26 17:30",
+        "date": "2026-11-27 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
@@ -3345,17 +3340,399 @@
     "id": 69
   },
   {
-    "numero": "GRA112600001",
-    "date": "2026-11-26",
+    "numero": "YDE112700093",
+    "date": "2026-11-27",
     "moyen": "ROUTE",
     "numeroTransport": "OU 334 DA",
     "transporteur": "Flotte SOLEX EXPRESS",
-    "departPrevu": "2026-11-26 18:00",
-    "arriveePrevue": "2026-11-27 15:00",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
     "annule": false,
     "heure": "17:30",
-    "agenceDepId": 8,
-    "villeDep": "GAROUA",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 10,
+    "villeDest": "LIMBE",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Fourgonnette (1,5 t)",
+      "immatriculation": "OU 334 DA"
+    },
+    "chauffeur": {
+      "nom": "NGUEMA Fabrice",
+      "tel": "690 23 77 15"
+    },
+    "scelle": "SC-043516",
+    "expeditionIds": [
+      436,
+      467
+    ],
+    "statut": "PARTI",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": null,
+    "dateCloture": null,
+    "recus": [],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 70
+  },
+  {
+    "numero": "YDE112700094",
+    "date": "2026-11-27",
+    "moyen": "ROUTE",
+    "numeroTransport": "LT 452 AB",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 11,
+    "villeDest": "BUEA",
+    "agenceDest": "MOLYKO",
+    "vehicule": {
+      "type": "Camionnette (3,5 t)",
+      "immatriculation": "LT 452 AB"
+    },
+    "chauffeur": {
+      "nom": "MBIDA Joseph",
+      "tel": "699 11 45 78"
+    },
+    "scelle": "SC-043553",
+    "expeditionIds": [
+      468
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": "2026-11-28 15:40",
+    "dateCloture": "2026-11-28 16:05",
+    "recus": [
+      468
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 71
+  },
+  {
+    "numero": "YDE112700095",
+    "date": "2026-11-27",
+    "moyen": "ROUTE",
+    "numeroTransport": "CE 218 KF",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 4,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "CENTRALE",
+    "agenceDestId": 7,
+    "villeDest": "BAFOUSSAM",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Fourgonnette (1,5 t)",
+      "immatriculation": "CE 218 KF"
+    },
+    "chauffeur": {
+      "nom": "TCHATCHOUA Eric",
+      "tel": "677 52 08 31"
+    },
+    "scelle": "SC-043590",
+    "expeditionIds": [
+      437,
+      441
+    ],
+    "statut": "PARTI",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": null,
+    "dateCloture": null,
+    "recus": [],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 72
+  },
+  {
+    "numero": "BAS112700001",
+    "date": "2026-11-27",
+    "moyen": "ROUTE",
+    "numeroTransport": "LT 907 HC",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 5,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "BASTOS",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
+    "vehicule": {
+      "type": "Camion 10 t",
+      "immatriculation": "LT 907 HC"
+    },
+    "chauffeur": {
+      "nom": "ABOUBAKAR Moussa",
+      "tel": "655 90 12 64"
+    },
+    "scelle": "SC-043627",
+    "expeditionIds": [
+      465,
+      477
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": "2026-11-28 15:40",
+    "dateCloture": "2026-11-28 16:05",
+    "recus": [
+      465,
+      477
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 73
+  },
+  {
+    "numero": "BAS112700002",
+    "date": "2026-11-27",
+    "moyen": "ROUTE",
+    "numeroTransport": "OU 334 DA",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 5,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "BASTOS",
+    "agenceDestId": 8,
+    "villeDest": "GAROUA",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Fourgonnette (1,5 t)",
+      "immatriculation": "OU 334 DA"
+    },
+    "chauffeur": {
+      "nom": "NGUEMA Fabrice",
+      "tel": "690 23 77 15"
+    },
+    "scelle": "SC-043664",
+    "expeditionIds": [
+      435
+    ],
+    "statut": "PARTI",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": null,
+    "dateCloture": null,
+    "recus": [],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 74
+  },
+  {
+    "numero": "BAS112700003",
+    "date": "2026-11-27",
+    "moyen": "ROUTE",
+    "numeroTransport": "LT 452 AB",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 5,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "BASTOS",
+    "agenceDestId": 9,
+    "villeDest": "KRIBI",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Camionnette (3,5 t)",
+      "immatriculation": "LT 452 AB"
+    },
+    "chauffeur": {
+      "nom": "MBIDA Joseph",
+      "tel": "699 11 45 78"
+    },
+    "scelle": "SC-043701",
+    "expeditionIds": [
+      469
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": "2026-11-28 15:40",
+    "dateCloture": "2026-11-28 16:05",
+    "recus": [
+      469
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 75
+  },
+  {
+    "numero": "MVA112700001",
+    "date": "2026-11-27",
+    "moyen": "ROUTE",
+    "numeroTransport": "CE 218 KF",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 6,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "MVAN",
+    "agenceDestId": 2,
+    "villeDest": "DOUALA",
+    "agenceDest": "BONANJO",
+    "vehicule": {
+      "type": "Fourgonnette (1,5 t)",
+      "immatriculation": "CE 218 KF"
+    },
+    "chauffeur": {
+      "nom": "TCHATCHOUA Eric",
+      "tel": "677 52 08 31"
+    },
+    "scelle": "SC-043738",
+    "expeditionIds": [
+      470
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": "2026-11-28 15:40",
+    "dateCloture": "2026-11-28 16:05",
+    "recus": [
+      470
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 76
+  },
+  {
+    "numero": "MVA112700002",
+    "date": "2026-11-27",
+    "moyen": "ROUTE",
+    "numeroTransport": "LT 907 HC",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 6,
+    "villeDep": "YAOUNDE",
+    "agenceDep": "MVAN",
+    "agenceDestId": 9,
+    "villeDest": "KRIBI",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Camion 10 t",
+      "immatriculation": "LT 907 HC"
+    },
+    "chauffeur": {
+      "nom": "ABOUBAKAR Moussa",
+      "tel": "655 90 12 64"
+    },
+    "scelle": "SC-043775",
+    "expeditionIds": [
+      466
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": "2026-11-28 15:40",
+    "dateCloture": "2026-11-28 16:05",
+    "recus": [
+      466
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 77
+  },
+  {
+    "numero": "BFS112700001",
+    "date": "2026-11-27",
+    "moyen": "ROUTE",
+    "numeroTransport": "OU 334 DA",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 7,
+    "villeDep": "BAFOUSSAM",
     "agenceDep": "CENTRE",
     "agenceDestId": 1,
     "villeDest": "DOUALA",
@@ -3368,30 +3745,126 @@
       "nom": "NGUEMA Fabrice",
       "tel": "690 23 77 15"
     },
-    "scelle": "SC-043516",
+    "scelle": "SC-043812",
     "expeditionIds": [
-      459,
-      461
+      474,
+      475
     ],
     "statut": "CLOTURE",
-    "dateDepart": "2026-11-27 06:15",
-    "dateArrivee": "2026-11-27 15:40",
-    "dateCloture": "2026-11-27 16:05",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": "2026-11-28 15:40",
+    "dateCloture": "2026-11-28 16:05",
     "recus": [
-      459,
-      461
+      474,
+      475
     ],
     "ecarts": [],
     "observations": "",
     "creePar": "Chef d'agence",
-    "dateCreation": "2026-11-26",
+    "dateCreation": "2026-11-27",
     "historique": [
       {
-        "date": "2026-11-26 17:30",
+        "date": "2026-11-27 17:30",
         "user": "Chef d'agence",
         "action": "Bordereau constitué (groupage du soir)"
       }
     ],
-    "id": 70
+    "id": 78
+  },
+  {
+    "numero": "BFS112700002",
+    "date": "2026-11-27",
+    "moyen": "ROUTE",
+    "numeroTransport": "LT 452 AB",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 7,
+    "villeDep": "BAFOUSSAM",
+    "agenceDep": "CENTRE",
+    "agenceDestId": 8,
+    "villeDest": "GAROUA",
+    "agenceDest": "CENTRE",
+    "vehicule": {
+      "type": "Camionnette (3,5 t)",
+      "immatriculation": "LT 452 AB"
+    },
+    "chauffeur": {
+      "nom": "MBIDA Joseph",
+      "tel": "699 11 45 78"
+    },
+    "scelle": "SC-043849",
+    "expeditionIds": [
+      438
+    ],
+    "statut": "PARTI",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": null,
+    "dateCloture": null,
+    "recus": [],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 79
+  },
+  {
+    "numero": "GRA112700001",
+    "date": "2026-11-27",
+    "moyen": "ROUTE",
+    "numeroTransport": "CE 218 KF",
+    "transporteur": "Flotte SOLEX EXPRESS",
+    "departPrevu": "2026-11-27 18:00",
+    "arriveePrevue": "2026-11-28 15:00",
+    "annule": false,
+    "heure": "17:30",
+    "agenceDepId": 8,
+    "villeDep": "GAROUA",
+    "agenceDep": "CENTRE",
+    "agenceDestId": 1,
+    "villeDest": "DOUALA",
+    "agenceDest": "AKWA",
+    "vehicule": {
+      "type": "Fourgonnette (1,5 t)",
+      "immatriculation": "CE 218 KF"
+    },
+    "chauffeur": {
+      "nom": "TCHATCHOUA Eric",
+      "tel": "677 52 08 31"
+    },
+    "scelle": "SC-043886",
+    "expeditionIds": [
+      471,
+      473
+    ],
+    "statut": "CLOTURE",
+    "dateDepart": "2026-11-28 06:15",
+    "dateArrivee": "2026-11-28 15:40",
+    "dateCloture": "2026-11-28 16:05",
+    "recus": [
+      471,
+      473
+    ],
+    "ecarts": [],
+    "observations": "",
+    "creePar": "Chef d'agence",
+    "dateCreation": "2026-11-27",
+    "historique": [
+      {
+        "date": "2026-11-27 17:30",
+        "user": "Chef d'agence",
+        "action": "Bordereau constitué (groupage du soir)"
+      }
+    ],
+    "id": 80
   }
 ]

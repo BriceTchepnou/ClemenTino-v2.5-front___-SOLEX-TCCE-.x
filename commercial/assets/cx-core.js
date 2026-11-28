@@ -487,4 +487,4 @@ CX.DataTable.prototype = {
 };
 
 /* Activation des tooltips Bootstrap sur toutes les pages */
-$(function () { $("body").tooltip({ selector: "[data-toggle=tooltip]", container: "body" }); });
+$(function () { if ($.fn.tooltip) $("body").tooltip({ selector: "[data-toggle=tooltip]", container: "body" }); });

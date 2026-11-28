@@ -145,13 +145,24 @@ CX.MODULES = [
     { id: "tracking", label: "Tracking", home: "../operations/tracking.html" },
     { id: "etats", label: "États", home: "../etats/index.html", menu: "MENU_ETATS" },
     { id: "comptabilite", label: "Comptabilité" },
-    { id: "controle", label: "Contrôle" },
+    { id: "controle", label: "Contrôle", home: "../reclamations/index.html", menu: "MENU_CONTROLE", petit: true },
     { id: "clientsweb", label: "Clients web" },
     { id: "sg", label: "Services généraux" }
 ];
 
+/* Module CONTRÔLE (dossier ../reclamations/) */
+CX.MENU_CONTROLE = [
+    {
+        id: "c-qualite", titre: "Qualité de service", icon: "fa-life-ring", home: "../reclamations/index.html",
+        items: [
+            { page: "c-reclamations", href: "../reclamations/index.html", label: "Réclamations", desc: "Plaintes, incidents, accidents : affecter, suivre, résoudre" },
+            { page: "c-reclamation-new", href: "../reclamations/index.html#nouvelle", label: "Nouvelle réclamation", desc: "Depuis un reçu, une facture ou sans justificatif" }
+        ]
+    }
+];
+
 CX.PAGE_GROUP = {
-    "o-dashboard": "o-dashboard", "o-groupage": "o-groupage", "o-degroupage": "o-degroupage", "o-instance": "o-instance",
+    "c-reclamations": "c-reclamations", "o-dashboard": "o-dashboard", "o-groupage": "o-groupage", "o-degroupage": "o-degroupage", "o-instance": "o-instance",
     "o-livraisons": "o-livraisons", "o-tournees": "o-tournees","o-lettres": "o-lettres", "o-preenregistrees": "o-preenregistrees", "o-provisoires": "o-provisoires", "o-international": "o-international", "o-inter-groupage": "o-international", "o-inter-degroupage": "o-international", "o-bordereaux": "o-bordereaux", "o-bordereau": "o-bordereaux", "o-tracking": "o-tracking",
     "e-index": "e-index", "e-ca": "e-ca", "e-journal": "e-journal", "e-production": "e-production", "e-volumique": "e-volumique",
     "e-livraisons": "e-livraisons", "e-tresorerie": "e-tresorerie", "e-statistiques": "e-statistiques",
@@ -217,12 +228,17 @@ CX.shell = {
             return "<li><a href='#' onclick='return false' title='Module hors maquette'>" + m.label + "</a></li>";
         }).join("");
         return "<header class='cx-header'><div class='cx-header-inner'>" +
-            "<a class='cx-brand' href='index.html'>ClemenTino<small>2.0</small></a>" +
+            "<a class='cx-brand' href='../accueil/index.html' title=\"Accueil\">ClemenTino<small>2.0</small></a>" +
             (CX.societe.logoUrl() ? "<span class='cx-soc-chip' title='" + CX.util.esc(CX.CONFIG.SOCIETE.nom) + "'><img src='" + CX.util.esc(CX.societe.logoUrl()) + "' alt='" + CX.util.esc(CX.CONFIG.SOCIETE.nom) + "'></span>" : "") +
             "<ul class='cx-nav'>" + nav + "</ul>" +
             "<div class='cx-header-right'><span class='cx-loc-chip'><i class='fa fa-map-marker'></i> " +
             CX.util.esc(CX.shell.nomVille(u.ville)) + " · bureau " + CX.util.esc(u.agence.charAt(0) + u.agence.substr(1).toLowerCase()) + "</span>" +
-            "<span class='cx-user'><i class='fa fa-user-circle-o'></i> " + CX.util.esc(u.nom) + "</span></div>" +
+            "<div class='dropdown cx-user-menu'><a href='#' class='cx-user' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fa fa-user-circle-o'></i> " + CX.util.esc(u.nom) + " <i class='fa fa-angle-down'></i></a>" +
+            "<ul class='dropdown-menu dropdown-menu-right'><li class='dropdown-header'>" + CX.util.esc(CX.CONFIG.SOCIETE.nom) + "</li>" +
+            "<li><a href='../accueil/index.html'><i class='fa fa-home fa-fw'></i> Accueil</a></li>" +
+            "<li><a href='../reclamations/index.html'><i class='fa fa-life-ring fa-fw'></i> Réclamations</a></li>" +
+            "<li role='separator' class='divider'></li>" +
+            "<li><a href='../accueil/connexion.html?deconnexion=1' data-deconnexion><i class='fa fa-sign-out fa-fw'></i> Se déconnecter</a></li></ul></div></div>" +
             "</div></header>";
     },
 
@@ -244,6 +260,11 @@ CX.shell = {
                 lien("o-instance", "Livraison de colis", "fa-motorcycle", "../operations/instance.html") +
                 lien("o-provisoires", "Bordereaux provisoires", "fa-file-text-o", "../operations/bordereaux-provisoires.html") +
                 "</nav>";
+        }
+        if (actif === "accueil") return "";
+        if (actif === "controle") {
+            return "<nav class='cx-subnav'>" + lien("c-reclamations", "Réclamations", "fa-life-ring", "../reclamations/index.html") +
+                "<a href='../reclamations/index.html#nouvelle'><i class='fa fa-plus-circle'></i>Nouvelle réclamation</a></nav>";
         }
         if (actif === "etats") {
             var menu = CX.MENU_ETATS;
