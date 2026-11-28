@@ -38,8 +38,8 @@ $(function () {
         { t: "Suivre un colis", d: "Tracking étape par étape", m: "Suivi", i: "fa-map-marker", c: "ardoise", h: "../operations/tracking.html" }
     ];
     $("#tuiles").html($.map(TUILES, function (x) {
-        return "<a class='ac-tuile ac-c-" + x.c + "' href='" + x.h + "'><i class='fa fa-arrow-right ac-tuile-fl'></i><span class='ac-tuile-ico'><i class='fa " + x.i + "'></i></span>" +
-            "<b>" + U.esc(x.t) + "</b><span class='ac-tuile-d'>" + U.esc(x.d) + "</span><em>" + U.esc(x.m) + "</em></a>";
+        return "<a class='ac-tuile ac-c-" + x.c + "' href='" + x.h + "' title='" + U.esc(x.m + " · " + x.d) + "'><i class='fa fa-arrow-right ac-tuile-fl'></i><span class='ac-tuile-ico'><i class='fa " + x.i + "'></i></span>" +
+            "<span class='ac-tuile-txt'><b>" + U.esc(x.t) + "</b><span class='ac-tuile-d'>" + U.esc(x.d) + "</span></span><em>" + U.esc(x.m) + "</em></a>";
     }).join(""));
 
     /* ---------------- Données ---------------- */
@@ -79,8 +79,8 @@ $(function () {
         for (var g = 0; g <= 4; g++) { var y = bas - (bas - haut) * g / 4; svg += "<line x1='0' x2='" + W + "' y1='" + y + "' y2='" + y + "' stroke='#eef1f6'/>"; }
         $.each(jours, function (k, j) {
             var x = k * larg + larg / 2, he = (bas - haut) * j.e / maxV, hl = (bas - haut) * j.l / maxV, dim = new Date(j.d + "T12:00:00").getDay() === 0;
-            svg += "<rect x='" + (x - bw - 1) + "' y='" + (bas - he) + "' width='" + bw + "' height='" + he + "' rx='3' fill='var(--cx-navy-2)'><title>" + U.toFr(j.d) + " : " + j.e + " expédiée(s)</title></rect>";
-            svg += "<rect x='" + (x + 1) + "' y='" + (bas - hl) + "' width='" + bw + "' height='" + hl + "' rx='3' fill='var(--cx-green)'><title>" + U.toFr(j.d) + " : " + j.l + " livrée(s)</title></rect>";
+            svg += "<rect x='" + (x - bw - 1) + "' y='" + (bas - he) + "' width='" + bw + "' height='" + he + "' rx='3' fill='#3b82f6'><title>" + U.toFr(j.d) + " : " + j.e + " expédiée(s)</title></rect>";
+            svg += "<rect x='" + (x + 1) + "' y='" + (bas - hl) + "' width='" + bw + "' height='" + hl + "' rx='3' fill='#16a34a'><title>" + U.toFr(j.d) + " : " + j.l + " livrée(s)</title></rect>";
             svg += "<text x='" + x + "' y='" + (H - 8) + "' text-anchor='middle'" + (j.d === today ? " style='font-weight:700;fill:var(--cx-ink)'" : dim ? " style='fill:#b6bcc8'" : "") + ">" + j.d.substr(8, 2) + "/" + j.d.substr(5, 2) + "</text>";
         });
         $("#graph").html(svg + "</svg>");

@@ -732,3 +732,11 @@ body.cx-app {
 .cx-user-menu .dropdown-menu > li > a { padding: 7px 10px; border-radius: 7px; color: var(--cx-text); }
 .cx-user-menu .dropdown-menu > li > a:hover { background: var(--cx-soft); }
 .cx-user-menu .dropdown-header { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+
+/* ---------------------------------------------------------------------
+   Pages « aérées » (accueil, formulaires) : marges latérales et verticales
+   plus généreuses, largeur de lecture contenue. Classe à poser sur <body>.
+   --------------------------------------------------------------------- */
+body.cx-aere .cx-main { max-width: 1240px; padding: 30px 40px 0; }
+body.cx-aere .cx-demo-bar { margin-bottom: 20px; }
+@media (max-width: 900px) { body.cx-aere .cx-main { padding: 20px 18px 0; } }
